@@ -2,10 +2,8 @@
 
 The Vertex platform command-line interface (CLI).
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/vertex-cli.svg)](https://npmjs.org/package/vertex-cli)
-[![Downloads/week](https://img.shields.io/npm/dw/vertex-cli.svg)](https://npmjs.org/package/vertex-cli)
-[![License](https://img.shields.io/npm/l/vertex-cli.svg)](https://github.com/Vertexvis/vertex-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@vertexvis/vertex-cli.svg)](https://www.npmjs.com/package/@vertexvis/vertex-cli)
+[![License](https://img.shields.io/npm/l/@vertexvis/vertex-cli.svg)](https://github.com/Vertexvis/vertex-cli/blob/master/LICENSE)
 
 <!-- toc -->
 * [vertex-cli](#vertex-cli)
