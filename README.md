@@ -21,7 +21,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.0.2 darwin-x64 node-v14.12.0
+@vertexvis/vertex-cli/0.0.1 darwin-x64 node-v14.12.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -56,7 +56,7 @@ EXAMPLE
   Uploaded and created 5 parts.
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.2/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.1/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -78,7 +78,7 @@ EXAMPLE
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.2/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.1/src/commands/create-scene.ts)_
 
 ## `vertex create-template [PATH]`
 
@@ -99,7 +99,7 @@ EXAMPLE
   Wrote 5 pvs instances from 'path/to/file' to 'template.json'.
 ```
 
-_See code: [src/commands/create-template.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.2/src/commands/create-template.ts)_
+_See code: [src/commands/create-template.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.1/src/commands/create-template.ts)_
 
 ## `vertex help [COMMAND]`
 
