@@ -1,0 +1,10 @@
+.github/CODEOWNERS
+.nvmrc
+.prettierignore
+LICENSE
+README.md
+yarn.lock
+
+bin/
+node_modules/
+scripts/

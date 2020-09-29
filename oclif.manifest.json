@@ -1,0 +1,135 @@
+{
+  "version": "0.0.1",
+  "commands": {
+    "create-parts": {
+      "id": "create-parts",
+      "description": "Given JSON file in Vertex's scene template format, upload geometry files and create parts in Vertex Part Library.",
+      "pluginName": "@vertexvis/vertex-cli",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ vertex create-parts -d path/to/geometry/directory path/to/file\nUploaded and created 5 parts.\n"
+      ],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "show CLI help",
+          "allowNo": false
+        },
+        "directory": {
+          "name": "directory",
+          "type": "option",
+          "char": "d",
+          "description": "Directory containing geometry files.",
+          "required": true
+        },
+        "environment": {
+          "name": "environment",
+          "type": "option",
+          "char": "e",
+          "description": "Vertex API environment.",
+          "options": ["platdev", "platstaging", "platprod"],
+          "default": "platprod"
+        },
+        "verbose": {
+          "name": "verbose",
+          "type": "boolean",
+          "char": "v",
+          "allowNo": false
+        }
+      },
+      "args": [{ "name": "path" }]
+    },
+    "create-scene": {
+      "id": "create-scene",
+      "description": "Given JSON file in Vertex's scene template format, create scene in Vertex.",
+      "pluginName": "@vertexvis/vertex-cli",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ vertex create-scene -i scene-template-supplied-id -t path/to/template/file\nCreated scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.\n"
+      ],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "show CLI help",
+          "allowNo": false
+        },
+        "template": {
+          "name": "template",
+          "type": "option",
+          "char": "t",
+          "description": "Path to scene template.",
+          "required": true
+        },
+        "templateSuppliedId": {
+          "name": "templateSuppliedId",
+          "type": "option",
+          "char": "i",
+          "description": "Scene template supplied ID.",
+          "required": true
+        },
+        "environment": {
+          "name": "environment",
+          "type": "option",
+          "char": "e",
+          "description": "Vertex API environment.",
+          "options": ["platdev", "platstaging", "platprod"],
+          "default": "platprod"
+        },
+        "verbose": {
+          "name": "verbose",
+          "type": "boolean",
+          "char": "v",
+          "allowNo": false
+        }
+      },
+      "args": [{ "name": "path" }]
+    },
+    "create-template": {
+      "id": "create-template",
+      "description": "Calculate path IDs and transforms for each instance in file and output new file in Vertex's scene template format.",
+      "pluginName": "@vertexvis/vertex-cli",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ vertex template -f pvs path/to/file\nWrote 5 pvs instances from 'path/to/file' to 'template.json'.\n"
+      ],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "show CLI help",
+          "allowNo": false
+        },
+        "format": {
+          "name": "format",
+          "type": "option",
+          "char": "f",
+          "description": "File format.",
+          "required": true,
+          "options": ["pvs"]
+        },
+        "output": {
+          "name": "output",
+          "type": "option",
+          "char": "o",
+          "description": "Path to output file.",
+          "default": "template.json"
+        },
+        "verbose": {
+          "name": "verbose",
+          "type": "boolean",
+          "char": "v",
+          "allowNo": false
+        }
+      },
+      "args": [{ "name": "path" }]
+    }
+  }
+}
