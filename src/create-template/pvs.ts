@@ -89,7 +89,8 @@ export const processPvs = (
 
         const instTransform = to4x4Transform(
           toFloats('1,0,0,0,1,0,0,0,1', compInst.orientation),
-          toFloats('0,0,0', compInst.translation)
+          toFloats('0,0,0', compInst.translation),
+          1000
         );
         recurse(
           components,
