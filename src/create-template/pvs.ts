@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import {
-  isIdentity,
+  is4x4Identity,
   multiply,
   toFloats,
   to4x4Transform,
@@ -59,7 +59,7 @@ const createTemplateItem = (
       args.partRevision
     }`,
     suppliedId,
-    transform: !t || isIdentity(t) ? undefined : toTransform(t),
+    transform: !t || is4x4Identity(t) ? undefined : toTransform(t),
   };
 };
 
