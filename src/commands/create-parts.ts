@@ -23,7 +23,7 @@ interface CreatePartArgs {
   partRevision: string;
 }
 
-const Parallelism = 10;
+const Parallelism = 20;
 
 const createPart = async (args: CreatePartArgs): Promise<string> =>
   createPartFromFile({
