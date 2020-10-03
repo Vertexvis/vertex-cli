@@ -1,16 +1,16 @@
-import { Command, flags } from '@oclif/command';
+import { flags } from '@oclif/command';
 import {
-  createPartFromFile,
+  arrayChunked,
+  createPartFromFileIfNotExists,
   Environment,
-  Environments,
   FileRelationshipDataTypeEnum,
   Utf8,
   VertexClient,
 } from '@vertexvis/vertex-api-client';
 import { lstatSync, readFileSync } from 'fs';
-import pLimit from 'p-limit';
 import { join } from 'path';
 import { parse } from 'querystring';
+import BaseCommand from '../base';
 import { ExtendedSceneTemplate } from '../create-template';
 import { DefaultPartRevision } from '../create-template/pvs';
 
@@ -23,10 +23,10 @@ interface CreatePartArgs {
   partRevision: string;
 }
 
-const Parallelism = 20;
+const ChunkSize = 20;
 
 const createPart = async (args: CreatePartArgs): Promise<string> =>
-  createPartFromFile({
+  createPartFromFileIfNotExists({
     client: args.client,
     verbose: args.verbose,
     fileData: readFileSync(join(args.directory, args.fileName)),
@@ -52,7 +52,7 @@ const createPart = async (args: CreatePartArgs): Promise<string> =>
     }),
   });
 
-export default class CreateParts extends Command {
+export default class CreateParts extends BaseCommand {
   public static description = `Given JSON file in Vertex's scene template format, upload geometry files and create parts in Vertex Part Library.`;
 
   public static examples = [
@@ -64,19 +64,12 @@ Uploaded and created 5 parts.
   public static args = [{ name: 'path' }];
 
   public static flags = {
-    help: flags.help({ char: 'h' }),
+    ...BaseCommand.flags,
     directory: flags.string({
       char: 'd',
       description: 'Directory containing geometry files.',
       required: true,
     }),
-    environment: flags.string({
-      char: 'e',
-      description: 'Vertex API environment.',
-      options: Environments,
-      default: 'platprod',
-    }),
-    verbose: flags.boolean({ char: 'v' }),
   };
 
   public async run(): Promise<void> {
@@ -116,16 +109,26 @@ Uploaded and created 5 parts.
         }
       });
 
-    const limit = pLimit(Parallelism);
     this.log(`Creating ${itemsWithGeometry.size} files...`);
 
-    await Promise.all(
-      [...itemsWithGeometry.values()].map((r) =>
-        limit<CreatePartArgs[], string>(createPart, r)
-      )
-    );
+    // Chunk array into ChunkSize sizes and await each using Promise.allSettled.
+    // This ensures all uploads within each chunk finish even if some fail.
+    // Promise.all, in contrast, stops eval if any reject, killing connections
+    // and leaving files in a partially uploaded state.
+    const chunks = arrayChunked([...itemsWithGeometry.values()], ChunkSize);
+    /* eslint-disable no-await-in-loop */
+    for (const chunk of chunks) {
+      const responses = await Promise.allSettled(chunk.map(createPart));
+      const failures = (responses.filter(
+        (p) => p.status === 'rejected'
+      ) as PromiseRejectedResult[]).map((p) => p.reason.message);
 
-    const len = itemsWithGeometry.size;
-    this.log(`Uploaded and created ${len} part${len === 1 ? '' : 's'}.`);
+      // If any in this chunk failed, exit with error.
+      if (failures.length > 0)
+        this.error(`Error(s) creating parts, exiting, ${failures.join('\n')}`);
+    }
+    /* eslint-enable no-await-in-loop */
+
+    this.log(`Uploaded and created ${itemsWithGeometry.size} part(s).`);
   }
 }

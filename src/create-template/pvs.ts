@@ -39,6 +39,16 @@ interface Component {
 // Hard-coded, update this to pull from PLM system
 export const DefaultPartRevision = '1';
 
+const rootIndex = (components: Component[], root?: string): number => {
+  const defaultIdx = components.length - 1;
+  if (!root) return defaultIdx;
+
+  for (let i = 0; i < components.length; i++)
+    if (components[i].name === root) return i;
+
+  return defaultIdx;
+};
+
 const createTemplateItem = (
   args: CreateTemplateItemArgs
 ): ExtendedTemplateItem => {
@@ -65,7 +75,8 @@ const createTemplateItem = (
 
 export const processPvs = (
   fileData: string,
-  verbose: boolean
+  verbose: boolean,
+  root?: string
 ): ExtendedTemplateItem[] => {
   const items: ExtendedTemplateItem[] = [];
 
@@ -123,7 +134,7 @@ export const processPvs = (
   }).PV_FILE.section_structure.component;
   if (verbose) console.log(`Found ${components.length} components.`);
 
-  recurse(components, components[components.length - 1]);
+  recurse(components, components[rootIndex(components, root)]);
 
   return items;
 };
