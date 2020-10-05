@@ -1,7 +1,6 @@
 import { flags } from '@oclif/command';
 import {
   createSceneFromTemplateFile,
-  Environment,
   FileRelationshipDataTypeEnum,
   SceneRelationshipDataTypeEnum,
   SceneTemplateRelationshipDataTypeEnum,
@@ -45,9 +44,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       this.error(`'${templatePath}' is not a valid file path, exiting.`);
     }
 
-    const client = await VertexClient.build({
-      environment: flags.environment as Environment,
-    });
+    const client = await VertexClient.build({ environment: flags.environment });
     const sceneId = await createSceneFromTemplateFile({
       client,
       verbose: flags.verbose,

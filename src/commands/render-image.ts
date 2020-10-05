@@ -1,6 +1,5 @@
 import { flags } from '@oclif/command';
 import {
-  Environment,
   VertexClient,
   renderScene,
   renderSceneView,
@@ -45,13 +44,11 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
 
   public async run(): Promise<void> {
     const { args, flags } = this.parse(CreateTemplate);
-    if (flags.height < 0) this.error(`Invalid height ${flags.height}.`);
-    if (flags.width < 0) this.error(`Invalid width ${flags.width}.`);
+    if (flags.height < 1) this.error(`Invalid height ${flags.height}.`);
+    if (flags.width < 1) this.error(`Invalid width ${flags.width}.`);
 
     const renderArgs = {
-      client: await VertexClient.build({
-        environment: flags.environment as Environment,
-      }),
+      client: await VertexClient.build({ environment: flags.environment }),
       renderReq: { id: args.id, height: flags.height, width: flags.width },
     };
     const renderRes = await (flags.resource === 'scene'
