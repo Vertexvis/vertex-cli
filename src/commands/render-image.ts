@@ -21,6 +21,11 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
 
   public static flags = {
     ...BaseCommand.flags,
+    height: flags.integer({
+      char: 'h',
+      description: 'Image height.',
+      default: 100,
+    }),
     output: flags.string({
       char: 'o',
       description: 'Path to output file.',
@@ -31,16 +36,23 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
       options: ['scene', 'scene-view'],
       default: 'scene',
     }),
+    width: flags.integer({
+      char: 'w',
+      description: 'Image width.',
+      default: 100,
+    }),
   };
 
   public async run(): Promise<void> {
     const { args, flags } = this.parse(CreateTemplate);
+    if (flags.height < 0) this.error(`Invalid height ${flags.height}.`);
+    if (flags.width < 0) this.error(`Invalid width ${flags.width}.`);
 
     const renderArgs = {
       client: await VertexClient.build({
         environment: flags.environment as Environment,
       }),
-      renderReq: { id: args.id, height: 1000, width: 1000 },
+      renderReq: { id: args.id, height: flags.height, width: flags.width },
     };
     const renderRes = await (flags.resource === 'scene'
       ? renderScene(renderArgs)
