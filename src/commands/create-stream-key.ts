@@ -1,9 +1,5 @@
 import { flags } from '@oclif/command';
-import {
-  Environment,
-  throwOnError,
-  VertexClient,
-} from '@vertexvis/vertex-api-client';
+import { throwOnError, VertexClient } from '@vertexvis/vertex-api-client';
 import BaseCommand from '../base';
 
 export default class CreateTemplate extends BaseCommand {
@@ -28,13 +24,11 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
 
   public async run(): Promise<void> {
     const { args, flags } = this.parse(CreateTemplate);
-    if (flags.expiry < 0) {
+    if (flags.expiry < 1) {
       this.error(`Invalid expiry ${flags.expiry}.`);
     }
 
-    const client = await VertexClient.build({
-      environment: flags.environment as Environment,
-    });
+    const client = await VertexClient.build({ environment: flags.environment });
     const streamKeyRes = await client.streamKeys.createSceneStreamKey(args.id, {
       data: {
         attributes: {

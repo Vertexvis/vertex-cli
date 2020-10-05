@@ -2,7 +2,6 @@ import { flags } from '@oclif/command';
 import {
   arrayChunked,
   createPartFromFileIfNotExists,
-  Environment,
   FileRelationshipDataTypeEnum,
   Utf8,
   VertexClient,
@@ -86,9 +85,7 @@ Uploaded and created 5 parts.
     const template: ExtendedSceneTemplate = JSON.parse(
       readFileSync(args.path, Utf8)
     );
-    const client = await VertexClient.build({
-      environment: flags.environment as Environment,
-    });
+    const client = await VertexClient.build({ environment: flags.environment });
 
     const itemsWithGeometry = new Map<string, CreatePartArgs>();
     template.items

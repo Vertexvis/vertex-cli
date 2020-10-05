@@ -46,9 +46,9 @@ USAGE
   $ vertex create-parts [PATH]
 
 OPTIONS
-  -d, --directory=directory                       (required) Directory containing geometry files.
-  -e, --environment=platdev|platstaging|platprod  [default: platprod] Vertex API environment.
-  -h, --help                                      show CLI help
+  -d, --directory=directory      (required) Directory containing geometry files.
+  -e, --environment=environment  [default: platprod] Vertex API environment.
+  -h, --help                     show CLI help
   -v, --verbose
 
 EXAMPLE
@@ -67,10 +67,10 @@ USAGE
   $ vertex create-scene [PATH]
 
 OPTIONS
-  -e, --environment=platdev|platstaging|platprod  [default: platprod] Vertex API environment.
-  -h, --help                                      show CLI help
-  -i, --templateSuppliedId=templateSuppliedId     (required) Scene template supplied ID.
-  -t, --template=template                         (required) Path to scene template.
+  -e, --environment=environment                [default: platprod] Vertex API environment.
+  -h, --help                                   show CLI help
+  -i, --templateSuppliedId=templateSuppliedId  (required) Scene template supplied ID.
+  -t, --template=template                      (required) Path to scene template.
   -v, --verbose
 
 EXAMPLE
@@ -89,9 +89,9 @@ USAGE
   $ vertex create-stream-key [ID]
 
 OPTIONS
-  -e, --environment=platdev|platstaging|platprod  [default: platprod] Vertex API environment.
-  -h, --help                                      show CLI help
-  -k, --expiry=expiry                             [default: 600] Expiry in seconds to set on stream-key.
+  -e, --environment=environment  [default: platprod] Vertex API environment.
+  -h, --help                     show CLI help
+  -k, --expiry=expiry            [default: 600] Expiry in seconds to set on stream-key.
   -v, --verbose
 
 EXAMPLE
@@ -110,11 +110,11 @@ USAGE
   $ vertex create-template [PATH]
 
 OPTIONS
-  -e, --environment=platdev|platstaging|platprod  [default: platprod] Vertex API environment.
-  -f, --format=pvs                                (required) File format.
-  -h, --help                                      show CLI help
-  -o, --output=output                             [default: template.json] Path to output file.
-  -r, --root=root                                 Part/assembly to use as root in file.
+  -e, --environment=environment  [default: platprod] Vertex API environment.
+  -f, --format=pvs               (required) File format.
+  -h, --help                     show CLI help
+  -o, --output=output            [default: template.json] Path to output file.
+  -r, --root=root                Part/assembly to use as root in file.
   -v, --verbose
 
 EXAMPLE
@@ -150,11 +150,13 @@ USAGE
   $ vertex render-image [ID]
 
 OPTIONS
-  -e, --environment=platdev|platstaging|platprod  [default: platprod] Vertex API environment.
-  -h, --help                                      show CLI help
-  -o, --output=output                             Path to output file.
-  -r, --resource=scene|scene-view                 [default: scene] Resource type of ID provided.
+  -e, --environment=environment    [default: platprod] Vertex API environment.
+  -h, --height=height              [default: 100] Image height.
+  -h, --help                       show CLI help
+  -o, --output=output              Path to output file.
+  -r, --resource=scene|scene-view  [default: scene] Resource type of ID provided.
   -v, --verbose
+  -w, --width=width                [default: 100] Image width.
 
 EXAMPLE
   $ vertex render-image f79d4760-0b71-44e4-ad0b-22743fdd4ca3
