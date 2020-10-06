@@ -342,7 +342,7 @@
     is-plain-object "^3.0.0"
     uuid "^3.3.2"
 
-"@vertexvis/vertex-api-client@0.0.7":
+"@vertexvis/vertex-api-client@0.0.8":
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.0.7.tgz#20e089d40613135ecf13b8e93d4eb23a51acb2d3"
   integrity sha512-XPadGOOSjW8Yr5grl1a20jI0zj2Skul1OJjPlibIYOydwlVRxTF4aDGNPVX0IENDmfFodIDAiO9Z1HEQQfaTHg==

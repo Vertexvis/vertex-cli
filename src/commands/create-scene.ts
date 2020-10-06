@@ -7,7 +7,7 @@ import {
   VertexClient,
 } from '@vertexvis/vertex-api-client';
 import { lstatSync, readFileSync } from 'fs';
-import { join, sep } from 'path';
+import { basename } from 'path';
 import BaseCommand from '../base';
 
 export default class CreateTemplate extends BaseCommand {
@@ -37,22 +37,19 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 
   public async run(): Promise<void> {
     const { flags } = this.parse(CreateTemplate);
-    const templatePath = flags.template.startsWith(join('.', sep))
-      ? flags.template.substring(2)
-      : flags.template;
-    if (!lstatSync(templatePath).isFile()) {
-      this.error(`'${templatePath}' is not a valid file path, exiting.`);
+    if (!lstatSync(flags.template).isFile()) {
+      this.error(`'${flags.template}' is not a valid file path, exiting.`);
     }
 
     const client = await VertexClient.build({ environment: flags.environment });
     const sceneId = await createSceneFromTemplateFile({
       client,
       verbose: flags.verbose,
-      fileData: readFileSync(templatePath),
+      fileData: readFileSync(flags.template),
       createFileReq: {
         data: {
           attributes: {
-            name: templatePath,
+            name: basename(flags.template),
             suppliedId: flags.templateSuppliedId,
           },
           type: 'file',
