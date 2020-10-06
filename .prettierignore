@@ -1,5 +1,6 @@
 .github/CODEOWNERS
 .github/pull_request_template.md
+.gitignore
 .nvmrc
 .prettierignore
 LICENSE
