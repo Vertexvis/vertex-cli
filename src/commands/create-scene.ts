@@ -41,7 +41,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       this.error(`'${flags.template}' is not a valid file path, exiting.`);
     }
 
-    const client = await VertexClient.build({ environment: flags.environment });
+    const client = await VertexClient.build({ basePath: flags.basePath });
     const sceneId = await createSceneFromTemplateFile({
       client,
       verbose: flags.verbose,
