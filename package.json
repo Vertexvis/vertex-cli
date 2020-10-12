@@ -1,6 +1,6 @@
 {
   "name": "@vertexvis/vertex-cli",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "The Vertex platform command-line interface (CLI).",
   "license": "MIT",
   "author": "Vertex Developers <support@vertexvis.com> (https://developer.vertexvis.com)",
