@@ -85,7 +85,7 @@ Uploaded and created 5 parts.
     const template: ExtendedSceneTemplate = JSON.parse(
       readFileSync(args.path, Utf8)
     );
-    const client = await VertexClient.build({ environment: flags.environment });
+    const client = await VertexClient.build({ basePath: flags.basePath });
 
     const itemsWithGeometry = new Map<string, CreatePartArgs>();
     template.items

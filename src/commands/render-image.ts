@@ -48,7 +48,7 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
     if (flags.width < 1) this.error(`Invalid width ${flags.width}.`);
 
     const renderArgs = {
-      client: await VertexClient.build({ environment: flags.environment }),
+      client: await VertexClient.build({ basePath: flags.basePath }),
       renderReq: { id: args.id, height: flags.height, width: flags.width },
     };
     const renderRes = await (flags.resource === 'scene'

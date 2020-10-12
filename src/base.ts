@@ -4,10 +4,10 @@ import { Input, OutputFlags } from '@oclif/parser';
 export default abstract class BaseCommand extends Command {
   public static flags = {
     help: flags.help({ char: 'h' }),
-    environment: flags.string({
-      char: 'e',
-      description: 'Vertex API environment.',
-      default: 'platprod',
+    basePath: flags.string({
+      char: 'b',
+      description: 'Vertex API base path.',
+      default: 'https://platform.platprod.vertexvis.io',
     }),
     verbose: flags.boolean({ char: 'v' }),
   };

@@ -28,7 +28,7 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
       this.error(`Invalid expiry ${flags.expiry}.`);
     }
 
-    const client = await VertexClient.build({ environment: flags.environment });
+    const client = await VertexClient.build({ basePath: flags.basePath });
     const streamKeyRes = await client.streamKeys.createSceneStreamKey(args.id, {
       data: {
         attributes: {
