@@ -1,5 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { Input, OutputFlags } from '@oclif/parser';
+import { BASE_PATH } from '@vertexvis/vertex-api-client/dist/base';
 
 export default abstract class BaseCommand extends Command {
   public static flags = {
@@ -7,7 +8,7 @@ export default abstract class BaseCommand extends Command {
     basePath: flags.string({
       char: 'b',
       description: 'Vertex API base path.',
-      default: 'https://platform.platprod.vertexvis.io',
+      default: BASE_PATH,
     }),
     verbose: flags.boolean({ char: 'v' }),
   };
