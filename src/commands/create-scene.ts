@@ -6,6 +6,7 @@ import {
   SceneTemplateRelationshipDataTypeEnum,
   VertexClient,
 } from '@vertexvis/vertex-api-client';
+import cli from 'cli-ux';
 import { lstatSync, readFileSync } from 'fs';
 import { basename } from 'path';
 import BaseCommand from '../base';
@@ -15,6 +16,7 @@ export default class CreateTemplate extends BaseCommand {
 
   public static examples = [
     `$ vertex create-scene -i scene-template-supplied-id -t path/to/template/file
+Creating scene... done
 Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 `,
   ];
@@ -40,6 +42,8 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
     if (!lstatSync(flags.template).isFile()) {
       this.error(`'${flags.template}' is not a valid file path, exiting.`);
     }
+
+    cli.action.start(`Creating scene...`);
 
     const client = await VertexClient.build({ basePath: flags.basePath });
     const sceneId = await createSceneFromTemplateFile({
@@ -82,6 +86,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       }),
     });
 
+    cli.action.stop();
     this.log(`Created scene ${sceneId}.`);
   }
 }

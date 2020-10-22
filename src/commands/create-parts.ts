@@ -6,6 +6,7 @@ import {
   Utf8,
   VertexClient,
 } from '@vertexvis/vertex-api-client';
+import cli from 'cli-ux';
 import { lstatSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { parse } from 'querystring';
@@ -54,7 +55,8 @@ export default class CreateParts extends BaseCommand {
 
   public static examples = [
     `$ vertex create-parts -d path/to/geometry/directory path/to/file
-Uploaded and created 5 parts.
+Found 5 part(s) with geometry.
+Uploading file(s) and creating part(s)... done
 `,
   ];
 
@@ -112,7 +114,8 @@ Uploaded and created 5 parts.
         }
       });
 
-    this.log(`Creating ${itemsWithGeometry.size} files...`);
+    this.log(`Found ${itemsWithGeometry.size} part(s) with geometry.`);
+    cli.action.start(`Uploading file(s) and creating part(s)...`);
 
     // Chunk array into flags.parallelism sizes and await each using Promise.allSettled.
     // This ensures all uploads within each chunk finish even if some fail.
@@ -135,6 +138,6 @@ Uploaded and created 5 parts.
     }
     /* eslint-enable no-await-in-loop */
 
-    this.log(`Uploaded and created ${itemsWithGeometry.size} part(s).`);
+    cli.action.stop();
   }
 }
