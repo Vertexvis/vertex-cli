@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { Input, OutputFlags } from '@oclif/parser';
-import { BASE_PATH } from '@vertexvis/vertex-api-client/dist/base';
+import { BASE_PATH } from '@vertexvis/vertex-api-client';
 
 export default abstract class BaseCommand extends Command {
   public static flags = {

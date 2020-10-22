@@ -36,6 +36,19 @@ interface Component {
   shape_source?: ShapeSource;
 }
 
+interface Property {
+  name: string;
+  value: string;
+}
+
+interface PropertyComponentRef {
+  property?: Property[] | Property;
+}
+
+interface SectionProperty {
+  property_component_ref: PropertyComponentRef[];
+}
+
 // Hard-coded, update this to pull from PLM system
 export const DefaultPartRevision = '1';
 
@@ -78,7 +91,30 @@ export const processPvs = (
   verbose: boolean,
   root?: string
 ): ExtendedTemplateItem[] => {
+  const partIdToIterationId: { [k: string]: string } = {};
   const items: ExtendedTemplateItem[] = [];
+
+  const populatePartIdToIterationIds = (sps: SectionProperty[]): void =>
+    sps.forEach((sp) =>
+      sp.property_component_ref.forEach((pcr) => {
+        if (Array.isArray(pcr.property)) {
+          const pId = pcr.property.find(
+            (p) => p.name === 'part_displayIdentity'
+          );
+          const iId = pcr.property.find(
+            (p) => p.name === 'part_iterationDisplayIdentifierSansView'
+          );
+          if (pId && iId) partIdToIterationId[pId.value] = iId.value;
+        }
+      })
+    );
+
+  const getRevisionId = (name: string): string => {
+    for (const k of Object.keys(partIdToIterationId)) {
+      if (k.includes(name)) return partIdToIterationId[k];
+    }
+    return DefaultPartRevision;
+  };
 
   const recurse = (
     components: Component[],
@@ -91,7 +127,7 @@ export const processPvs = (
         createTemplateItem({
           pathId,
           partName: component.name,
-          partRevision: DefaultPartRevision,
+          partRevision: getRevisionId(component.name),
         })
       );
 
@@ -120,7 +156,7 @@ export const processPvs = (
         createTemplateItem({
           pathId,
           partName: component.name,
-          partRevision: DefaultPartRevision,
+          partRevision: getRevisionId(component.name),
           fileName: component.shape_source.file_name,
           transform,
         })
@@ -128,12 +164,14 @@ export const processPvs = (
     }
   };
 
-  const components = parse(fileData, {
+  const file = parse(fileData, {
     attributeNamePrefix: '',
     ignoreAttributes: false,
-  }).PV_FILE.section_structure.component;
+  }).PV_FILE;
+  const components = file.section_structure.component;
   if (verbose) console.log(`Found ${components.length} components.`);
 
+  populatePartIdToIterationIds(file.section_properties);
   recurse(components, components[rootIndex(components, root)]);
 
   return items;

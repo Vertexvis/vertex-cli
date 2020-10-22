@@ -22,8 +22,6 @@ interface CreatePartArgs {
   partRevision: string;
 }
 
-const ChunkSize = 20;
-
 const createPart = async (args: CreatePartArgs): Promise<string> =>
   createPartFromFileIfNotExists({
     client: args.client,
@@ -69,6 +67,11 @@ Uploaded and created 5 parts.
       description: 'Directory containing geometry files.',
       required: true,
     }),
+    parallelism: flags.integer({
+      char: 'p',
+      description: 'Number of files and parts to create in parallel.',
+      default: 20,
+    }),
   };
 
   public async run(): Promise<void> {
@@ -80,6 +83,9 @@ Uploaded and created 5 parts.
       this.error(
         `'${flags.directory}' is not a valid directory path, exiting.`
       );
+    }
+    if (flags.parallelism < 1 || flags.parallelism > 20) {
+      this.error(`Invalid parallelism ${flags.parallelism}.`);
     }
 
     const template: ExtendedSceneTemplate = JSON.parse(
@@ -108,11 +114,14 @@ Uploaded and created 5 parts.
 
     this.log(`Creating ${itemsWithGeometry.size} files...`);
 
-    // Chunk array into ChunkSize sizes and await each using Promise.allSettled.
+    // Chunk array into flags.parallelism sizes and await each using Promise.allSettled.
     // This ensures all uploads within each chunk finish even if some fail.
     // Promise.all, in contrast, stops eval if any reject, killing connections
     // and leaving files in a partially uploaded state.
-    const chunks = arrayChunked([...itemsWithGeometry.values()], ChunkSize);
+    const chunks = arrayChunked(
+      [...itemsWithGeometry.values()],
+      flags.parallelism
+    );
     /* eslint-disable no-await-in-loop */
     for (const chunk of chunks) {
       const responses = await Promise.allSettled(chunk.map(createPart));
