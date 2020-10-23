@@ -28,8 +28,11 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
       description: 'Path to output file.',
       default: 'template.json',
     }),
-    root: flags.string({
+    revisionProperty: flags.string({
       char: 'r',
+      description: `Assuming the file format includes metadata properties, the property name to use for the part-revision's supplied ID. If not provided, the supplied ID defaults to '1'.`,
+    }),
+    root: flags.string({
       description: 'Part/assembly to use as root in file.',
     }),
   };
@@ -46,7 +49,8 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
         items = processPvs(
           readFileSync(args.path, Utf8),
           flags.verbose,
-          flags.root
+          flags.root,
+          flags.revisionProperty
         );
         break;
       default:

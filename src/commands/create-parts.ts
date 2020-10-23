@@ -23,8 +23,8 @@ interface CreatePartArgs {
   partRevision: string;
 }
 
-const createPart = async (args: CreatePartArgs): Promise<string> =>
-  createPartFromFileIfNotExists({
+async function createPart(args: CreatePartArgs): Promise<string> {
+  return createPartFromFileIfNotExists({
     client: args.client,
     verbose: args.verbose,
     fileData: readFileSync(join(args.directory, args.fileName)),
@@ -49,6 +49,7 @@ const createPart = async (args: CreatePartArgs): Promise<string> =>
       },
     }),
   });
+}
 
 export default class CreateParts extends BaseCommand {
   public static description = `Given JSON file in Vertex's scene template format, upload geometry files and create parts in Vertex Part Library.`;

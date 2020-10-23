@@ -34,6 +34,7 @@ interface Component {
   component_instance?: ComponentInstance[] | ComponentInstance;
   name: string;
   shape_source?: ShapeSource;
+  vertexIndex: number;
 }
 
 interface Property {
@@ -49,10 +50,39 @@ interface SectionProperty {
   property_component_ref: PropertyComponentRef[];
 }
 
+interface Properties {
+  properties: SectionProperty[];
+  revisionProperty: string;
+}
+
 // Hard-coded, update this to pull from PLM system
 export const DefaultPartRevision = '1';
 
-const rootIndex = (components: Component[], root?: string): number => {
+export function processPvs(
+  fileData: string,
+  verbose: boolean,
+  root?: string,
+  revisionProperty?: string
+): ExtendedTemplateItem[] {
+  const file = parse(fileData, {
+    attributeNamePrefix: '',
+    ignoreAttributes: false,
+  }).PV_FILE;
+  const components = file.section_structure.component;
+  if (verbose) console.log(`Found ${components.length} components.`);
+
+  const idx = rootIndex(components, root);
+  components[idx].vertexIndex = idx;
+  return createItems(
+    components,
+    components[idx],
+    revisionProperty
+      ? { properties: file.section_properties, revisionProperty }
+      : undefined
+  );
+}
+
+function rootIndex(components: Component[], root?: string): number {
   const defaultIdx = components.length - 1;
   if (!root) return defaultIdx;
 
@@ -60,11 +90,72 @@ const rootIndex = (components: Component[], root?: string): number => {
     if (components[i].name === root) return i;
 
   return defaultIdx;
-};
+}
 
-const createTemplateItem = (
+function createItems(
+  components: Component[],
+  rootComponent: Component,
+  properties?: Properties
+): ExtendedTemplateItem[] {
+  const items: ExtendedTemplateItem[] = [];
+
+  function recurse(
+    components: Component[],
+    component: Component,
+    pathId = '',
+    transform?: number[][]
+  ): void {
+    if (component.component_instance) {
+      items.push(
+        createTemplateItem({
+          pathId,
+          partName: component.name,
+          partRevision: getRevisionId(component.vertexIndex, properties),
+        })
+      );
+
+      const processInstance = (compInst: ComponentInstance): void => {
+        if (compInst.hide_self || compInst.hide_child) return;
+
+        const instTransform = to4x4Transform(
+          toFloats('1,0,0,0,1,0,0,0,1', compInst.orientation),
+          toFloats('0,0,0', compInst.translation),
+          1000
+        );
+        const idx = parseInt(compInst.index, 10);
+        components[idx].vertexIndex = idx;
+        recurse(
+          components,
+          components[idx],
+          `${pathId}/${compInst.id}`,
+          transform ? multiply(transform, instTransform) : instTransform
+        );
+      };
+
+      if (Array.isArray(component.component_instance)) {
+        for (const compInst of component.component_instance)
+          processInstance(compInst);
+      } else processInstance(component.component_instance);
+    } else if (component.shape_source) {
+      items.push(
+        createTemplateItem({
+          pathId,
+          partName: component.name,
+          partRevision: getRevisionId(component.vertexIndex, properties),
+          fileName: component.shape_source.file_name,
+          transform,
+        })
+      );
+    }
+  }
+
+  recurse(components, rootComponent);
+  return items;
+}
+
+function createTemplateItem(
   args: CreateTemplateItemArgs
-): ExtendedTemplateItem => {
+): ExtendedTemplateItem {
   const suppliedId = args.pathId === '' ? '/' : args.pathId;
   const parentId =
     suppliedId === '/'
@@ -84,95 +175,25 @@ const createTemplateItem = (
     suppliedId,
     transform: !t || is4x4Identity(t) ? undefined : toTransform(t),
   };
-};
+}
 
-export const processPvs = (
-  fileData: string,
-  verbose: boolean,
-  root?: string
-): ExtendedTemplateItem[] => {
-  const partIdToIterationId: Record<string, string> = {};
-  const items: ExtendedTemplateItem[] = [];
+function getRevisionId(idx: number, properties?: Properties): string {
+  if (!properties) return DefaultPartRevision;
 
-  const populatePartIdToIterationIds = (sps: SectionProperty[]): void =>
-    sps.forEach((sp) =>
-      sp.property_component_ref.forEach((pcr) => {
-        if (Array.isArray(pcr.property)) {
-          const pId = pcr.property.find(
-            (p) => p.name === 'part_displayIdentity'
-          );
-          const iId = pcr.property.find(
-            (p) => p.name === 'part_iterationDisplayIdentifierSansView'
-          );
-          if (pId && iId) partIdToIterationId[pId.value] = iId.value;
-        }
-      })
-    );
-
-  const getRevisionId = (name: string): string => {
-    for (const k of Object.keys(partIdToIterationId)) {
-      if (k.includes(name)) return partIdToIterationId[k];
+  for (const sectionProp of properties.properties) {
+    const propCompRef = sectionProp.property_component_ref[idx];
+    if (propCompRef) {
+      const prop = Array.isArray(propCompRef.property)
+        ? propCompRef.property.find(
+            (p) => p.name === properties.revisionProperty
+          )
+        : propCompRef.property &&
+          propCompRef.property.name === properties.revisionProperty
+        ? propCompRef.property
+        : undefined;
+      if (prop) return prop.value || DefaultPartRevision;
     }
-    return DefaultPartRevision;
-  };
+  }
 
-  const recurse = (
-    components: Component[],
-    component: Component,
-    pathId = '',
-    transform?: number[][]
-  ): void => {
-    if (component.component_instance) {
-      items.push(
-        createTemplateItem({
-          pathId,
-          partName: component.name,
-          partRevision: getRevisionId(component.name),
-        })
-      );
-
-      const processInstance = (compInst: ComponentInstance): void => {
-        if (compInst.hide_self || compInst.hide_child) return;
-
-        const instTransform = to4x4Transform(
-          toFloats('1,0,0,0,1,0,0,0,1', compInst.orientation),
-          toFloats('0,0,0', compInst.translation),
-          1000
-        );
-        recurse(
-          components,
-          components[parseInt(compInst.index, 10)],
-          `${pathId}/${compInst.id}`,
-          transform ? multiply(transform, instTransform) : instTransform
-        );
-      };
-
-      if (Array.isArray(component.component_instance)) {
-        for (const compInst of component.component_instance)
-          processInstance(compInst);
-      } else processInstance(component.component_instance);
-    } else if (component.shape_source) {
-      items.push(
-        createTemplateItem({
-          pathId,
-          partName: component.name,
-          partRevision: getRevisionId(component.name),
-          fileName: component.shape_source.file_name,
-          transform,
-        })
-      );
-    }
-  };
-
-  const file = parse(fileData, {
-    attributeNamePrefix: '',
-    ignoreAttributes: false,
-  }).PV_FILE;
-  const components = file.section_structure.component;
-  if (verbose) console.log(`Found ${components.length} components.`);
-
-  populatePartIdToIterationIds(file.section_properties);
-  recurse(components, components[rootIndex(components, root)]);
-
-  return items;
-};
+  return DefaultPartRevision;
+}
