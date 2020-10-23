@@ -113,12 +113,18 @@ USAGE
   $ vertex create-template [PATH]
 
 OPTIONS
-  -b, --basePath=basePath  [default: https://platform.vertexvis.com] Vertex API base path.
-  -f, --format=pvs         (required) File format.
-  -h, --help               show CLI help
-  -o, --output=output      [default: template.json] Path to output file.
-  -r, --root=root          Part/assembly to use as root in file.
+  -b, --basePath=basePath                  [default: https://platform.vertexvis.com] Vertex API base path.
+  -f, --format=pvs                         (required) File format.
+  -h, --help                               show CLI help
+  -o, --output=output                      [default: template.json] Path to output file.
+
+  -r, --revisionProperty=revisionProperty  Assuming the file format includes metadata properties, the property name to
+                                           use for the part-revision's supplied ID. If not provided, the supplied ID
+                                           defaults to '1'.
+
   -v, --verbose
+
+  --root=root                              Part/assembly to use as root in file.
 
 EXAMPLE
   $ vertex create-template -f pvs path/to/file
