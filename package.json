@@ -1,6 +1,6 @@
 {
   "name": "@vertexvis/vertex-cli",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "The Vertex platform command-line interface (CLI).",
   "license": "MIT",
   "author": "Vertex Developers <support@vertexvis.com> (https://developer.vertexvis.com)",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
-    "@types/node": "^14.14.0",
+    "@types/node": "^14.14.2",
     "@vertexvis/eslint-config-vertexvis-typescript": "0.3.0",
     "eslint": "^7.11.0",
     "eslint-config-oclif": "^3.1",

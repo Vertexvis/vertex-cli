@@ -1,5 +1,5 @@
 import { flags } from '@oclif/command';
-import { throwOnError, VertexClient } from '@vertexvis/vertex-api-client';
+import { VertexClient } from '@vertexvis/vertex-api-client';
 import BaseCommand from '../base';
 
 export default class CreateTemplate extends BaseCommand {
@@ -28,19 +28,26 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
       this.error(`Invalid expiry ${flags.expiry}.`);
     }
 
-    const client = await VertexClient.build({ basePath: flags.basePath });
-    const streamKeyRes = await client.streamKeys.createSceneStreamKey(args.id, {
-      data: {
-        attributes: {
-          expiry: flags.expiry,
-        },
-        type: 'stream-key',
-      },
-    });
-    throwOnError(streamKeyRes, `Error getting stream-key for scene ${args.id}`);
+    try {
+      const client = await VertexClient.build({ basePath: flags.basePath });
+      const streamKeyRes = await client.streamKeys.createSceneStreamKey(
+        args.id,
+        {
+          data: {
+            attributes: {
+              expiry: flags.expiry,
+            },
+            type: 'stream-key',
+          },
+        }
+      );
 
-    this.log(
-      `Created stream-key '${streamKeyRes.data.data.attributes.key}' expiring in ${flags.expiry} seconds.`
-    );
+      this.log(
+        `Created stream-key '${streamKeyRes.data.data.attributes.key}' expiring in ${flags.expiry} seconds.`
+      );
+    } catch (error) {
+      if (error.vertexErrorMessage) this.error(error.vertexErrorMessage);
+      throw error;
+    }
   }
 }
