@@ -91,7 +91,7 @@ export const processPvs = (
   verbose: boolean,
   root?: string
 ): ExtendedTemplateItem[] => {
-  const partIdToIterationId: { [k: string]: string } = {};
+  const partIdToIterationId: Record<string, string> = {};
   const items: ExtendedTemplateItem[] = [];
 
   const populatePartIdToIterationIds = (sps: SectionProperty[]): void =>
