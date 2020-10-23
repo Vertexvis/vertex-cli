@@ -19,7 +19,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.0.10 darwin-x64 node-v14.12.0
+@vertexvis/vertex-cli/0.0.11 darwin-x64 node-v14.12.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -46,17 +46,19 @@ USAGE
   $ vertex create-parts [PATH]
 
 OPTIONS
-  -b, --basePath=basePath    [default: https://platform.vertexvis.com] Vertex API base path.
-  -d, --directory=directory  (required) Directory containing geometry files.
-  -h, --help                 show CLI help
+  -b, --basePath=basePath        [default: https://platform.vertexvis.com] Vertex API base path.
+  -d, --directory=directory      (required) Directory containing geometry files.
+  -h, --help                     show CLI help
+  -p, --parallelism=parallelism  [default: 20] Number of files and parts to create in parallel.
   -v, --verbose
 
 EXAMPLE
   $ vertex create-parts -d path/to/geometry/directory path/to/file
-  Uploaded and created 5 parts.
+  Found 5 part(s) with geometry.
+  Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.10/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -75,10 +77,11 @@ OPTIONS
 
 EXAMPLE
   $ vertex create-scene -i scene-template-supplied-id -t path/to/template/file
+  Creating scene... done
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.10/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
 
@@ -99,7 +102,7 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.10/src/commands/create-stream-key.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/create-stream-key.ts)_
 
 ## `vertex create-template [PATH]`
 
@@ -119,10 +122,10 @@ OPTIONS
 
 EXAMPLE
   $ vertex create-template -f pvs path/to/file
-  Wrote 5 pvs items from 'path/to/file' to 'template.json'.
+  Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
 ```
 
-_See code: [src/commands/create-template.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.10/src/commands/create-template.ts)_
+_See code: [src/commands/create-template.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/create-template.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -163,5 +166,5 @@ EXAMPLE
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.10/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/render-image.ts)_
 <!-- commandsstop -->
