@@ -47,20 +47,25 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
     if (flags.height < 1) this.error(`Invalid height ${flags.height}.`);
     if (flags.width < 1) this.error(`Invalid width ${flags.width}.`);
 
-    const renderArgs = {
-      client: await VertexClient.build({ basePath: flags.basePath }),
-      renderReq: { id: args.id, height: flags.height, width: flags.width },
-    };
-    const renderRes = await (flags.resource === 'scene'
-      ? renderScene(renderArgs)
-      : renderSceneView(renderArgs));
-    if (renderRes.headers['content-length'] === '137') {
-      this.error(`Received empty image for ${flags.resource} ${args.id}.`);
+    try {
+      const renderArgs = {
+        client: await VertexClient.build({ basePath: flags.basePath }),
+        renderReq: { id: args.id, height: flags.height, width: flags.width },
+      };
+      const renderRes = await (flags.resource === 'scene'
+        ? renderScene(renderArgs)
+        : renderSceneView(renderArgs));
+      if (parseInt(renderRes.headers['content-length'], 10) < 140) {
+        this.error(`Received empty image for ${flags.resource} ${args.id}.`);
+      }
+
+      const output = flags.output || `${args.id}.jpeg`;
+      renderRes.data.pipe(createWriteStream(output));
+
+      this.log(`Image written to '${output}'.`);
+    } catch (error) {
+      if (error.vertexErrorMessage) this.error(error.vertexErrorMessage);
+      throw error;
     }
-
-    const output = flags.output || `${args.id}.jpeg`;
-    renderRes.data.pipe(createWriteStream(output));
-
-    this.log(`Image written to '${output}'.`);
   }
 }

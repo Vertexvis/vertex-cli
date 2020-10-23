@@ -1,6 +1,5 @@
 import { flags } from '@oclif/command';
 import { Utf8 } from '@vertexvis/vertex-api-client';
-import cli from 'cli-ux';
 import { lstatSync, readFileSync, writeFileSync } from 'fs';
 import { processPvs } from '../create-template/pvs';
 import BaseCommand from '../base';
@@ -10,7 +9,6 @@ export default class CreateTemplate extends BaseCommand {
 
   public static examples = [
     `$ vertex create-template -f pvs path/to/file
-Creating template... done
 Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
 `,
   ];
@@ -42,7 +40,6 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
       this.error(`'${args.path}' is not a valid file path, exiting.`);
     }
 
-    cli.action.start(`Creating template...`);
     let items = [];
     switch (flags.format) {
       case 'pvs':
@@ -57,8 +54,6 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
     }
 
     writeFileSync(flags.output, JSON.stringify({ version: '0.1', items }));
-
-    cli.action.stop();
     this.log(
       `Wrote ${items.length} ${flags.format} item(s) from '${args.path}' to '${flags.output}'.`
     );

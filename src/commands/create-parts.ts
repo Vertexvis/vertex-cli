@@ -130,11 +130,14 @@ Uploading file(s) and creating part(s)... done
       const responses = await Promise.allSettled(chunk.map(createPart));
       const failures = (responses.filter(
         (p) => p.status === 'rejected'
-      ) as PromiseRejectedResult[]).map((p) => p.reason.message);
+      ) as PromiseRejectedResult[]).map((p) =>
+        p.reason.vertexErrorMessage
+          ? p.reason.vertexErrorMessage
+          : p.reason.message
+      );
 
       // If any in this chunk failed, exit with error.
-      if (failures.length > 0)
-        this.error(`Error(s) creating parts, exiting, ${failures.join('\n')}`);
+      if (failures.length > 0) this.error(failures.join('\n\n'));
     }
     /* eslint-enable no-await-in-loop */
 

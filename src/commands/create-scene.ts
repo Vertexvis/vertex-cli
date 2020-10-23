@@ -43,50 +43,55 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       this.error(`'${flags.template}' is not a valid file path, exiting.`);
     }
 
-    cli.action.start(`Creating scene...`);
+    try {
+      cli.action.start(`Creating scene...`);
 
-    const client = await VertexClient.build({ basePath: flags.basePath });
-    const sceneId = await createSceneFromTemplateFile({
-      client,
-      verbose: flags.verbose,
-      fileData: readFileSync(flags.template),
-      createFileReq: {
-        data: {
-          attributes: {
-            name: basename(flags.template),
-            suppliedId: flags.templateSuppliedId,
+      const client = await VertexClient.build({ basePath: flags.basePath });
+      const sceneId = await createSceneFromTemplateFile({
+        client,
+        verbose: flags.verbose,
+        fileData: readFileSync(flags.template),
+        createFileReq: {
+          data: {
+            attributes: {
+              name: basename(flags.template),
+              suppliedId: flags.templateSuppliedId,
+            },
+            type: 'file',
           },
-          type: 'file',
         },
-      },
-      createSceneReq: (templateId) => ({
-        data: {
-          attributes: {},
-          relationships: {
-            source: {
-              data: {
-                id: templateId,
-                type: SceneTemplateRelationshipDataTypeEnum.SceneTemplate,
+        createSceneReq: (templateId) => ({
+          data: {
+            attributes: {},
+            relationships: {
+              source: {
+                data: {
+                  id: templateId,
+                  type: SceneTemplateRelationshipDataTypeEnum.SceneTemplate,
+                },
               },
             },
+            type: SceneRelationshipDataTypeEnum.Scene,
           },
-          type: SceneRelationshipDataTypeEnum.Scene,
-        },
-      }),
-      createSceneTemplateReq: (fileId) => ({
-        data: {
-          attributes: { suppliedId: flags.templateSuppliedId },
-          relationships: {
-            source: {
-              data: { id: fileId, type: FileRelationshipDataTypeEnum.File },
+        }),
+        createSceneTemplateReq: (fileId) => ({
+          data: {
+            attributes: { suppliedId: flags.templateSuppliedId },
+            relationships: {
+              source: {
+                data: { id: fileId, type: FileRelationshipDataTypeEnum.File },
+              },
             },
+            type: SceneTemplateRelationshipDataTypeEnum.SceneTemplate,
           },
-          type: SceneTemplateRelationshipDataTypeEnum.SceneTemplate,
-        },
-      }),
-    });
+        }),
+      });
 
-    cli.action.stop();
-    this.log(`Created scene ${sceneId}.`);
+      cli.action.stop();
+      this.log(`Created scene ${sceneId}.`);
+    } catch (error) {
+      if (error.vertexErrorMessage) this.error(error.vertexErrorMessage);
+      throw error;
+    }
   }
 }
