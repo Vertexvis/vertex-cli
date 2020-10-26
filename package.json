@@ -26,6 +26,7 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
     "@vertexvis/vertex-api-client": "0.0.12",
+    "cli-ux": "^5.5.0",
     "fast-xml-parser": "^3.17.4",
     "tslib": "^2"
   },

@@ -9,46 +9,16 @@ import {
 import cli from 'cli-ux';
 import { lstatSync, readFileSync } from 'fs';
 import { join } from 'path';
-import { parse } from 'querystring';
 import BaseCommand from '../base';
 import { ExtendedSceneTemplate } from '../create-template';
-import { DefaultPartRevision } from '../create-template/pvs';
 
 interface CreatePartArgs {
   client: VertexClient;
   verbose: boolean;
   directory: string;
   fileName: string;
-  partName: string;
-  partRevision: string;
-}
-
-async function createPart(args: CreatePartArgs): Promise<string> {
-  return createPartFromFileIfNotExists({
-    client: args.client,
-    verbose: args.verbose,
-    fileData: readFileSync(join(args.directory, args.fileName)),
-    createFileReq: {
-      data: {
-        attributes: { name: args.fileName, suppliedId: args.fileName },
-        type: 'file',
-      },
-    },
-    createPartReq: (fileId) => ({
-      data: {
-        attributes: {
-          suppliedId: args.partName,
-          suppliedRevisionId: args.partRevision,
-        },
-        relationships: {
-          source: {
-            data: { id: fileId, type: FileRelationshipDataTypeEnum.File },
-          },
-        },
-        type: 'part',
-      },
-    }),
-  });
+  suppliedPartId: string;
+  suppliedRevisionId: string;
 }
 
 export default class CreateParts extends BaseCommand {
@@ -98,18 +68,15 @@ Uploading file(s) and creating part(s)... done
 
     const itemsWithGeometry = new Map<string, CreatePartArgs>();
     template.items
-      .filter((i) => i.name && i.fileName && i.source)
+      .filter((i) => i.fileName)
       .forEach((i) => {
         if (!itemsWithGeometry.has(i.fileName as string)) {
-          const queryParams = parse(i.source as string) || {};
           itemsWithGeometry.set(i.fileName as string, {
             client,
             verbose: flags.verbose,
             directory: flags.directory,
-            partName: i.name as string,
-            partRevision:
-              (queryParams['filter[part-revisions][suppliedId]'] as string) ||
-              DefaultPartRevision,
+            suppliedPartId: i.suppliedPartId,
+            suppliedRevisionId: i.suppliedRevisionId,
             fileName: i.fileName as string,
           });
         }
@@ -144,4 +111,32 @@ Uploading file(s) and creating part(s)... done
 
     cli.action.stop();
   }
+}
+
+async function createPart(args: CreatePartArgs): Promise<string> {
+  return createPartFromFileIfNotExists({
+    client: args.client,
+    verbose: args.verbose,
+    fileData: readFileSync(join(args.directory, args.fileName), Utf8),
+    createFileReq: {
+      data: {
+        attributes: { name: args.fileName, suppliedId: args.fileName },
+        type: 'file',
+      },
+    },
+    createPartReq: (fileId) => ({
+      data: {
+        attributes: {
+          suppliedId: args.suppliedPartId,
+          suppliedRevisionId: args.suppliedRevisionId,
+        },
+        relationships: {
+          source: {
+            data: { id: fileId, type: FileRelationshipDataTypeEnum.File },
+          },
+        },
+        type: 'part',
+      },
+    }),
+  });
 }

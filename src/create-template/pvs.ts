@@ -58,6 +58,8 @@ interface Properties {
 // Hard-coded, update this to pull from PLM system
 export const DefaultPartRevision = '1';
 
+const PathIdSeparator = '/';
+
 export function processPvs(
   fileData: string,
   verbose: boolean,
@@ -156,22 +158,24 @@ function createItems(
 function createTemplateItem(
   args: CreateTemplateItemArgs
 ): ExtendedTemplateItem {
-  const suppliedId = args.pathId === '' ? '/' : args.pathId;
+  const suppliedId = args.pathId === '' ? PathIdSeparator : args.pathId;
   const parentId =
-    suppliedId === '/'
+    suppliedId === PathIdSeparator
       ? undefined
-      : suppliedId.split('/').slice(0, -1).join('/');
+      : suppliedId.split(PathIdSeparator).slice(0, -1).join(PathIdSeparator);
   const t = args.transform;
 
   return {
+    depth: args.pathId.split(PathIdSeparator).length - 1,
     fileName: args.fileName,
-    name: args.partName,
-    parentId: parentId === '' ? '/' : parentId,
-    source: `/parts?filter[suppliedId]=${encodeURI(
+    suppliedPartId: args.partName,
+    suppliedRevisionId: args.partRevision,
+    parentId: parentId === '' ? PathIdSeparator : parentId,
+    source: `/parts?filter[suppliedId]=${encodeURIComponent(
       args.partName
-    )}&include=part-revisions&filter[part-revisions][suppliedId]=${
+    )}&include=part-revisions&filter[part-revisions][suppliedId]=${encodeURIComponent(
       args.partRevision
-    }`,
+    )}`,
     suppliedId,
     transform: !t || is4x4Identity(t) ? undefined : toTransform(t),
   };

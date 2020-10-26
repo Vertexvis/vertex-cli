@@ -7,9 +7,9 @@
     "outDir": "lib",
     "rootDir": "src",
     "strict": true,
+    "strictNullChecks": true,
     "target": "es2020",
-    // Remove `dom` once there's an acceptable fix for https://github.com/axios/axios/issues/3219
-    "lib": ["dom", "es2020"]
+    "lib": ["es2020"]
   },
   "include": ["src/**/*"]
 }
