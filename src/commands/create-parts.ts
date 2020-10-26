@@ -117,7 +117,8 @@ async function createPart(args: CreatePartArgs): Promise<string> {
   return createPartFromFileIfNotExists({
     client: args.client,
     verbose: args.verbose,
-    fileData: readFileSync(join(args.directory, args.fileName), Utf8),
+    // Do not pass encoding, vertex-api-client expects buffer
+    fileData: readFileSync(join(args.directory, args.fileName)),
     createFileReq: {
       data: {
         attributes: { name: args.fileName, suppliedId: args.fileName },
