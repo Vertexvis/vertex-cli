@@ -22,7 +22,7 @@ export default class CreateTemplate extends BaseCommand {
   public static description = `Given JSON file in Vertex's scene template format, create scene in Vertex.`;
 
   public static examples = [
-    `$ vertex create-scene -t path/to/template/file
+    `$ vertex create-scene -i scene-template-supplied-id -t path/to/template/file
 Creating scene... done
 Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 `,

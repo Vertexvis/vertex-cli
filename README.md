@@ -75,7 +75,7 @@ OPTIONS
   -p, --parallelism=parallelism                [default: 20] Number of scene-items to create in parallel.
   -t, --template=template                      (required) Path to scene template.
   -v, --verbose
-  -x, --testing123                             Top secret.
+  --experimental                               Create scene with scene-items.
 
 EXAMPLE
   $ vertex create-scene -i scene-template-supplied-id -t path/to/template/file
