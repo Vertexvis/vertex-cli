@@ -72,8 +72,10 @@ OPTIONS
   -b, --basePath=basePath                      [default: https://platform.vertexvis.com] Vertex API base path.
   -h, --help                                   show CLI help
   -i, --templateSuppliedId=templateSuppliedId  (required) Scene template supplied ID.
+  -p, --parallelism=parallelism                [default: 20] Number of scene-items to create in parallel.
   -t, --template=template                      (required) Path to scene template.
   -v, --verbose
+  --experimental                               Create scene with scene-items.
 
 EXAMPLE
   $ vertex create-scene -i scene-template-supplied-id -t path/to/template/file

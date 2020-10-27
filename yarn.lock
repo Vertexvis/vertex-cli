@@ -342,13 +342,13 @@
     is-plain-object "^3.0.0"
     uuid "^3.3.2"
 
-"@vertexvis/vertex-api-client@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.0.12.tgz#0dec5f6116a0d520e655b2c61bc8b3c673916b61"
-  integrity sha512-6SjMaX8Pxrhhz7rWAm5a/rBBO5bj8DHkestTMYewUcTdaOgYOun2R46r3wXiuoTExZKgdqd+YNhqs5PaYgYBNg==
+"@vertexvis/vertex-api-client@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.0.14.tgz#1cc0fe8236495e7c3cb59fcfdc8fce74f03fb0fc"
+  integrity sha512-3KYNBhPPg1xr0lN+IXiij/djgcKFAtYeNfW91lUZX94FN2NHyGf7RyVimwg7fFXHxCKQk+Ft9RARW+8ee2gFtQ==
   dependencies:
     "@vertexvis/utils" "^0.9.8"
-    axios "^0.20.0"
+    axios "^0.21.0"
 
 acorn-jsx@^5.2.0:
   version "5.3.1"
@@ -461,10 +461,10 @@ at-least-node@^1.0.0:
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
-axios@^0.20.0:
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.20.0.tgz#057ba30f04884694993a8cd07fa394cff11c50bd"
-  integrity sha512-ANA4rr2BDcmmAQLOKft2fufrtuvlqR+cXNNinUmvfeSNCOF98PZL+7M/v1zIdGo7OLjEA9J2gXJL+j4zGsl0bA==
+axios@^0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.0.tgz#26df088803a2350dff2c27f96fef99fe49442aca"
+  integrity sha512-fmkJBknJKoZwem3/IKSSLpkdNXZeBu5Q7GA/aRsr2btgrptmSCxi2oFjZHqGdK9DoTil9PIHlPIZw2EcRJXRvw==
   dependencies:
     follow-redirects "^1.10.0"
 
@@ -597,7 +597,7 @@ cli-truncate@^2.1.0:
     slice-ansi "^3.0.0"
     string-width "^4.2.0"
 
-cli-ux@^5.2.1:
+cli-ux@^5.2.1, cli-ux@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.5.0.tgz#5609fb7dd2561891cb88933721c92e7acd5785f1"
   integrity sha512-aXoHgEOtkem8sJmQrU/jXsojCq8uOp8++9lybCbt9mFDyPouSNawSdoPjuM00PPaSPCJThvY0VNYOQNd6gGQCA==
