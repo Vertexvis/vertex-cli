@@ -7,6 +7,7 @@ import {
   toTransform,
 } from '@vertexvis/vertex-api-client';
 import { parse } from 'fast-xml-parser';
+import { URLSearchParams } from 'url';
 import { ExtendedTemplateItem } from '.';
 
 interface CreateTemplateItemArgs {
@@ -171,11 +172,11 @@ function createTemplateItem(
     suppliedPartId: args.partName,
     suppliedRevisionId: args.partRevision,
     parentId: parentId === '' ? PathIdSeparator : parentId,
-    source: `/parts?filter[suppliedId]=${encodeURIComponent(
-      args.partName
-    )}&include=part-revisions&filter[part-revisions][suppliedId]=${encodeURIComponent(
-      args.partRevision
-    )}`,
+    source: `/parts?${new URLSearchParams({
+      'filter[suppliedId]': args.partName,
+      include: 'part-revisions',
+      'filter[part-revisions][suppliedId]': args.partRevision,
+    }).toString()}`,
     suppliedId,
     transform: !t || is4x4Identity(t) ? undefined : toTransform(t),
   };
