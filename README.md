@@ -1,6 +1,14 @@
 # vertex-cli
 
-The Vertex platform command-line interface (CLI).
+The Vertex platform command-line interface (CLI). It uses [@vertexvis/vertex-api-client](https://github.com/vertexvis/vertex-api-client-ts) to make API calls, so it requires the following exported environment variables,
+
+```shell
+# Export your Vertex Platform API client ID and secret
+export VERTEX_CLIENT_ID={CLIENT_ID}
+export VERTEX_CLIENT_SECRET={CLIENT_SECRET}
+```
+
+The expected flow of commands is `create-template`, `create-parts`, `create-scene`, and then optionally `render-image` and `create-stream-key`.
 
 [![Version](https://img.shields.io/npm/v/@vertexvis/vertex-cli.svg)](https://www.npmjs.com/package/@vertexvis/vertex-cli)
 [![License](https://img.shields.io/npm/l/@vertexvis/vertex-cli.svg)](https://github.com/Vertexvis/vertex-cli/blob/master/LICENSE)
