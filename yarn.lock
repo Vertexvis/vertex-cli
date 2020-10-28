@@ -342,10 +342,10 @@
     is-plain-object "^3.0.0"
     uuid "^3.3.2"
 
-"@vertexvis/vertex-api-client@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.0.14.tgz#1cc0fe8236495e7c3cb59fcfdc8fce74f03fb0fc"
-  integrity sha512-3KYNBhPPg1xr0lN+IXiij/djgcKFAtYeNfW91lUZX94FN2NHyGf7RyVimwg7fFXHxCKQk+Ft9RARW+8ee2gFtQ==
+"@vertexvis/vertex-api-client@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.0.15.tgz#a43d98d25f95ddc5d509fa65a7388330353cdc42"
+  integrity sha512-kGcIOYIp1W0TZrEwzNx5fU84vpNHia46lb2VbvPr304wKiMweoyAdHxVdA0N1rsaOZGFOFRItvaQ/zyTYgeqCQ==
   dependencies:
     "@vertexvis/utils" "^0.9.8"
     axios "^0.21.0"
