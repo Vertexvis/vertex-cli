@@ -19,7 +19,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.0.11 darwin-x64 node-v14.12.0
+@vertexvis/vertex-cli/0.0.12 darwin-x64 node-v14.12.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -58,7 +58,7 @@ EXAMPLE
   Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.12/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -83,7 +83,7 @@ EXAMPLE
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.12/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
 
@@ -104,7 +104,7 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/create-stream-key.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.12/src/commands/create-stream-key.ts)_
 
 ## `vertex create-template [PATH]`
 
@@ -133,7 +133,7 @@ EXAMPLE
   Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
 ```
 
-_See code: [src/commands/create-template.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/create-template.ts)_
+_See code: [src/commands/create-template.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.12/src/commands/create-template.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -174,5 +174,5 @@ EXAMPLE
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.11/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.0.12/src/commands/render-image.ts)_
 <!-- commandsstop -->
