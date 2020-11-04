@@ -18,7 +18,7 @@ import { basename } from 'path';
 import BaseCommand from '../base';
 import { ExtendedSceneTemplate } from '../create-template';
 
-export default class CreateTemplate extends BaseCommand {
+export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file in Vertex's scene template format, create scene in Vertex.`;
 
   public static examples = [
@@ -53,7 +53,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
   };
 
   public async run(): Promise<void> {
-    const { flags } = this.parse(CreateTemplate);
+    const { flags } = this.parse(CreateScene);
     if (!lstatSync(flags.template).isFile()) {
       this.error(`'${flags.template}' is not a valid file path, exiting.`);
     }
