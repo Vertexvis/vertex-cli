@@ -7,7 +7,7 @@ import {
 import { createWriteStream } from 'fs';
 import BaseCommand from '../base';
 
-export default class CreateTemplate extends BaseCommand {
+export default class RenderImage extends BaseCommand {
   public static description = `Render an image of either a scene or scene-view.`;
 
   public static examples = [
@@ -43,7 +43,7 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = this.parse(CreateTemplate);
+    const { args, flags } = this.parse(RenderImage);
     if (flags.height < 1) this.error(`Invalid height ${flags.height}.`);
     if (flags.width < 1) this.error(`Invalid width ${flags.width}.`);
 

@@ -2,7 +2,7 @@ import { flags } from '@oclif/command';
 import { VertexClient } from '@vertexvis/vertex-api-client';
 import BaseCommand from '../base';
 
-export default class CreateTemplate extends BaseCommand {
+export default class CreateStreamKey extends BaseCommand {
   public static description = `Generate a stream-key for a scene.`;
 
   public static examples = [
@@ -23,7 +23,7 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = this.parse(CreateTemplate);
+    const { args, flags } = this.parse(CreateStreamKey);
     if (flags.expiry < 1) {
       this.error(`Invalid expiry ${flags.expiry}.`);
     }
