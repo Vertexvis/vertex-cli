@@ -26,7 +26,7 @@ export default class CreateParts extends BaseCommand {
 
   public static examples = [
     `$ vertex create-parts -d path/to/geometry/directory path/to/file
-Found 5 part(s) with geometry.
+Found 5 part(s) with unique geometry.
 Uploading file(s) and creating part(s)... done
 `,
   ];
@@ -82,7 +82,7 @@ Uploading file(s) and creating part(s)... done
         }
       });
 
-    this.log(`Found ${itemsWithGeometry.size} part(s) with geometry.`);
+    this.log(`Found ${itemsWithGeometry.size} part(s) with unique geometry.`);
     cli.action.start(`Uploading file(s) and creating part(s)...`);
 
     // Chunk array into flags.parallelism sizes and await each using Promise.allSettled.

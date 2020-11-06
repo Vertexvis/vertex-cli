@@ -172,11 +172,13 @@ function createTemplateItem(
     suppliedPartId: args.partName,
     suppliedRevisionId: args.partRevision,
     parentId: parentId === '' ? PathIdSeparator : parentId,
-    source: `/parts?${new URLSearchParams({
-      'filter[suppliedId]': args.partName,
-      include: 'part-revisions',
-      'filter[part-revisions][suppliedId]': args.partRevision,
-    }).toString()}`,
+    source: args.fileName
+      ? `/parts?${new URLSearchParams({
+          'filter[suppliedId]': args.partName,
+          include: 'part-revisions',
+          'filter[part-revisions][suppliedId]': args.partRevision,
+        }).toString()}`
+      : undefined,
     suppliedId,
     transform: !t || is4x4Identity(t) ? undefined : toTransform(t),
   };
