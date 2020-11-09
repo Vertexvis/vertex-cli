@@ -30,17 +30,17 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
 
     try {
       const client = await VertexClient.build({ basePath: flags.basePath });
-      const streamKeyRes = await client.streamKeys.createSceneStreamKey(
-        args.id,
-        {
+      const streamKeyRes = await client.streamKeys.createSceneStreamKey({
+        id: args.id,
+        createStreamKeyRequest: {
           data: {
             attributes: {
               expiry: flags.expiry,
             },
             type: 'stream-key',
           },
-        }
-      );
+        },
+      });
 
       this.log(
         `Created stream-key '${streamKeyRes.data.data.attributes.key}' expiring in ${flags.expiry} seconds.`
