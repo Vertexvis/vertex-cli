@@ -169,8 +169,18 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         });
       }
 
+      const getSceneItemsRes = await client.sceneItems.getSceneItems({
+        id: sceneId,
+        pageSize: 1,
+      });
+
       cli.action.stop();
+
       this.log(`Created scene ${sceneId}.`);
+
+      if (getSceneItemsRes.data.data.length === 0) {
+        this.error(`No scene items exist in the scene.`);
+      }
     } catch (error) {
       if (error.vertexErrorMessage) this.error(error.vertexErrorMessage);
       throw error;

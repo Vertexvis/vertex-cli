@@ -85,6 +85,7 @@ Uploading file(s) and creating part(s)... done
     this.log(`Found ${itemsWithGeometry.size} part(s) with unique geometry.`);
     cli.action.start(`Uploading file(s) and creating part(s)...`);
 
+    const errors = new Set<PromiseRejectedResult>();
     // Chunk array into flags.parallelism sizes and await each using Promise.allSettled.
     // This ensures all uploads within each chunk finish even if some fail.
     // Promise.all, in contrast, stops eval if any reject, killing connections
@@ -104,10 +105,16 @@ Uploading file(s) and creating part(s)... done
           : p.reason.message
       );
 
-      // If any in this chunk failed, exit with error.
-      if (failures.length > 0) this.error(failures.join('\n\n'));
+      // If all of requests failed, something is probably wrong. Exit with error.
+      if (failures.length === flags.parallelism)
+        this.error([...errors.values(), ...failures].join('\n\n'));
+
+      // Else add to `errors` and continue
+      for (const f of failures) errors.add(f);
     }
     /* eslint-enable no-await-in-loop */
+
+    if (errors.size > 0) this.error([...errors.values()].join('\n\n'));
 
     cli.action.stop();
   }
