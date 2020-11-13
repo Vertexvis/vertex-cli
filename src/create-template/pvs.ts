@@ -175,8 +175,8 @@ function createTemplateItem(
     source: args.fileName
       ? `/parts?${new URLSearchParams({
           'filter[suppliedId]': args.partName,
-          include: 'part-revisions',
-          'filter[part-revisions][suppliedId]': args.partRevision,
+          include: 'partRevisions',
+          'filter[partRevisions][suppliedId]': args.partRevision,
         }).toString()}`
       : undefined,
     suppliedId,
