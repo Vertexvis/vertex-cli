@@ -98,25 +98,18 @@ function rootIndex(components: Component[], root?: string): number {
 function createItems(
   components: Component[],
   rootComponent: Component,
-  properties?: Properties
+  properties?: Properties,
+  transform?: number[][]
 ): ExtendedTemplateItem[] {
   const items: ExtendedTemplateItem[] = [];
 
   function recurse(
     components: Component[],
     component: Component,
-    pathId = '',
+    pathId: string,
     transform?: number[][]
   ): void {
     if (component.component_instance) {
-      items.push(
-        createTemplateItem({
-          pathId,
-          partName: component.name,
-          partRevision: getRevisionId(component.vertexIndex, properties),
-        })
-      );
-
       const processInstance = (compInst: ComponentInstance): void => {
         if (compInst.hide_self || compInst.hide_child) return;
 
@@ -135,6 +128,15 @@ function createItems(
         );
       };
 
+      items.push(
+        createTemplateItem({
+          pathId,
+          partName: component.name,
+          partRevision: getRevisionId(component.vertexIndex, properties),
+          transform: transform,
+        })
+      );
+
       if (Array.isArray(component.component_instance)) {
         for (const compInst of component.component_instance)
           processInstance(compInst);
@@ -152,7 +154,7 @@ function createItems(
     }
   }
 
-  recurse(components, rootComponent);
+  recurse(components, rootComponent, '', transform);
   return items;
 }
 

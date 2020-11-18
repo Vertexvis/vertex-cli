@@ -5,7 +5,7 @@ import {
   CreateSceneItemRequest,
   createSceneWithSceneItems,
   FileRelationshipDataTypeEnum,
-  PartRevisionRelationshipDataTypeEnum,
+  SceneData,
   SceneItemRelationshipDataTypeEnum,
   SceneRelationshipDataTypeEnum,
   SceneTemplateRelationshipDataTypeEnum,
@@ -68,7 +68,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       const template: ExtendedSceneTemplate = JSON.parse(
         readFileSync(flags.template, Utf8)
       );
-      let sceneId: string;
+      let scene: SceneData;
       if (flags.experimental) {
         const createSceneItemReqFactoriesByDepth: ((
           suppliedIdToSceneItemId: Map<string, string>
@@ -83,6 +83,12 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
               data: {
                 attributes: {
                   materialOverride: i.materialOverride,
+                  source: i.fileName
+                    ? {
+                        suppliedPartId: i.suppliedPartId,
+                        suppliedRevisionId: i.suppliedRevisionId,
+                      }
+                    : undefined,
                   suppliedId: i.suppliedId,
                   transform: i.transform,
                   visible: true,
@@ -96,18 +102,6 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
                         },
                       }
                     : undefined,
-                  source: i.fileName
-                    ? {
-                        data: {
-                          id: {
-                            suppliedPartId: i.suppliedPartId,
-                            suppliedRevisionId: i.suppliedRevisionId,
-                          },
-                          type:
-                            PartRevisionRelationshipDataTypeEnum.PartRevision,
-                        },
-                      }
-                    : undefined,
                 },
                 type: 'scene-item',
               },
@@ -115,7 +109,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
           )
         );
 
-        sceneId = await createSceneWithSceneItems({
+        scene = await createSceneWithSceneItems({
           client,
           parallelism: flags.parallelism,
           verbose: flags.verbose,
@@ -128,7 +122,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
           createSceneItemReqFactoriesByDepth,
         });
       } else {
-        sceneId = await createSceneFromTemplateFile({
+        scene = await createSceneFromTemplateFile({
           client,
           verbose: flags.verbose,
           fileData: readFileSync(flags.template),
@@ -170,13 +164,13 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       }
 
       const getSceneItemsRes = await client.sceneItems.getSceneItems({
-        id: sceneId,
+        id: scene.id,
         pageSize: 1,
       });
 
       cli.action.stop();
 
-      this.log(`Created scene ${sceneId}.`);
+      this.log(`Created scene ${scene.id}.`);
 
       if (getSceneItemsRes.data.data.length === 0) {
         this.error(`No scene items exist in the scene.`);
