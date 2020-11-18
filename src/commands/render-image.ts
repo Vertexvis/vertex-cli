@@ -12,7 +12,7 @@ export default class RenderImage extends BaseCommand {
 
   public static examples = [
     `$ vertex render-image f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
+Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.png'.
 `,
   ];
 
@@ -59,7 +59,7 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpeg'.
         this.error(`Received empty image for ${flags.resource} ${args.id}.`);
       }
 
-      const output = flags.output || `${args.id}.jpeg`;
+      const output = flags.output || `${args.id}.png`;
       renderRes.data.pipe(createWriteStream(output));
 
       this.log(`Image written to '${output}'.`);

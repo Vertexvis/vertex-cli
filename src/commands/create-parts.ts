@@ -3,6 +3,7 @@ import {
   arrayChunked,
   createPartFromFileIfNotExists,
   FileRelationshipDataTypeEnum,
+  PartRevisionData,
   Utf8,
   VertexClient,
 } from '@vertexvis/vertex-api-client';
@@ -120,7 +121,7 @@ Uploading file(s) and creating part(s)... done
   }
 }
 
-async function createPart(args: CreatePartArgs): Promise<string> {
+async function createPart(args: CreatePartArgs): Promise<PartRevisionData> {
   return createPartFromFileIfNotExists({
     client: args.client,
     verbose: args.verbose,
