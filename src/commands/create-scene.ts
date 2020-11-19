@@ -6,7 +6,6 @@ import {
   createSceneWithSceneItems,
   FileRelationshipDataTypeEnum,
   SceneData,
-  SceneItemRelationshipDataTypeEnum,
   SceneRelationshipDataTypeEnum,
   SceneTemplateRelationshipDataTypeEnum,
   Utf8,
@@ -57,7 +56,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
     if (!lstatSync(flags.template).isFile()) {
       this.error(`'${flags.template}' is not a valid file path, exiting.`);
     }
-    if (flags.parallelism < 1 || flags.parallelism > 20) {
+    if (flags.parallelism < 1 || flags.parallelism > 25) {
       this.error(`Invalid parallelism ${flags.parallelism}.`);
     }
 
@@ -70,43 +69,29 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       );
       let scene: SceneData;
       if (flags.experimental) {
-        const createSceneItemReqFactoriesByDepth: ((
-          suppliedIdToSceneItemId: Map<string, string>
-        ) => CreateSceneItemRequest)[][] = groupBy(
+        const createSceneItemReqsByDepth: CreateSceneItemRequest[][] = groupBy(
           template.items,
           (i) => i.depth
         ).map((g) =>
-          g.map(
-            (i) => (
-              suppliedIdToSceneItemId: Map<string, string>
-            ): CreateSceneItemRequest => ({
-              data: {
-                attributes: {
-                  materialOverride: i.materialOverride,
-                  source: i.fileName
-                    ? {
-                        suppliedPartId: i.suppliedPartId,
-                        suppliedRevisionId: i.suppliedRevisionId,
-                      }
-                    : undefined,
-                  suppliedId: i.suppliedId,
-                  transform: i.transform,
-                  visible: true,
-                },
-                relationships: {
-                  parent: i.parentId
-                    ? {
-                        data: {
-                          id: suppliedIdToSceneItemId.get(i.parentId) || '',
-                          type: SceneItemRelationshipDataTypeEnum.SceneItem,
-                        },
-                      }
-                    : undefined,
-                },
-                type: 'scene-item',
+          g.map((i) => ({
+            data: {
+              attributes: {
+                materialOverride: i.materialOverride,
+                parent: i.parentId,
+                source: i.fileName
+                  ? {
+                      suppliedPartId: i.suppliedPartId,
+                      suppliedRevisionId: i.suppliedRevisionId,
+                    }
+                  : undefined,
+                suppliedId: i.suppliedId,
+                transform: i.transform,
+                visible: true,
               },
-            })
-          )
+              relationships: {},
+              type: 'scene-item',
+            },
+          }))
         );
 
         scene = await createSceneWithSceneItems({
@@ -119,7 +104,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
               type: SceneRelationshipDataTypeEnum.Scene,
             },
           }),
-          createSceneItemReqFactoriesByDepth,
+          createSceneItemReqsByDepth,
         });
       } else {
         scene = await createSceneFromTemplateFile({
