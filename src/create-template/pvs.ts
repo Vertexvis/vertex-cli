@@ -98,8 +98,7 @@ function rootIndex(components: Component[], root?: string): number {
 function createItems(
   components: Component[],
   rootComponent: Component,
-  properties?: Properties,
-  transform?: number[][]
+  properties?: Properties
 ): ExtendedTemplateItem[] {
   const items: ExtendedTemplateItem[] = [];
 
@@ -133,7 +132,6 @@ function createItems(
           pathId,
           partName: component.name,
           partRevision: getRevisionId(component.vertexIndex, properties),
-          transform: transform,
         })
       );
 
@@ -154,7 +152,7 @@ function createItems(
     }
   }
 
-  recurse(components, rootComponent, '', transform);
+  recurse(components, rootComponent, '');
   return items;
 }
 

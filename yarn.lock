@@ -333,10 +333,10 @@
     eslint-plugin-prettier "^3.1.0"
     prettier "^1.19.1"
 
-"@vertexvis/vertex-api-client@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.2.1.tgz#3a6b41a32114bf7d6805a31b4e731d72fb406e6e"
-  integrity sha512-MazYwDTocGJqUYMRPPsVFyDE5z98nxxGa+Z/L03T9pBi71KBkZbatY/wIcwQ74d0UKFJ3I7zsS6a4e49gX4CQg==
+"@vertexvis/vertex-api-client@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.3.1.tgz#77b74e52b64fe52f05fc259b89dec09f91f382bb"
+  integrity sha512-13/RlUzXjDzhvq0S2Fn/UN2fdoCbr6TY6qJxq1SFiNnEXVWikYrG90MNOHJ+/XcvnTKH+PQb3yC4a8m+SUh3oA==
   dependencies:
     axios "^0.21.0"
 
