@@ -28,7 +28,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.1.3 darwin-x64 node-v14.15.0
+@vertexvis/vertex-cli/0.1.4 darwin-x64 node-v14.15.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -48,8 +48,6 @@ USAGE
 
 ## `vertex create-parts [PATH]`
 
-Given JSON file in Vertex's scene template format, upload geometry files and create parts in Vertex Part Library.
-
 ```
 USAGE
   $ vertex create-parts [PATH]
@@ -67,11 +65,9 @@ EXAMPLE
   Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.3/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.4/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
-
-Given JSON file in Vertex's scene template format, create scene in Vertex.
 
 ```
 USAGE
@@ -92,11 +88,9 @@ EXAMPLE
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.3/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.4/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
-
-Generate a stream-key for a scene.
 
 ```
 USAGE
@@ -113,11 +107,9 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.3/src/commands/create-stream-key.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.4/src/commands/create-stream-key.ts)_
 
 ## `vertex create-template [PATH]`
-
-Calculate path IDs and transforms for each instance in file and output new file in Vertex's scene template format.
 
 ```
 USAGE
@@ -142,11 +134,9 @@ EXAMPLE
   Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
 ```
 
-_See code: [src/commands/create-template.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.3/src/commands/create-template.ts)_
+_See code: [src/commands/create-template.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.4/src/commands/create-template.ts)_
 
 ## `vertex help [COMMAND]`
-
-display help for vertex
 
 ```
 USAGE
@@ -162,8 +152,6 @@ OPTIONS
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.0/src/commands/help.ts)_
 
 ## `vertex render-image [ID]`
-
-Render an image of either a scene or scene-view.
 
 ```
 USAGE
@@ -183,5 +171,5 @@ EXAMPLE
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.png'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.3/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.4/src/commands/render-image.ts)_
 <!-- commandsstop -->
