@@ -56,7 +56,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
     if (!lstatSync(flags.template).isFile()) {
       this.error(`'${flags.template}' is not a valid file path, exiting.`);
     }
-    if (flags.parallelism < 1 || flags.parallelism > 25) {
+    if (flags.parallelism < 1 || flags.parallelism > 40) {
       this.error(`Invalid parallelism ${flags.parallelism}.`);
     }
 
