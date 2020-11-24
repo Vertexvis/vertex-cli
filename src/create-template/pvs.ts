@@ -98,7 +98,8 @@ function rootIndex(components: Component[], root?: string): number {
 function createItems(
   components: Component[],
   rootComponent: Component,
-  properties?: Properties
+  properties?: Properties,
+  transform?: number[][]
 ): ExtendedTemplateItem[] {
   const items: ExtendedTemplateItem[] = [];
 
@@ -152,7 +153,7 @@ function createItems(
     }
   }
 
-  recurse(components, rootComponent, '');
+  recurse(components, rootComponent, '', transform);
   return items;
 }
 
@@ -160,10 +161,11 @@ function createTemplateItem(
   args: CreateTemplateItemArgs
 ): ExtendedTemplateItem {
   const suppliedId = args.pathId === '' ? PathIdSeparator : args.pathId;
-  const parentId =
+  const pId =
     suppliedId === PathIdSeparator
       ? undefined
       : suppliedId.split(PathIdSeparator).slice(0, -1).join(PathIdSeparator);
+  const parentId = pId === '' ? PathIdSeparator : pId;
   const t = args.transform;
 
   return {
@@ -171,7 +173,7 @@ function createTemplateItem(
     fileName: args.fileName,
     suppliedPartId: args.partName,
     suppliedRevisionId: args.partRevision,
-    parentId: parentId === '' ? PathIdSeparator : parentId,
+    parentId,
     source: args.fileName
       ? `/parts?${new URLSearchParams({
           'filter[suppliedId]': args.partName,

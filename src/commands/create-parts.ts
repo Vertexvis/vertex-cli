@@ -9,6 +9,7 @@ import {
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
 import { lstatSync, readFileSync } from 'fs';
+import { Agent } from 'https';
 import { join } from 'path';
 import BaseCommand from '../base';
 import { ExtendedSceneTemplate } from '../create-template';
@@ -65,7 +66,10 @@ Uploading file(s) and creating part(s)... done
     const template: ExtendedSceneTemplate = JSON.parse(
       readFileSync(args.path, Utf8)
     );
-    const client = await VertexClient.build({ basePath: flags.basePath });
+    const client = await VertexClient.build({
+      axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
+      basePath: flags.basePath,
+    });
 
     const itemsWithGeometry = new Map<string, CreatePartArgs>();
     template.items
