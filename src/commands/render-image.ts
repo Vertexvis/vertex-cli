@@ -53,14 +53,15 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.png'.
         renderReq: { id: args.id, height: flags.height, width: flags.width },
       };
       const renderRes = await (flags.resource === 'scene'
-        ? renderScene(renderArgs)
-        : renderSceneView(renderArgs));
+        ? renderScene<NodeJS.ReadableStream>(renderArgs)
+        : renderSceneView<NodeJS.ReadableStream>(renderArgs));
       if (parseInt(renderRes.headers['content-length'], 10) < 140) {
         this.error(`Received empty image for ${flags.resource} ${args.id}.`);
       }
 
       const output = flags.output || `${args.id}.png`;
       renderRes.data.pipe(createWriteStream(output));
+      await createFile(renderRes.data, output);
 
       this.log(`Image written to '${output}'.`);
     } catch (error) {
@@ -68,4 +69,15 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.png'.
       throw error;
     }
   }
+}
+
+async function createFile(
+  stream: NodeJS.ReadableStream,
+  path: string
+): Promise<void> {
+  return new Promise((resolve) => {
+    const ws = createWriteStream(path);
+    stream.pipe(ws);
+    ws.on('finish', resolve);
+  });
 }

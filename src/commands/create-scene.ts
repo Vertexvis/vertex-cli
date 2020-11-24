@@ -1,10 +1,10 @@
 import { flags } from '@oclif/command';
 import {
-  groupBy,
   createSceneFromTemplateFile,
   CreateSceneItemRequest,
   createSceneWithSceneItems,
   FileRelationshipDataTypeEnum,
+  groupBy,
   SceneData,
   SceneRelationshipDataTypeEnum,
   SceneTemplateRelationshipDataTypeEnum,
@@ -13,6 +13,7 @@ import {
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
 import { lstatSync, readFileSync } from 'fs';
+import { Agent } from 'https';
 import { basename } from 'path';
 import BaseCommand from '../base';
 import { ExtendedSceneTemplate } from '../create-template';
@@ -56,14 +57,17 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
     if (!lstatSync(flags.template).isFile()) {
       this.error(`'${flags.template}' is not a valid file path, exiting.`);
     }
-    if (flags.parallelism < 1 || flags.parallelism > 40) {
+    if (flags.parallelism < 1 || flags.parallelism > 100) {
       this.error(`Invalid parallelism ${flags.parallelism}.`);
     }
 
     try {
       cli.action.start(`Creating scene...`);
 
-      const client = await VertexClient.build({ basePath: flags.basePath });
+      const client = await VertexClient.build({
+        axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
+        basePath: flags.basePath,
+      });
       const template: ExtendedSceneTemplate = JSON.parse(
         readFileSync(flags.template, Utf8)
       );
