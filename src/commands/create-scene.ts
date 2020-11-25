@@ -1,28 +1,22 @@
 import { flags } from '@oclif/command';
 import {
-  createSceneFromTemplateFile,
   CreateSceneItemRequest,
   createSceneWithSceneItems,
-  FileRelationshipDataTypeEnum,
-  groupBy,
-  SceneData,
   SceneRelationshipDataTypeEnum,
-  SceneTemplateRelationshipDataTypeEnum,
   Utf8,
   VertexClient,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
 import { lstatSync, readFileSync } from 'fs';
 import { Agent } from 'https';
-import { basename } from 'path';
 import BaseCommand from '../base';
-import { ExtendedSceneTemplate } from '../create-template';
+import { SceneItem } from '../create-items';
 
 export default class CreateScene extends BaseCommand {
-  public static description = `Given JSON file in Vertex's scene template format, create scene in Vertex.`;
+  public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
 
   public static examples = [
-    `$ vertex create-scene -i scene-template-supplied-id -t path/to/template/file
+    `$ vertex create-scene -i path/to/items/file
 Creating scene... done
 Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 `,
@@ -32,32 +26,24 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 
   public static flags = {
     ...BaseCommand.flags,
-    experimental: flags.boolean({
-      description: 'Create scene with scene-items.',
+    items: flags.string({
+      char: 'i',
+      description: 'Path to scene items.',
+      required: true,
     }),
     parallelism: flags.integer({
       char: 'p',
       description: 'Number of scene-items to create in parallel.',
       default: 20,
     }),
-    template: flags.string({
-      char: 't',
-      description: 'Path to scene template.',
-      required: true,
-    }),
-    templateSuppliedId: flags.string({
-      char: 'i',
-      description: 'Scene template supplied ID.',
-      required: true,
-    }),
   };
 
   public async run(): Promise<void> {
     const { flags } = this.parse(CreateScene);
-    if (!lstatSync(flags.template).isFile()) {
-      this.error(`'${flags.template}' is not a valid file path, exiting.`);
+    if (!lstatSync(flags.items).isFile()) {
+      this.error(`'${flags.items}' is not a valid file path, exiting.`);
     }
-    if (flags.parallelism < 1 || flags.parallelism > 100) {
+    if (flags.parallelism < 1 || flags.parallelism > 200) {
       this.error(`Invalid parallelism ${flags.parallelism}.`);
     }
 
@@ -68,89 +54,41 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
         basePath: flags.basePath,
       });
-      const template: ExtendedSceneTemplate = JSON.parse(
-        readFileSync(flags.template, Utf8)
-      );
-      let scene: SceneData;
-      if (flags.experimental) {
-        const createSceneItemReqsByDepth: CreateSceneItemRequest[][] = groupBy(
-          template.items,
-          (i) => i.depth
-        ).map((g) =>
-          g.map((i) => ({
-            data: {
-              attributes: {
-                materialOverride: i.materialOverride,
-                parent: i.parentId,
-                source: i.fileName
-                  ? {
-                      suppliedPartId: i.suppliedPartId,
-                      suppliedRevisionId: i.suppliedRevisionId,
-                    }
-                  : undefined,
-                suppliedId: i.suppliedId,
-                transform: i.transform,
-                visible: true,
-              },
-              relationships: {},
-              type: 'scene-item',
+      const items: SceneItem[] = JSON.parse(readFileSync(flags.items, Utf8));
+      const createSceneItemReqs: CreateSceneItemRequest[] = items
+        .sort((a, b) => a.depth - b.depth)
+        .map((i) => ({
+          data: {
+            attributes: {
+              materialOverride: i.materialOverride,
+              parent: i.parentId,
+              source: i.fileName
+                ? {
+                    suppliedPartId: i.suppliedPartId,
+                    suppliedRevisionId: i.suppliedRevisionId,
+                  }
+                : undefined,
+              suppliedId: i.suppliedId,
+              transform: i.transform,
+              visible: true,
             },
-          }))
-        );
-
-        scene = await createSceneWithSceneItems({
-          client,
-          parallelism: flags.parallelism,
-          verbose: flags.verbose,
-          createSceneReq: () => ({
-            data: {
-              attributes: {},
-              type: SceneRelationshipDataTypeEnum.Scene,
-            },
-          }),
-          createSceneItemReqsByDepth,
-        });
-      } else {
-        scene = await createSceneFromTemplateFile({
-          client,
-          verbose: flags.verbose,
-          fileData: readFileSync(flags.template),
-          createFileReq: {
-            data: {
-              attributes: {
-                name: basename(flags.template),
-                suppliedId: flags.templateSuppliedId,
-              },
-              type: 'file',
-            },
+            relationships: {},
+            type: 'scene-item',
           },
-          createSceneReq: (templateId) => ({
-            data: {
-              attributes: {},
-              relationships: {
-                source: {
-                  data: {
-                    id: templateId,
-                    type: SceneTemplateRelationshipDataTypeEnum.SceneTemplate,
-                  },
-                },
-              },
-              type: SceneRelationshipDataTypeEnum.Scene,
-            },
-          }),
-          createSceneTemplateReq: (fileId) => ({
-            data: {
-              attributes: { suppliedId: flags.templateSuppliedId },
-              relationships: {
-                source: {
-                  data: { id: fileId, type: FileRelationshipDataTypeEnum.File },
-                },
-              },
-              type: SceneTemplateRelationshipDataTypeEnum.SceneTemplate,
-            },
-          }),
-        });
-      }
+        }));
+
+      const scene = await createSceneWithSceneItems({
+        client,
+        parallelism: flags.parallelism,
+        verbose: flags.verbose,
+        createSceneReq: () => ({
+          data: {
+            attributes: {},
+            type: SceneRelationshipDataTypeEnum.Scene,
+          },
+        }),
+        createSceneItemReqs,
+      });
 
       const getSceneItemsRes = await client.sceneItems.getSceneItems({
         id: scene.id,

@@ -7,10 +7,9 @@ import {
   toTransform,
 } from '@vertexvis/vertex-api-client';
 import { parse } from 'fast-xml-parser';
-import { URLSearchParams } from 'url';
-import { ExtendedTemplateItem } from '.';
+import { SceneItem } from '.';
 
-interface CreateTemplateItemArgs {
+interface CreateSceneItemArgs {
   pathId: string;
   partName: string;
   partRevision: string;
@@ -66,7 +65,7 @@ export function processPvs(
   verbose: boolean,
   root?: string,
   revisionProperty?: string
-): ExtendedTemplateItem[] {
+): SceneItem[] {
   const file = parse(fileData, {
     attributeNamePrefix: '',
     ignoreAttributes: false,
@@ -100,8 +99,8 @@ function createItems(
   rootComponent: Component,
   properties?: Properties,
   transform?: number[][]
-): ExtendedTemplateItem[] {
-  const items: ExtendedTemplateItem[] = [];
+): SceneItem[] {
+  const items: SceneItem[] = [];
 
   function recurse(
     components: Component[],
@@ -129,7 +128,7 @@ function createItems(
       };
 
       items.push(
-        createTemplateItem({
+        createSceneItem({
           pathId,
           partName: component.name,
           partRevision: getRevisionId(component.vertexIndex, properties),
@@ -142,7 +141,7 @@ function createItems(
       } else processInstance(component.component_instance);
     } else if (component.shape_source) {
       items.push(
-        createTemplateItem({
+        createSceneItem({
           pathId,
           partName: component.name,
           partRevision: getRevisionId(component.vertexIndex, properties),
@@ -157,9 +156,7 @@ function createItems(
   return items;
 }
 
-function createTemplateItem(
-  args: CreateTemplateItemArgs
-): ExtendedTemplateItem {
+function createSceneItem(args: CreateSceneItemArgs): SceneItem {
   const suppliedId = args.pathId === '' ? PathIdSeparator : args.pathId;
   const pId =
     suppliedId === PathIdSeparator
@@ -174,13 +171,6 @@ function createTemplateItem(
     suppliedPartId: args.partName,
     suppliedRevisionId: args.partRevision,
     parentId,
-    source: args.fileName
-      ? `/parts?${new URLSearchParams({
-          'filter[suppliedId]': args.partName,
-          include: 'partRevisions',
-          'filter[partRevisions][suppliedId]': args.partRevision,
-        }).toString()}`
-      : undefined,
     suppliedId,
     transform: !t || is4x4Identity(t) ? undefined : toTransform(t),
   };

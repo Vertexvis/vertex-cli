@@ -1,6 +1,6 @@
 {
   "name": "@vertexvis/vertex-cli",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "The Vertex platform command-line interface (CLI).",
   "license": "MIT",
   "author": "Vertex Developers <support@vertexvis.com> (https://developer.vertexvis.com)",
@@ -25,7 +25,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
-    "@vertexvis/vertex-api-client": "^0.3.4",
+    "@vertexvis/vertex-api-client": "^0.4.0",
     "cli-ux": "^5.5.1",
     "fast-xml-parser": "^3.17.4",
     "nanoid": "^3.1.18",
@@ -33,14 +33,14 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.24.1",
-    "@types/node": "^14.14.9",
+    "@types/node": "^14.14.10",
     "@vertexvis/eslint-config-vertexvis-typescript": "0.3.0",
     "eslint": "^7.14.0",
     "eslint-config-oclif": "^3.1",
     "eslint-config-oclif-typescript": "^0.2",
     "globby": "^11",
     "husky": "^4.3.0",
-    "lint-staged": "^10.5.1",
+    "lint-staged": "^10.5.2",
     "prettier": "^2.2.0",
     "ts-node": "^9",
     "typescript": "^4.1.2"
@@ -66,10 +66,14 @@
     ]
   },
   "scripts": {
+    "build": "tsc --build",
+    "clean": "rm -rf lib && rm -f oclif.manifest.json",
     "format": "prettier --write './**/*.+(js|jsx|ts|tsx|json|yml|yaml|md|mdx|html|css)'",
+    "lint": "eslint . --ext .ts --config .eslintrc --ignore-path .gitignore",
+    "lint-staged": "yarn lint && yarn format",
     "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint . --ext .ts --config .eslintrc --ignore-path .gitignore",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "posttest": "yarn lint",
+    "prepack": "yarn clean && yarn build && oclif-dev manifest && oclif-dev readme",
     "setup": "yarn && yarn link",
     "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md"

@@ -28,7 +28,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.1.6 darwin-x64 node-v14.15.0
+@vertexvis/vertex-cli/0.2.0 darwin-x64 node-v14.15.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -39,12 +39,39 @@ USAGE
 # Commands
 
 <!-- commands -->
+* [`vertex create-items [PATH]`](#vertex-create-items-path)
 * [`vertex create-parts [PATH]`](#vertex-create-parts-path)
 * [`vertex create-scene [PATH]`](#vertex-create-scene-path)
 * [`vertex create-stream-key [ID]`](#vertex-create-stream-key-id)
-* [`vertex create-template [PATH]`](#vertex-create-template-path)
 * [`vertex help [COMMAND]`](#vertex-help-command)
 * [`vertex render-image [ID]`](#vertex-render-image-id)
+
+## `vertex create-items [PATH]`
+
+```
+USAGE
+  $ vertex create-items [PATH]
+
+OPTIONS
+  -b, --basePath=basePath                  [default: https://platform.vertexvis.com] Vertex API base path.
+  -f, --format=pvs                         (required) File format.
+  -h, --help                               show CLI help
+  -o, --output=output                      [default: items.json] Path to output file.
+
+  -r, --revisionProperty=revisionProperty  Assuming the file format includes metadata properties, the property name to
+                                           use for the part-revision's supplied ID. If not provided, the supplied ID
+                                           defaults to '1'.
+
+  -v, --verbose
+
+  --root=root                              Part/assembly to use as root in file.
+
+EXAMPLE
+  $ vertex create-items -f pvs path/to/file
+  Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
+```
+
+_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.2.0/src/commands/create-items.ts)_
 
 ## `vertex create-parts [PATH]`
 
@@ -65,7 +92,7 @@ EXAMPLE
   Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.6/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.2.0/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -74,21 +101,19 @@ USAGE
   $ vertex create-scene [PATH]
 
 OPTIONS
-  -b, --basePath=basePath                      [default: https://platform.vertexvis.com] Vertex API base path.
-  -h, --help                                   show CLI help
-  -i, --templateSuppliedId=templateSuppliedId  (required) Scene template supplied ID.
-  -p, --parallelism=parallelism                [default: 20] Number of scene-items to create in parallel.
-  -t, --template=template                      (required) Path to scene template.
+  -b, --basePath=basePath        [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help                     show CLI help
+  -i, --items=items              (required) Path to scene items.
+  -p, --parallelism=parallelism  [default: 20] Number of scene-items to create in parallel.
   -v, --verbose
-  --experimental                               Create scene with scene-items.
 
 EXAMPLE
-  $ vertex create-scene -i scene-template-supplied-id -t path/to/template/file
+  $ vertex create-scene -i path/to/items/file
   Creating scene... done
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.6/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.2.0/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
 
@@ -107,34 +132,7 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.6/src/commands/create-stream-key.ts)_
-
-## `vertex create-template [PATH]`
-
-```
-USAGE
-  $ vertex create-template [PATH]
-
-OPTIONS
-  -b, --basePath=basePath                  [default: https://platform.vertexvis.com] Vertex API base path.
-  -f, --format=pvs                         (required) File format.
-  -h, --help                               show CLI help
-  -o, --output=output                      [default: template.json] Path to output file.
-
-  -r, --revisionProperty=revisionProperty  Assuming the file format includes metadata properties, the property name to
-                                           use for the part-revision's supplied ID. If not provided, the supplied ID
-                                           defaults to '1'.
-
-  -v, --verbose
-
-  --root=root                              Part/assembly to use as root in file.
-
-EXAMPLE
-  $ vertex create-template -f pvs path/to/file
-  Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
-```
-
-_See code: [src/commands/create-template.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.6/src/commands/create-template.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.2.0/src/commands/create-stream-key.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -171,5 +169,5 @@ EXAMPLE
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.png'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.1.6/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.2.0/src/commands/render-image.ts)_
 <!-- commandsstop -->
