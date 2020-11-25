@@ -12,7 +12,7 @@ import { lstatSync, readFileSync } from 'fs';
 import { Agent } from 'https';
 import { join } from 'path';
 import BaseCommand from '../base';
-import { ExtendedSceneTemplate } from '../create-template';
+import { SceneItem } from '../create-items';
 
 interface CreatePartArgs {
   client: VertexClient;
@@ -24,7 +24,7 @@ interface CreatePartArgs {
 }
 
 export default class CreateParts extends BaseCommand {
-  public static description = `Given JSON file in Vertex's scene template format, upload geometry files and create parts in Vertex Part Library.`;
+  public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), upload geometry files and create parts in Vertex Part Library.`;
 
   public static examples = [
     `$ vertex create-parts -d path/to/geometry/directory path/to/file
@@ -63,16 +63,14 @@ Uploading file(s) and creating part(s)... done
       this.error(`Invalid parallelism ${flags.parallelism}.`);
     }
 
-    const template: ExtendedSceneTemplate = JSON.parse(
-      readFileSync(args.path, Utf8)
-    );
+    const items: SceneItem[] = JSON.parse(readFileSync(args.path, Utf8));
     const client = await VertexClient.build({
       axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
       basePath: flags.basePath,
     });
 
     const itemsWithGeometry = new Map<string, CreatePartArgs>();
-    template.items
+    items
       .filter((i) => i.fileName)
       .forEach((i) => {
         if (!itemsWithGeometry.has(i.fileName as string)) {

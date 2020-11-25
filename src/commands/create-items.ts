@@ -1,15 +1,15 @@
 import { flags } from '@oclif/command';
 import { Utf8 } from '@vertexvis/vertex-api-client';
 import { lstatSync, readFileSync, writeFileSync } from 'fs';
-import { processPvs } from '../create-template/pvs';
+import { processPvs } from '../create-items/pvs';
 import BaseCommand from '../base';
 
-export default class CreateTemplate extends BaseCommand {
-  public static description = `Calculate path IDs and transforms for each instance in file and output new file in Vertex's scene template format.`;
+export default class CreateItems extends BaseCommand {
+  public static description = `Calculate path IDs and transforms for each instance in file and output JSON file containing SceneItems (as defined in src/create-items/index.d.ts).`;
 
   public static examples = [
-    `$ vertex create-template -f pvs path/to/file
-Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
+    `$ vertex create-items -f pvs path/to/file
+Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
 `,
   ];
 
@@ -26,7 +26,7 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
     output: flags.string({
       char: 'o',
       description: 'Path to output file.',
-      default: 'template.json',
+      default: 'items.json',
     }),
     revisionProperty: flags.string({
       char: 'r',
@@ -38,7 +38,7 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'template.json'.
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = this.parse(CreateTemplate);
+    const { args, flags } = this.parse(CreateItems);
     if (!lstatSync(args.path).isFile()) {
       this.error(`'${args.path}' is not a valid file path, exiting.`);
     }
