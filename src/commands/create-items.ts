@@ -57,7 +57,7 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
         this.error(`Unsupported format ${flags.format}`);
     }
 
-    writeFileSync(flags.output, JSON.stringify({ version: '0.1', items }));
+    writeFileSync(flags.output, JSON.stringify(items));
     this.log(
       `Wrote ${items.length} ${flags.format} item(s) from '${args.path}' to '${flags.output}'.`
     );
