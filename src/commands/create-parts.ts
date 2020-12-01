@@ -108,7 +108,7 @@ Uploading file(s) and creating part(s)... done
           : p.reason.message
       );
 
-      // If all of requests failed, something is probably wrong. Exit with error.
+      // If all requests failed, something is probably wrong. Exit with error.
       if (failures.length === flags.parallelism)
         this.error([...errors.values(), ...failures].join('\n\n'));
 
