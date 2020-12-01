@@ -28,7 +28,7 @@ export default class CreateParts extends BaseCommand {
 
   public static examples = [
     `$ vertex create-parts -d path/to/geometry/directory path/to/file
-Found 5 part(s) with unique geometry.
+Found 5 part(s) with geometry.
 Uploading file(s) and creating part(s)... done
 `,
   ];
@@ -73,8 +73,8 @@ Uploading file(s) and creating part(s)... done
     items
       .filter((i) => i.fileName)
       .forEach((i) => {
-        if (!itemsWithGeometry.has(i.fileName as string)) {
-          itemsWithGeometry.set(i.fileName as string, {
+        if (!itemsWithGeometry.has(i.suppliedPartId)) {
+          itemsWithGeometry.set(i.suppliedPartId, {
             client,
             verbose: flags.verbose,
             directory: flags.directory,
@@ -85,13 +85,13 @@ Uploading file(s) and creating part(s)... done
         }
       });
 
-    this.log(`Found ${itemsWithGeometry.size} part(s) with unique geometry.`);
+    this.log(`Found ${itemsWithGeometry.size} part(s) with geometry.`);
     cli.action.start(`Uploading file(s) and creating part(s)...`);
 
     const errors = new Set<PromiseRejectedResult>();
-    // Chunk array into flags.parallelism sizes and await each using Promise.allSettled.
+    // Chunk array into `flags.parallelism` sizes and await each using `Promise.allSettled`.
     // This ensures all uploads within each chunk finish even if some fail.
-    // Promise.all, in contrast, stops eval if any reject, killing connections
+    // `Promise.all`, in contrast, stops eval if any reject, killing connections
     // and leaving files in a partially uploaded state.
     const chunks = arrayChunked(
       [...itemsWithGeometry.values()],
