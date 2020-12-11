@@ -167,10 +167,14 @@ function createSceneItem(args: CreateSceneItemArgs): SceneItem {
 
   return {
     depth: args.pathId.split(PathIdSeparator).length - 1,
-    fileName: args.fileName,
-    suppliedPartId: args.partName,
-    suppliedRevisionId: args.partRevision,
     parentId,
+    source: args.fileName
+      ? {
+          fileName: args.fileName,
+          suppliedPartId: args.partName,
+          suppliedRevisionId: args.partRevision,
+        }
+      : undefined,
     suppliedId,
     transform: !t || is4x4Identity(t) ? undefined : toTransform(t),
   };

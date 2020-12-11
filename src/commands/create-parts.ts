@@ -14,10 +14,10 @@ import { join } from 'path';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
 
-interface CreatePartArgs {
+interface Args {
   client: VertexClient;
   verbose: boolean;
-  directory: string;
+  directory?: string;
   fileName: string;
   suppliedPartId: string;
   suppliedRevisionId: string;
@@ -40,7 +40,6 @@ Uploading file(s) and creating part(s)... done
     directory: flags.string({
       char: 'd',
       description: 'Directory containing geometry files.',
-      required: true,
     }),
     parallelism: flags.integer({
       char: 'p',
@@ -54,7 +53,7 @@ Uploading file(s) and creating part(s)... done
     if (!lstatSync(args.path).isFile()) {
       this.error(`'${args.path}' is not a valid file path, exiting.`);
     }
-    if (!lstatSync(flags.directory).isDirectory()) {
+    if (flags.directory && !lstatSync(flags.directory).isDirectory()) {
       this.error(
         `'${flags.directory}' is not a valid directory path, exiting.`
       );
@@ -69,18 +68,18 @@ Uploading file(s) and creating part(s)... done
       basePath: flags.basePath,
     });
 
-    const itemsWithGeometry = new Map<string, CreatePartArgs>();
+    const itemsWithGeometry = new Map<string, Args>();
     items
-      .filter((i) => i.fileName)
+      .filter((i) => i.source)
       .forEach((i) => {
-        if (!itemsWithGeometry.has(i.suppliedPartId)) {
-          itemsWithGeometry.set(i.suppliedPartId, {
+        if (i.source && !itemsWithGeometry.has(i.source?.suppliedPartId)) {
+          itemsWithGeometry.set(i.source?.suppliedPartId, {
             client,
             verbose: flags.verbose,
             directory: flags.directory,
-            suppliedPartId: i.suppliedPartId,
-            suppliedRevisionId: i.suppliedRevisionId,
-            fileName: i.fileName as string,
+            suppliedPartId: i.source?.suppliedPartId,
+            suppliedRevisionId: i.source?.suppliedRevisionId,
+            fileName: i.source?.fileName,
           });
         }
       });
@@ -123,12 +122,15 @@ Uploading file(s) and creating part(s)... done
   }
 }
 
-async function createPart(args: CreatePartArgs): Promise<PartRevisionData> {
+async function createPart(args: Args): Promise<PartRevisionData> {
+  const path = args.directory
+    ? join(args.directory, args.fileName)
+    : args.fileName;
   return createPartFromFileIfNotExists({
     client: args.client,
     verbose: args.verbose,
     // Do not pass encoding, vertex-api-client expects buffer
-    fileData: readFileSync(join(args.directory, args.fileName)),
+    fileData: readFileSync(path),
     createFileReq: {
       data: {
         attributes: { name: args.fileName, suppliedId: args.fileName },

@@ -8,5 +8,6 @@ README.md
 yarn.lock
 
 bin/
+lib/
 node_modules/
 scripts/

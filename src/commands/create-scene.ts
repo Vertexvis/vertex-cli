@@ -56,16 +56,16 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       });
       const items: SceneItem[] = JSON.parse(readFileSync(flags.items, Utf8));
       const createSceneItemReqs: CreateSceneItemRequest[] = items
-        .sort((a, b) => a.depth - b.depth)
+        .sort((a, b) => (a.depth || 0) - (b.depth || 0))
         .map((i) => ({
           data: {
             attributes: {
               materialOverride: i.materialOverride,
               parent: i.parentId,
-              source: i.fileName
+              source: i.source
                 ? {
-                    suppliedPartId: i.suppliedPartId,
-                    suppliedRevisionId: i.suppliedRevisionId,
+                    suppliedPartId: i.source.suppliedPartId,
+                    suppliedRevisionId: i.source.suppliedRevisionId,
                   }
                 : undefined,
               suppliedId: i.suppliedId,
