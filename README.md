@@ -8,7 +8,7 @@ export VERTEX_CLIENT_ID={CLIENT_ID}
 export VERTEX_CLIENT_SECRET={CLIENT_SECRET}
 ```
 
-The expected flow of commands is `create-template`, `create-parts`, `create-scene`, and then optionally `render-image` and `create-stream-key`.
+The expected flow of commands is `create-items`, `create-parts`, `create-scene`, and then optionally `render-image` and `create-stream-key`.
 
 [![Version](https://img.shields.io/npm/v/@vertexvis/vertex-cli.svg)](https://www.npmjs.com/package/@vertexvis/vertex-cli)
 [![License](https://img.shields.io/npm/l/@vertexvis/vertex-cli.svg)](https://github.com/Vertexvis/vertex-cli/blob/master/LICENSE)
