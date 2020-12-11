@@ -296,8 +296,8 @@
     eslint-visitor-keys "^2.0.0"
 
 "@vertexvis/eslint-config-vertexvis-typescript@0.3":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@vertexvis/eslint-config-vertexvis-typescript/-/eslint-config-vertexvis-typescript-0.2.0.tgz#317def975f5beaed7575cd9b121bd83074f9036e"
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@vertexvis/eslint-config-vertexvis-typescript/-/eslint-config-vertexvis-typescript-0.3.0.tgz#317def975f5beaed7575cd9b121bd83074f9036e"
   integrity sha512-tJQOJXeKH7zkZJlB2GdfnqRIe1xZa+FNcP/dmW+riPvoC4F/AAFGxf6x3LEUQUBAdHqIpbZrqb5J/bWpHr7uYg==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.0.1"
