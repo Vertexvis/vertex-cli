@@ -49,7 +49,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
         basePath: flags.basePath,
       });
-      const items: SceneItem[] = JSON.parse(readFileSync(flags.items, Utf8));
+      const items: SceneItem[] = JSON.parse(readFileSync(args.path, Utf8));
       const createSceneItemReqs: CreateSceneItemRequest[] = items
         .sort((a, b) => (a.depth || 0) - (b.depth || 0))
         .map((i) => ({
