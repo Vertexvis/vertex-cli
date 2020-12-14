@@ -195,7 +195,7 @@ OPTIONS
 
 EXAMPLE
   $ vertex render-image f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-  Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.png'.
+  Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
 ```
 
 _See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.0/src/commands/render-image.ts)_
