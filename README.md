@@ -3,7 +3,7 @@
 [![Version](https://img.shields.io/npm/v/@vertexvis/vertex-cli.svg)](https://www.npmjs.com/package/@vertexvis/vertex-cli)
 [![License](https://img.shields.io/npm/l/@vertexvis/vertex-cli.svg)](https://github.com/Vertexvis/vertex-cli/blob/master/LICENSE)
 
-The Vertex platform command-line interface (CLI). It uses [@vertexvis/vertex-api-client](https://github.com/vertexvis/vertex-api-client-ts) to make API calls, so it requires the following exported environment variables,
+The Vertex command-line interface (CLI) allows you to perform operations with a single command instead of making multiple API calls. The CLI uses [`vertex-api-client`](https://github.com/vertexvis/vertex-api-client-ts) to make API calls. It requires the following exported environment variables to create OAuth tokens.
 
 ```shell
 # Export your Vertex Platform API client ID and secret
@@ -11,24 +11,7 @@ export VERTEX_CLIENT_ID={CLIENT_ID}
 export VERTEX_CLIENT_SECRET={CLIENT_SECRET}
 ```
 
-To import a single file in one of [Vertex's supported formats](https://developer.vertexvis.com/docs/guides/importing-data#supported-file-formats), create a JSON file containing a list of `SceneItem`s as defined in [`src/create-items/index.d.ts`](./src/create-items/index.d.ts). Here's a simple example,
-
-```json
-[
-  {
-    "source": {
-      "fileName": "/path/to/model.zip",
-      "suppliedPartId": "PN12345",
-      "suppliedRevisionId": "Rev 1"
-    },
-    "suppliedId": "/"
-  }
-]
-```
-
-Once the file is created, upload the geometry file and translate the parts with the `create-parts` command. Next, create a scene and add the part as a scene item with the `create-scene` command. Finally, you can optionally render the scene via `render-image` and create a stream key for use by the [Vertex SDKs](https://developer.vertexvis.com/docs/sdk) with `create-stream-key`.
-
-For more complicated scenarios, `create-items` is available to generate the JSON file given a file in a different format. We currently support PVS XML files. If you use a different format, [let us know](https://developer.vertexvis.com/docs/support) or create a pull request to add support yourself!
+Below is a full list of commands and their options. To get started with the CLI, [check out our guide](https://developer.vertexvis.com/docs/guides/cli-getting-started).
 
 <!-- toc -->
 * [vertex-cli](#vertex-cli)
@@ -45,7 +28,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.3.1 darwin-x64 node-v14.15.1
+@vertexvis/vertex-cli/0.3.2 darwin-x64 node-v14.15.1
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -90,7 +73,7 @@ EXAMPLE
   Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
 ```
 
-_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.1/src/commands/create-items.ts)_
+_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.2/src/commands/create-items.ts)_
 
 ## `vertex create-parts [PATH]`
 
@@ -113,7 +96,7 @@ EXAMPLE
   Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.1/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.2/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -135,7 +118,7 @@ EXAMPLE
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.1/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.2/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
 
@@ -156,7 +139,7 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.1/src/commands/create-stream-key.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.2/src/commands/create-stream-key.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -173,7 +156,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.0/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1/src/commands/help.ts)_
 
 ## `vertex render-image [ID]`
 
@@ -197,5 +180,5 @@ EXAMPLE
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.1/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.2/src/commands/render-image.ts)_
 <!-- commandsstop -->
