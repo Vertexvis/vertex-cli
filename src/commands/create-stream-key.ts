@@ -1,5 +1,5 @@
 import { flags } from '@oclif/command';
-import { VertexClient } from '@vertexvis/vertex-api-client';
+import { logError, VertexClient } from '@vertexvis/vertex-api-client';
 import BaseCommand from '../base';
 
 export default class CreateStreamKey extends BaseCommand {
@@ -46,8 +46,7 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
         `Created stream-key '${streamKeyRes.data.data.attributes.key}' expiring in ${flags.expiry} seconds.`
       );
     } catch (error) {
-      if (error.vertexErrorMessage) this.error(error.vertexErrorMessage);
-      throw error;
+      logError(error, this.error);
     }
   }
 }

@@ -1,15 +1,16 @@
 import { flags } from '@oclif/command';
 import {
-  VertexClient,
   deleteAllFiles,
   deleteAllScenes,
+  logError,
+  VertexClient,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
 import BaseCommand from '../base';
 
 interface Deleter {
-  deleteOne: (id: string) => void;
-  deleteAll: () => void;
+  deleteOne: (id: string) => Promise<void>;
+  deleteAll: () => Promise<void>;
 }
 
 export default class Delete extends BaseCommand {
@@ -60,17 +61,16 @@ Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         flags.verbose
       );
       if (flags.all) {
-        deleter.deleteAll();
+        await deleter.deleteAll();
         this.log(`Deleted all ${flags.resource}s.`);
       } else {
-        deleter.deleteOne(args.id);
+        await deleter.deleteOne(args.id);
         this.log(`Deleted ${flags.resource} ${args.id}.`);
       }
 
       cli.action.stop();
     } catch (error) {
-      if (error.vertexErrorMessage) this.error(error.vertexErrorMessage);
-      throw error;
+      logError(error, this.error);
     }
   }
 }
@@ -92,22 +92,22 @@ function getDeleter(
 
 function fileDeleter(client: VertexClient, verbose: boolean): Deleter {
   return {
-    deleteOne: (id: string) => {
-      client.files.deleteFile({ id });
+    deleteOne: async (id: string) => {
+      await client.files.deleteFile({ id });
     },
-    deleteAll: () => {
-      deleteAllFiles({ client, pageSize: 100, verbose });
+    deleteAll: async () => {
+      await deleteAllFiles({ client, pageSize: 100, verbose });
     },
   };
 }
 
 function sceneDeleter(client: VertexClient, verbose: boolean): Deleter {
   return {
-    deleteOne: (id: string) => {
-      client.scenes.deleteScene({ id });
+    deleteOne: async (id: string) => {
+      await client.scenes.deleteScene({ id });
     },
-    deleteAll: () => {
-      deleteAllScenes({ client, pageSize: 5, verbose });
+    deleteAll: async () => {
+      await deleteAllScenes({ client, pageSize: 5, verbose });
     },
   };
 }
