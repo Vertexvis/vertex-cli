@@ -2,6 +2,7 @@ import { flags } from '@oclif/command';
 import {
   CreateSceneItemRequest,
   createSceneWithSceneItems,
+  logError,
   SceneRelationshipDataTypeEnum,
   Utf8,
   VertexClient,
@@ -98,8 +99,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         this.error(`No scene items exist in the scene.`);
       }
     } catch (error) {
-      if (error.vertexErrorMessage) this.error(error.vertexErrorMessage);
-      throw error;
+      logError(error, this.error);
     }
   }
 }

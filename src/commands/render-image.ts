@@ -1,8 +1,9 @@
 import { flags } from '@oclif/command';
 import {
-  VertexClient,
+  logError,
   renderScene,
   renderSceneView,
+  VertexClient,
 } from '@vertexvis/vertex-api-client';
 import { createWriteStream } from 'fs';
 import BaseCommand from '../base';
@@ -65,8 +66,7 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
 
       this.log(`Image written to '${output}'.`);
     } catch (error) {
-      if (error.vertexErrorMessage) this.error(error.vertexErrorMessage);
-      throw error;
+      logError(error, this.error);
     }
   }
 }
