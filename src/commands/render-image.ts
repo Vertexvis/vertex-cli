@@ -123,11 +123,11 @@ function generateHtml(streamKey: string): string {
     ></script>
   </head>
   <body>
-    <vertex-viewer id="viewer" class="viewer" style="width: auto; height: auto">
+    <vertex-viewer id="viewer" class="viewer" client-id="08F675C4AACE8C0214362DB5EFD4FACAFA556D463ECA00877CB225157EF58BFA" style="width: auto; height: auto">
     </vertex-viewer>
 
     <script type="module">
-      import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/viewer/index.esm.js';
+      import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/index.mjs';
 
       document.addEventListener('DOMContentLoaded', () => {
         main();

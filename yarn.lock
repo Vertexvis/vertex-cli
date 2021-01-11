@@ -317,9 +317,9 @@
     prettier "^1.19.1"
 
 "@vertexvis/vertex-api-client@^0.6":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.6.3.tgz#e2615931b80daf5f7b9043dbf42e091b249d13b8"
-  integrity sha512-AaHY2p5OMFAHjj6yAZO+rfyc4+V2av6LfY+xFMibflpnryDbMcCbo2Y4cJsYHUQIqwBqEGUHChUOP8qQm5i6Bw==
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.6.5.tgz#8bc5076809f03f6f6c840be1a8a5f7570c45fb2e"
+  integrity sha512-wCiH9KJUouFgi2j7p2HPgKcAkZ21+3m4icfGQeZtRyfqWZyhnemIh/K9nKyv0U/ua3Re/NpZ4ehKNcNAsRxUmA==
   dependencies:
     axios "^0.21"
     p-limit "^3.1"
