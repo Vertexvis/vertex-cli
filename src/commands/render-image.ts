@@ -143,12 +143,14 @@ function generateHtml(
 
     <script type="module">
       import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/index.mjs';
+      import { defineCustomElements } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/loader.mjs';
 
       document.addEventListener('DOMContentLoaded', () => {
         main();
       });
 
       async function main() {
+        await defineCustomElements();
         const viewer = document.querySelector('vertex-viewer');
         ${config ? `viewer.configEnv = '${config}';` : ''}
         await viewer.load('urn:vertexvis:stream-key:${streamKey}');
