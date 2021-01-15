@@ -67,7 +67,10 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
         const output = flags.output || `${args.id}.html`;
         const key = streamKeyRes.data.data.attributes.key;
         if (!key) this.error('Error creating stream-key');
-        writeFileSync(output, generateHtml(key));
+        writeFileSync(
+          output,
+          generateHtml(key, flags.basePath, process.env.VERTEX_CLIENT_ID)
+        );
 
         this.log(`Viewer HTML written to '${output}'.`);
       } else {
@@ -105,7 +108,17 @@ async function createFile(
   });
 }
 
-function generateHtml(streamKey: string): string {
+function generateHtml(
+  streamKey: string,
+  basePath: string,
+  clientId?: string
+): string {
+  const config = basePath.includes('platdev')
+    ? `platdev`
+    : basePath.includes('platstaging')
+    ? `platstaging`
+    : undefined;
+
   return `<html>
   <head>
     <meta charset="utf-8" />
@@ -123,7 +136,9 @@ function generateHtml(streamKey: string): string {
     ></script>
   </head>
   <body>
-    <vertex-viewer id="viewer" class="viewer" client-id="08F675C4AACE8C0214362DB5EFD4FACAFA556D463ECA00877CB225157EF58BFA" style="width: auto; height: auto">
+    <vertex-viewer id="viewer" class="viewer" client-id="${
+      clientId || `[CLIENT_ID]`
+    }" style="width: auto; height: auto">
     </vertex-viewer>
 
     <script type="module">
@@ -135,6 +150,7 @@ function generateHtml(streamKey: string): string {
 
       async function main() {
         const viewer = document.querySelector('vertex-viewer');
+        ${config ? `viewer.configEnv = '${config}';` : ''}
         await viewer.load('urn:vertexvis:stream-key:${streamKey}');
 
         viewer.addEventListener('tap', async (event) => {
