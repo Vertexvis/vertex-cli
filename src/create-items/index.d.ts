@@ -29,6 +29,11 @@ export interface SceneItem {
   depth: number;
 
   /**
+   * Whether or not to index metadata in the part file.
+   */
+  indexMetadata?: boolean;
+
+  /**
    * Optional color material override for item.
    */
   materialOverride?: ColorMaterial;
