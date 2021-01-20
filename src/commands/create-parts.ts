@@ -19,6 +19,7 @@ interface Args {
   verbose: boolean;
   directory?: string;
   fileName: string;
+  indexMetadata: boolean;
   suppliedPartId: string;
   suppliedRevisionId: string;
 }
@@ -77,9 +78,10 @@ Uploading file(s) and creating part(s)... done
             client,
             verbose: flags.verbose,
             directory: flags.directory,
+            fileName: i.source?.fileName,
+            indexMetadata: i.indexMetadata ?? false,
             suppliedPartId: i.source?.suppliedPartId,
             suppliedRevisionId: i.source?.suppliedRevisionId,
-            fileName: i.source?.fileName,
           });
         }
       });
@@ -140,6 +142,7 @@ async function createPart(args: Args): Promise<PartRevisionData> {
     createPartReq: (fileId) => ({
       data: {
         attributes: {
+          indexMetadata: args.indexMetadata,
           suppliedId: args.suppliedPartId,
           suppliedRevisionId: args.suppliedRevisionId,
         },
