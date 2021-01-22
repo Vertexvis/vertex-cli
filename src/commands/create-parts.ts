@@ -73,8 +73,9 @@ Uploading file(s) and creating part(s)... done
     items
       .filter((i) => i.source)
       .forEach((i) => {
-        if (i.source && !itemsWithGeometry.has(i.source?.suppliedPartId)) {
-          itemsWithGeometry.set(i.source?.suppliedPartId, {
+        const mapKey = `${i.source?.suppliedPartId}:${i.source?.suppliedRevisionId}`;
+        if (i.source && !itemsWithGeometry.has(mapKey)) {
+          itemsWithGeometry.set(mapKey, {
             client,
             verbose: flags.verbose,
             directory: flags.directory,
