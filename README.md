@@ -10,7 +10,7 @@ export VERTEX_CLIENT_ID={CLIENT_ID}
 export VERTEX_CLIENT_SECRET={CLIENT_SECRET}
 ```
 
-Below is a full list of commands and their options. To get started with the CLI, [check out our guide](https://developer.vertexvis.com/docs/guides/cli-getting-started).
+Below is a full list of commands and their options. To get started with the CLI, [check out our guide](https://developer.vertexvis.com/docs/guides/cli-quick-start).
 
 <!-- toc -->
 * [vertex-cli](#vertex-cli)
