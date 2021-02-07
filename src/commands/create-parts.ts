@@ -15,13 +15,13 @@ import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
 
 interface Args {
-  client: VertexClient;
-  verbose: boolean;
-  directory?: string;
-  fileName: string;
-  indexMetadata: boolean;
-  suppliedPartId: string;
-  suppliedRevisionId: string;
+  readonly client: VertexClient;
+  readonly verbose: boolean;
+  readonly directory?: string;
+  readonly fileName: string;
+  readonly indexMetadata: boolean;
+  readonly suppliedPartId: string;
+  readonly suppliedRevisionId: string;
 }
 
 export default class CreateParts extends BaseCommand {

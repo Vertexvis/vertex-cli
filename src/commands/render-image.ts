@@ -1,6 +1,9 @@
+import { AxiosResponse } from 'axios';
 import { flags } from '@oclif/command';
 import {
   logError,
+  RenderImageArgs,
+  renderPartRevision,
   renderScene,
   renderSceneView,
   VertexClient,
@@ -9,7 +12,7 @@ import { createWriteStream, writeFileSync } from 'fs';
 import BaseCommand from '../base';
 
 export default class RenderImage extends BaseCommand {
-  public static description = `Render an image or create Web SDK Viewer HTML for either a scene or scene-view.`;
+  public static description = `Render an image for a scene, scene-view, or part-revision.`;
 
   public static examples = [
     `$ vertex render-image f79d4760-0b71-44e4-ad0b-22743fdd4ca3
@@ -37,7 +40,7 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
     resource: flags.string({
       char: 'r',
       description: 'Resource type of ID provided.',
-      options: ['scene', 'scene-view'],
+      options: ['scene', 'scene-view', 'part-revision'],
       default: 'scene',
     }),
     width: flags.integer({
@@ -51,6 +54,8 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
     const { args, flags } = this.parse(RenderImage);
     if (flags.height < 1) this.error(`Invalid height ${flags.height}.`);
     if (flags.width < 1) this.error(`Invalid width ${flags.width}.`);
+    if (flags.viewer && flags.resource !== 'scene')
+      this.error(`--viewer flag only allowed for scene resources.`);
 
     try {
       const client = await VertexClient.build({ basePath: flags.basePath });
@@ -74,13 +79,17 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
 
         this.log(`Viewer HTML written to '${output}'.`);
       } else {
-        const renderArgs = {
-          client,
-          renderReq: { id: args.id, height: flags.height, width: flags.width },
-        };
-        const renderRes = await (flags.resource === 'scene'
-          ? renderScene<NodeJS.ReadableStream>(renderArgs)
-          : renderSceneView<NodeJS.ReadableStream>(renderArgs));
+        const renderRes = await render(
+          {
+            client,
+            renderReq: {
+              id: args.id,
+              height: flags.height,
+              width: flags.width,
+            },
+          },
+          flags.resource
+        );
         if (parseInt(renderRes.headers['content-length'], 10) < 140) {
           this.error(`Received empty image for ${flags.resource} ${args.id}.`);
         }
@@ -94,6 +103,22 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
     } catch (error) {
       logError(error, this.error);
     }
+  }
+}
+
+async function render(
+  args: RenderImageArgs,
+  resource: string
+): Promise<AxiosResponse<NodeJS.ReadableStream>> {
+  switch (resource) {
+    case 'part-revision':
+      return renderPartRevision<NodeJS.ReadableStream>(args);
+    case 'scene':
+      return renderScene<NodeJS.ReadableStream>(args);
+    case 'scene-view':
+      return renderSceneView<NodeJS.ReadableStream>(args);
+    default:
+      throw new Error(`Invalid resource ${resource}`);
   }
 }
 

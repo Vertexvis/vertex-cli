@@ -51,27 +51,26 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         basePath: flags.basePath,
       });
       const items: SceneItem[] = JSON.parse(readFileSync(args.path, Utf8));
-      const createSceneItemReqs: CreateSceneItemRequest[] = items
-        .sort((a, b) => (a.depth || 0) - (b.depth || 0))
-        .map((i) => ({
-          data: {
-            attributes: {
-              materialOverride: i.materialOverride,
-              parent: i.parentId,
-              source: i.source
-                ? {
-                    suppliedPartId: i.source.suppliedPartId,
-                    suppliedRevisionId: i.source.suppliedRevisionId,
-                  }
-                : undefined,
-              suppliedId: i.suppliedId,
-              transform: i.transform,
-              visible: true,
-            },
-            relationships: {},
-            type: 'scene-item',
+      items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
+      const createSceneItemReqs: CreateSceneItemRequest[] = items.map((i) => ({
+        data: {
+          attributes: {
+            materialOverride: i.materialOverride,
+            parent: i.parentId,
+            source: i.source
+              ? {
+                  suppliedPartId: i.source.suppliedPartId,
+                  suppliedRevisionId: i.source.suppliedRevisionId,
+                }
+              : undefined,
+            suppliedId: i.suppliedId,
+            transform: i.transform,
+            visible: true,
           },
-        }));
+          relationships: {},
+          type: 'scene-item',
+        },
+      }));
 
       const scene = await createSceneWithSceneItems({
         client,

@@ -10,49 +10,49 @@ import { parse } from 'fast-xml-parser';
 import { SceneItem } from '.';
 
 interface CreateSceneItemArgs {
-  pathId: string;
-  partName: string;
-  partRevision: string;
-  fileName?: string;
-  transform?: number[][];
+  readonly pathId: string;
+  readonly partName: string;
+  readonly partRevision: string;
+  readonly fileName?: string;
+  readonly transform?: number[][];
 }
 
 interface ComponentInstance {
-  hide_child?: string;
-  hide_self?: string;
-  id: string;
-  index: string;
-  orientation?: string;
-  translation?: string;
+  readonly hide_child?: string;
+  readonly hide_self?: string;
+  readonly id: string;
+  readonly index: string;
+  readonly orientation?: string;
+  readonly translation?: string;
 }
 
 interface ShapeSource {
-  file_name: string;
+  readonly file_name: string;
 }
 
 interface Component {
-  component_instance?: ComponentInstance[] | ComponentInstance;
-  name: string;
-  shape_source?: ShapeSource;
+  readonly component_instance?: ComponentInstance[] | ComponentInstance;
+  readonly name: string;
+  readonly shape_source?: ShapeSource;
   vertexIndex: number;
 }
 
 interface Property {
-  name: string;
-  value: string;
+  readonly name: string;
+  readonly value: string;
 }
 
 interface PropertyComponentRef {
-  property?: Property[] | Property;
+  readonly property?: Property[] | Property;
 }
 
 interface SectionProperty {
-  property_component_ref: PropertyComponentRef[];
+  readonly property_component_ref: PropertyComponentRef[];
 }
 
 interface Properties {
-  properties: SectionProperty[];
-  revisionProperty: string;
+  readonly properties: SectionProperty[];
+  readonly revisionProperty: string;
 }
 
 // Hard-coded, update this to pull from PLM system
@@ -103,50 +103,50 @@ function createItems(
   const items: SceneItem[] = [];
 
   function recurse(
-    components: Component[],
-    component: Component,
+    comps: Component[],
+    comp: Component,
     pathId: string,
-    transform?: number[][]
+    tran?: number[][]
   ): void {
-    if (component.component_instance) {
+    if (comp.component_instance) {
       const processInstance = (compInst: ComponentInstance): void => {
         if (compInst.hide_self || compInst.hide_child) return;
 
-        const instTransform = to4x4Transform(
+        const instTran = to4x4Transform(
           toFloats('1,0,0,0,1,0,0,0,1', compInst.orientation),
           toFloats('0,0,0', compInst.translation),
           1000
         );
         const idx = parseInt(compInst.index, 10);
-        components[idx].vertexIndex = idx;
+        comps[idx].vertexIndex = idx;
         recurse(
-          components,
-          components[idx],
+          comps,
+          comps[idx],
           `${pathId}/${compInst.id}`,
-          transform ? multiply(transform, instTransform) : instTransform
+          tran ? multiply(tran, instTran) : instTran
         );
       };
 
       items.push(
         createSceneItem({
           pathId,
-          partName: component.name,
-          partRevision: getRevisionId(component.vertexIndex, properties),
+          partName: comp.name,
+          partRevision: getRevisionId(comp.vertexIndex, properties),
         })
       );
 
-      if (Array.isArray(component.component_instance)) {
-        for (const compInst of component.component_instance)
+      if (Array.isArray(comp.component_instance)) {
+        for (const compInst of comp.component_instance)
           processInstance(compInst);
-      } else processInstance(component.component_instance);
-    } else if (component.shape_source) {
+      } else processInstance(comp.component_instance);
+    } else if (comp.shape_source) {
       items.push(
         createSceneItem({
           pathId,
-          partName: component.name,
-          partRevision: getRevisionId(component.vertexIndex, properties),
-          fileName: component.shape_source.file_name,
-          transform,
+          partName: comp.name,
+          partRevision: getRevisionId(comp.vertexIndex, properties),
+          fileName: comp.shape_source.file_name,
+          transform: tran,
         })
       );
     }
