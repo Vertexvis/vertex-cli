@@ -26,7 +26,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.3.9 darwin-x64 node-v14.15.4
+@vertexvis/vertex-cli/0.4.0 darwin-x64 node-v14.15.4
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -72,7 +72,7 @@ EXAMPLE
   Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
 ```
 
-_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.9/src/commands/create-items.ts)_
+_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/create-items.ts)_
 
 ## `vertex create-parts [PATH]`
 
@@ -95,7 +95,7 @@ EXAMPLE
   Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.9/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -117,7 +117,7 @@ EXAMPLE
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.9/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
 
@@ -138,7 +138,7 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.9/src/commands/create-stream-key.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/create-stream-key.ts)_
 
 ## `vertex delete [ID]`
 
@@ -160,7 +160,7 @@ EXAMPLE
   Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.9/src/commands/delete.ts)_
+_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/delete.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -177,30 +177,30 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
 
 ## `vertex render-image [ID]`
 
-Render an image or create Web SDK Viewer HTML for either a scene or scene-view.
+Render an image for a scene, scene-view, or part-revision.
 
 ```
 USAGE
   $ vertex render-image [ID]
 
 OPTIONS
-  -b, --basePath=basePath          [default: https://platform.vertexvis.com] Vertex API base path.
-  -h, --height=height              [default: 100] Image height.
-  -h, --help                       show CLI help
-  -o, --output=output              Path to output file.
-  -r, --resource=scene|scene-view  [default: scene] Resource type of ID provided.
+  -b, --basePath=basePath                        [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --height=height                            [default: 100] Image height.
+  -h, --help                                     show CLI help
+  -o, --output=output                            Path to output file.
+  -r, --resource=scene|scene-view|part-revision  [default: scene] Resource type of ID provided.
   -v, --verbose
-  -w, --width=width                [default: 100] Image width.
-  --viewer                         Create Web SDK Viewer HTML instead of jpg image.
+  -w, --width=width                              [default: 100] Image width.
+  --viewer                                       Create Web SDK Viewer HTML instead of jpg image.
 
 EXAMPLE
   $ vertex render-image f79d4760-0b71-44e4-ad0b-22743fdd4ca3
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.3.9/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/render-image.ts)_
 <!-- commandsstop -->
