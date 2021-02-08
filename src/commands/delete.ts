@@ -9,8 +9,8 @@ import cli from 'cli-ux';
 import BaseCommand from '../base';
 
 interface Deleter {
-  deleteOne: (id: string) => Promise<void>;
-  deleteAll: () => Promise<void>;
+  readonly deleteOne: (id: string) => Promise<void>;
+  readonly deleteAll: () => Promise<void>;
 }
 
 export default class Delete extends BaseCommand {
