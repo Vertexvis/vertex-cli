@@ -16,10 +16,8 @@ export default abstract class BaseCommand extends Command {
   protected parsedFlags?: OutputFlags<typeof BaseCommand.flags>;
 
   public async init(): Promise<void> {
-    const { flags } = this.parse(
+    this.parsedFlags = this.parse(
       this.constructor as Input<typeof BaseCommand.flags>
-    );
-
-    this.parsedFlags = flags;
+    ).flags;
   }
 }

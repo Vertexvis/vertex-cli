@@ -38,28 +38,31 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = this.parse(CreateItems);
-    if (!lstatSync(args.path).isFile()) {
-      this.error(`'${args.path}' is not a valid file path, exiting.`);
+    const {
+      args: { path },
+      flags: { format, output, revisionProperty, root, verbose },
+    } = this.parse(CreateItems);
+    if (!lstatSync(path).isFile()) {
+      this.error(`'${path}' is not a valid file path, exiting.`);
     }
 
     let items = [];
-    switch (flags.format) {
+    switch (format) {
       case 'pvs':
         items = processPvs(
-          readFileSync(args.path, Utf8),
-          flags.verbose,
-          flags.root,
-          flags.revisionProperty
+          readFileSync(path, Utf8),
+          verbose,
+          root,
+          revisionProperty
         );
         break;
       default:
-        this.error(`Unsupported format ${flags.format}`);
+        this.error(`Unsupported format ${format}`);
     }
 
-    writeFileSync(flags.output, JSON.stringify(items));
+    writeFileSync(output, JSON.stringify(items));
     this.log(
-      `Wrote ${items.length} ${flags.format} item(s) from '${args.path}' to '${flags.output}'.`
+      `Wrote ${items.length} ${format} item(s) from '${path}' to '${output}'.`
     );
   }
 }

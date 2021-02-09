@@ -34,7 +34,7 @@ export interface SceneItem {
   readonly indexMetadata?: boolean;
 
   /**
-   * Optional color material override for item.
+   * Optional {@link ColorMaterial} override for item.
    */
   readonly materialOverride?: ColorMaterial;
 
@@ -44,7 +44,7 @@ export interface SceneItem {
   readonly parentId?: string;
 
   /**
-   * Optional source geometry for item. If item is only for hierarchical
+   * Optional {@link Source} geometry for item. If item is only for hierarchical
    * purposes and contains no geometry, omit.
    */
   readonly source?: Source;
@@ -58,8 +58,8 @@ export interface SceneItem {
   readonly suppliedId: string;
 
   /**
-   * Optional 4x4 affine transformation matrix. For details, see
-   * https://developer.vertexvis.com/docs/guides/rendering-scenes#transformation-matrices
+   * Optional 4x4 affine transformation {@link Matrix4}. For details, see
+   * @see {@link https://developer.vertexvis.com/docs/guides/rendering-scenes#transformation-matrices|Transformation Matrices}
    */
   readonly transform?: Matrix4;
 }

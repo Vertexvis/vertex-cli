@@ -156,23 +156,29 @@ function createItems(
   return items;
 }
 
-function createSceneItem(args: CreateSceneItemArgs): SceneItem {
-  const suppliedId = args.pathId === '' ? PathIdSeparator : args.pathId;
+function createSceneItem({
+  pathId,
+  partName,
+  partRevision,
+  fileName,
+  transform,
+}: CreateSceneItemArgs): SceneItem {
+  const suppliedId = pathId === '' ? PathIdSeparator : pathId;
   const pId =
     suppliedId === PathIdSeparator
       ? undefined
       : suppliedId.split(PathIdSeparator).slice(0, -1).join(PathIdSeparator);
   const parentId = pId === '' ? PathIdSeparator : pId;
-  const t = args.transform;
+  const t = transform;
 
   return {
-    depth: args.pathId.split(PathIdSeparator).length - 1,
+    depth: pathId.split(PathIdSeparator).length - 1,
     parentId,
-    source: args.fileName
+    source: fileName
       ? {
-          fileName: args.fileName,
-          suppliedPartId: args.partName,
-          suppliedRevisionId: args.partRevision,
+          fileName: fileName,
+          suppliedPartId: partName,
+          suppliedRevisionId: partRevision,
         }
       : undefined,
     suppliedId,

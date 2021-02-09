@@ -26,7 +26,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.4.0 darwin-x64 node-v14.15.4
+@vertexvis/vertex-cli/0.5.0 darwin-x64 node-v14.15.4
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -72,7 +72,7 @@ EXAMPLE
   Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
 ```
 
-_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/create-items.ts)_
+_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.0/src/commands/create-items.ts)_
 
 ## `vertex create-parts [PATH]`
 
@@ -95,7 +95,7 @@ EXAMPLE
   Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.0/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -117,7 +117,7 @@ EXAMPLE
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.0/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
 
@@ -138,7 +138,7 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/create-stream-key.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.0/src/commands/create-stream-key.ts)_
 
 ## `vertex delete [ID]`
 
@@ -149,18 +149,18 @@ USAGE
   $ vertex delete [ID]
 
 OPTIONS
-  -b, --basePath=basePath    [default: https://platform.vertexvis.com] Vertex API base path.
-  -h, --help                 show CLI help
-  -r, --resource=file|scene  (required) Resource type of ID provided.
+  -b, --basePath=basePath         [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help                      show CLI help
+  -r, --resource=file|part|scene  (required) Resource type of ID provided.
   -v, --verbose
-  --all                      Delete all of specified resources.
+  --all                           Delete all of specified resources.
 
 EXAMPLE
   $ vertex delete --resource scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3
   Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/delete.ts)_
+_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.0/src/commands/delete.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -202,5 +202,5 @@ EXAMPLE
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.4.0/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.0/src/commands/render-image.ts)_
 <!-- commandsstop -->

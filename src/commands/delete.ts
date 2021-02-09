@@ -1,6 +1,8 @@
 import { flags } from '@oclif/command';
 import {
+  BaseArgs,
   deleteAllFiles,
+  deleteAllParts,
   deleteAllScenes,
   logError,
   VertexClient,
@@ -33,39 +35,42 @@ Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
     resource: flags.string({
       char: 'r',
       description: 'Resource type of ID provided.',
-      options: ['file', 'scene'],
+      options: ['file', 'part', 'scene'],
       required: true,
     }),
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = this.parse(Delete);
-    if (flags.all) {
+    const {
+      args: { id },
+      flags: { all, basePath, resource, verbose },
+    } = this.parse(Delete);
+    if (all) {
       const choice = await cli.prompt(
-        `Are you sure you want to delete all ${flags.resource}s? (yes/no)`
+        `Are you sure you want to delete all ${resource}s? (yes/no)`
       );
       if (choice.toLowerCase() !== 'yes') {
         this.log('Aborting...');
         this.exit(0);
       }
-    } else if (!args.id) {
+    } else if (!id) {
       this.error('Either --all flag or id argument required.');
     }
 
     try {
-      cli.action.start(`Deleting ${flags.resource}(s)...`);
+      cli.action.start(`Deleting ${resource}(s)...`);
 
-      const deleter = getDeleter(
-        await VertexClient.build({ basePath: flags.basePath }),
-        flags.resource,
-        flags.verbose
-      );
-      if (flags.all) {
+      const deleter = getDeleter({
+        client: await VertexClient.build({ basePath: basePath }),
+        resource: resource,
+        verbose: verbose,
+      });
+      if (all) {
         await deleter.deleteAll();
-        this.log(`Deleted all ${flags.resource}s.`);
+        this.log(`Deleted all ${resource}s.`);
       } else {
-        await deleter.deleteOne(args.id);
-        this.log(`Deleted ${flags.resource} ${args.id}.`);
+        await deleter.deleteOne(id);
+        this.log(`Deleted ${resource} ${id}.`);
       }
 
       cli.action.stop();
@@ -75,39 +80,51 @@ Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
   }
 }
 
-function getDeleter(
-  client: VertexClient,
-  resource: string,
-  verbose: boolean
-): Deleter {
+function getDeleter({
+  resource,
+  ...args
+}: BaseArgs & { resource: string }): Deleter {
   switch (resource) {
-    case 'scene':
-      return sceneDeleter(client, verbose);
     case 'file':
-      return fileDeleter(client, verbose);
+      return fileDeleter(args);
+    case 'part':
+      return partDeleter(args);
+    case 'scene':
+      return sceneDeleter(args);
     default:
       throw new Error(`Unexpected resource ${resource}`);
   }
 }
 
-function fileDeleter(client: VertexClient, verbose: boolean): Deleter {
+function fileDeleter({ client, verbose }: BaseArgs): Deleter {
   return {
     deleteOne: async (id: string) => {
       await client.files.deleteFile({ id });
     },
     deleteAll: async () => {
-      await deleteAllFiles({ client, pageSize: 100, verbose });
+      await deleteAllFiles({ client, pageSize: 10, verbose });
     },
   };
 }
 
-function sceneDeleter(client: VertexClient, verbose: boolean): Deleter {
+function partDeleter({ client, verbose }: BaseArgs): Deleter {
+  return {
+    deleteOne: async (id: string) => {
+      await client.parts.deletePart({ id });
+    },
+    deleteAll: async () => {
+      await deleteAllParts({ client, pageSize: 10, verbose });
+    },
+  };
+}
+
+function sceneDeleter({ client, verbose }: BaseArgs): Deleter {
   return {
     deleteOne: async (id: string) => {
       await client.scenes.deleteScene({ id });
     },
     deleteAll: async () => {
-      await deleteAllScenes({ client, pageSize: 5, verbose });
+      await deleteAllScenes({ client, pageSize: 10, verbose });
     },
   };
 }
