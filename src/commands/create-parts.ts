@@ -1,5 +1,6 @@
 import { flags } from '@oclif/command';
 import {
+  BaseArgs,
   arrayChunked,
   createPartFromFileIfNotExists,
   FileRelationshipDataTypeEnum,
@@ -14,9 +15,7 @@ import { join } from 'path';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
 
-interface Args {
-  readonly client: VertexClient;
-  readonly verbose: boolean;
+interface Args extends BaseArgs {
   readonly directory?: string;
   readonly fileName: string;
   readonly indexMetadata: boolean;
@@ -50,23 +49,24 @@ Uploading file(s) and creating part(s)... done
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = this.parse(CreateParts);
-    if (!lstatSync(args.path).isFile()) {
-      this.error(`'${args.path}' is not a valid file path, exiting.`);
+    const {
+      args: { path },
+      flags: { basePath, directory, parallelism, verbose },
+    } = this.parse(CreateParts);
+    if (!lstatSync(path).isFile()) {
+      this.error(`'${path}' is not a valid file path, exiting.`);
     }
-    if (flags.directory && !lstatSync(flags.directory).isDirectory()) {
-      this.error(
-        `'${flags.directory}' is not a valid directory path, exiting.`
-      );
+    if (directory && !lstatSync(directory).isDirectory()) {
+      this.error(`'${directory}' is not a valid directory path, exiting.`);
     }
-    if (flags.parallelism < 1 || flags.parallelism > 20) {
-      this.error(`Invalid parallelism ${flags.parallelism}.`);
+    if (parallelism < 1 || parallelism > 20) {
+      this.error(`Invalid parallelism ${parallelism}.`);
     }
 
-    const items: SceneItem[] = JSON.parse(readFileSync(args.path, Utf8));
+    const items: SceneItem[] = JSON.parse(readFileSync(path, Utf8));
     const client = await VertexClient.build({
       axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
-      basePath: flags.basePath,
+      basePath: basePath,
     });
 
     const itemsWithGeometry = new Map<string, Args>();
@@ -77,8 +77,8 @@ Uploading file(s) and creating part(s)... done
         if (i.source && !itemsWithGeometry.has(mapKey)) {
           itemsWithGeometry.set(mapKey, {
             client,
-            verbose: flags.verbose,
-            directory: flags.directory,
+            verbose: verbose,
+            directory: directory,
             fileName: i.source?.fileName,
             indexMetadata: i.indexMetadata ?? false,
             suppliedPartId: i.source?.suppliedPartId,
@@ -91,14 +91,11 @@ Uploading file(s) and creating part(s)... done
     cli.action.start(`Uploading file(s) and creating part(s)...`);
 
     const errors = new Set<PromiseRejectedResult>();
-    // Chunk array into `flags.parallelism` sizes and await each using `Promise.allSettled`.
+    // Chunk array into `parallelism` sizes and await each using `Promise.allSettled`.
     // This ensures all uploads within each chunk finish even if some fail.
     // `Promise.all`, in contrast, stops eval if any reject, killing connections
     // and leaving files in a partially uploaded state.
-    const chunks = arrayChunked(
-      [...itemsWithGeometry.values()],
-      flags.parallelism
-    );
+    const chunks = arrayChunked([...itemsWithGeometry.values()], parallelism);
     /* eslint-disable no-await-in-loop */
     for (const chunk of chunks) {
       const responses = await Promise.allSettled(chunk.map(createPart));
@@ -111,7 +108,7 @@ Uploading file(s) and creating part(s)... done
       );
 
       // If all requests failed, something is probably wrong. Exit with error.
-      if (failures.length === flags.parallelism)
+      if (failures.length === parallelism)
         this.error([...errors.values(), ...failures].join('\n\n'));
 
       // Else add to `errors` and continue
@@ -125,27 +122,33 @@ Uploading file(s) and creating part(s)... done
   }
 }
 
-async function createPart(args: Args): Promise<PartRevisionData> {
-  const path = args.directory
-    ? join(args.directory, args.fileName)
-    : args.fileName;
+async function createPart({
+  client,
+  directory,
+  fileName,
+  indexMetadata,
+  suppliedPartId,
+  suppliedRevisionId,
+  verbose,
+}: Args): Promise<PartRevisionData> {
+  const path = directory ? join(directory, fileName) : fileName;
   return createPartFromFileIfNotExists({
-    client: args.client,
-    verbose: args.verbose,
+    client,
+    verbose,
     // Do not pass encoding, vertex-api-client expects buffer
     fileData: readFileSync(path),
     createFileReq: {
       data: {
-        attributes: { name: args.fileName, suppliedId: args.fileName },
+        attributes: { name: fileName, suppliedId: fileName },
         type: 'file',
       },
     },
     createPartReq: (fileId) => ({
       data: {
         attributes: {
-          indexMetadata: args.indexMetadata,
-          suppliedId: args.suppliedPartId,
-          suppliedRevisionId: args.suppliedRevisionId,
+          indexMetadata: indexMetadata,
+          suppliedId: suppliedPartId,
+          suppliedRevisionId: suppliedRevisionId,
         },
         relationships: {
           source: {

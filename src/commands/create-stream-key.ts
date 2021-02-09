@@ -23,19 +23,22 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = this.parse(CreateStreamKey);
-    if (flags.expiry < 1) {
-      this.error(`Invalid expiry ${flags.expiry}.`);
+    const {
+      args: { id },
+      flags: { basePath, expiry },
+    } = this.parse(CreateStreamKey);
+    if (expiry < 1) {
+      this.error(`Invalid expiry ${expiry}.`);
     }
 
     try {
-      const client = await VertexClient.build({ basePath: flags.basePath });
+      const client = await VertexClient.build({ basePath: basePath });
       const streamKeyRes = await client.streamKeys.createSceneStreamKey({
-        id: args.id,
+        id,
         createStreamKeyRequest: {
           data: {
             attributes: {
-              expiry: flags.expiry,
+              expiry: expiry,
             },
             type: 'stream-key',
           },
@@ -43,7 +46,7 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
       });
 
       this.log(
-        `Created stream-key '${streamKeyRes.data.data.attributes.key}' expiring in ${flags.expiry} seconds.`
+        `Created stream-key '${streamKeyRes.data.data.attributes.key}' expiring in ${expiry} seconds.`
       );
     } catch (error) {
       logError(error, this.error);

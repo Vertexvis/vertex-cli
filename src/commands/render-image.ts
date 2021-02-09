@@ -51,17 +51,20 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = this.parse(RenderImage);
-    if (flags.height < 1) this.error(`Invalid height ${flags.height}.`);
-    if (flags.width < 1) this.error(`Invalid width ${flags.width}.`);
-    if (flags.viewer && flags.resource !== 'scene')
+    const {
+      args: { id },
+      flags: { basePath, height, output, resource, verbose, viewer, width },
+    } = this.parse(RenderImage);
+    if (height < 1) this.error(`Invalid height ${height}.`);
+    if (width < 1) this.error(`Invalid width ${width}.`);
+    if (viewer && resource !== 'scene')
       this.error(`--viewer flag only allowed for scene resources.`);
 
     try {
-      const client = await VertexClient.build({ basePath: flags.basePath });
-      if (flags.viewer) {
+      const client = await VertexClient.build({ basePath: basePath });
+      if (viewer) {
         const streamKeyRes = await client.streamKeys.createSceneStreamKey({
-          id: args.id,
+          id: id,
           createStreamKeyRequest: {
             data: {
               attributes: {},
@@ -69,36 +72,37 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
             },
           },
         });
-        const output = flags.output || `${args.id}.html`;
+        const out = output || `${id}.html`;
         const key = streamKeyRes.data.data.attributes.key;
         if (!key) this.error('Error creating stream-key');
         writeFileSync(
-          output,
-          generateHtml(key, flags.basePath, process.env.VERTEX_CLIENT_ID)
+          out,
+          generateHtml(key, basePath, process.env.VERTEX_CLIENT_ID)
         );
 
-        this.log(`Viewer HTML written to '${output}'.`);
+        this.log(`Viewer HTML written to '${out}'.`);
       } else {
         const renderRes = await render(
           {
             client,
             renderReq: {
-              id: args.id,
-              height: flags.height,
-              width: flags.width,
+              id,
+              height: height,
+              width: width,
             },
+            verbose,
           },
-          flags.resource
+          resource
         );
         if (parseInt(renderRes.headers['content-length'], 10) < 140) {
-          this.error(`Received empty image for ${flags.resource} ${args.id}.`);
+          this.error(`Received empty image for ${resource} ${id}.`);
         }
 
-        const output = flags.output || `${args.id}.jpg`;
-        renderRes.data.pipe(createWriteStream(output));
-        await createFile(renderRes.data, output);
+        const out = output || `${id}.jpg`;
+        renderRes.data.pipe(createWriteStream(out));
+        await createFile(renderRes.data, out);
 
-        this.log(`Image written to '${output}'.`);
+        this.log(`Image written to '${out}'.`);
       }
     } catch (error) {
       logError(error, this.error);

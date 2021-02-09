@@ -35,12 +35,15 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = this.parse(CreateScene);
-    if (!lstatSync(args.path).isFile()) {
-      this.error(`'${args.path}' is not a valid file path, exiting.`);
+    const {
+      args: { path },
+      flags: { basePath, parallelism, verbose },
+    } = this.parse(CreateScene);
+    if (!lstatSync(path).isFile()) {
+      this.error(`'${path}' is not a valid file path, exiting.`);
     }
-    if (flags.parallelism < 1 || flags.parallelism > 200) {
-      this.error(`Invalid parallelism ${flags.parallelism}.`);
+    if (parallelism < 1 || parallelism > 200) {
+      this.error(`Invalid parallelism ${parallelism}.`);
     }
 
     try {
@@ -48,9 +51,9 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 
       const client = await VertexClient.build({
         axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
-        basePath: flags.basePath,
+        basePath: basePath,
       });
-      const items: SceneItem[] = JSON.parse(readFileSync(args.path, Utf8));
+      const items: SceneItem[] = JSON.parse(readFileSync(path, Utf8));
       items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
       const createSceneItemReqs: CreateSceneItemRequest[] = items.map((i) => ({
         data: {
@@ -74,8 +77,8 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 
       const scene = await createSceneWithSceneItems({
         client,
-        parallelism: flags.parallelism,
-        verbose: flags.verbose,
+        parallelism: parallelism,
+        verbose: verbose,
         createSceneReq: () => ({
           data: {
             attributes: {},
