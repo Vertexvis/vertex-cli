@@ -1,5 +1,6 @@
 *-debug.log
 *-error.log
+.husky/
 /.nyc_output
 /dist
 /lib
