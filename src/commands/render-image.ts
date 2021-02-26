@@ -61,7 +61,7 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
       this.error(`--viewer flag only allowed for scene resources.`);
 
     try {
-      const client = await VertexClient.build({ basePath: basePath });
+      const client = await VertexClient.build({ basePath });
       if (viewer) {
         const streamKeyRes = await client.streamKeys.createSceneStreamKey({
           id: id,

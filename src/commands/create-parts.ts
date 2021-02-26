@@ -66,7 +66,7 @@ Uploading file(s) and creating part(s)... done
     const items: SceneItem[] = JSON.parse(readFileSync(path, Utf8));
     const client = await VertexClient.build({
       axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
-      basePath: basePath,
+      basePath,
     });
 
     const itemsWithGeometry = new Map<string, Args>();
