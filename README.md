@@ -3,14 +3,16 @@
 [![Version](https://img.shields.io/npm/v/@vertexvis/vertex-cli.svg)](https://www.npmjs.com/package/@vertexvis/vertex-cli)
 [![License](https://img.shields.io/npm/l/@vertexvis/vertex-cli.svg)](https://github.com/Vertexvis/vertex-cli/blob/master/LICENSE)
 
-The Vertex command-line interface (CLI) allows you to perform operations with a single command instead of making multiple API calls. The CLI uses [`vertex-api-client`](https://github.com/vertexvis/vertex-api-client-ts) to make API calls. It requires the following exported environment variables to create OAuth tokens.
+The Vertex command-line interface (CLI) makes Vertex API calls on your behalf, simplifying common operations into single commands.
+
+To get started with the CLI, [check out our guide](https://developer.vertexvis.com/docs/guides/import-data). Below, find installation and configuration instructions along with a full list of commands and their options. 
+
+Install the CLI with either `npm install -g @vertexvis/vertex-cli` or `yarn global add @vertexvis/vertex-cli`. Then, run `vertex configure` with the optional `--basePath` option to configure your Vertex client ID and secret. The command creates `~/.config/@vertexvis/vertex-cli/config.json` on macOs/Linux and `%LOCALAPPDATA%\@vertexvis/vertex-cli/config.json` on Windows with your credentials. Alternatively, you can override this file with the following environment variables. 
 
 ```shell
 export VERTEX_CLIENT_ID={CLIENT_ID}
 export VERTEX_CLIENT_SECRET={CLIENT_SECRET}
 ```
-
-Below is a full list of commands and their options. To get started with the CLI, [check out our guide](https://developer.vertexvis.com/docs/guides/cli-quick-start).
 
 <!-- toc -->
 * [Vertex CLI](#vertex-cli)

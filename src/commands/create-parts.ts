@@ -67,6 +67,7 @@ Uploading file(s) and creating part(s)... done
     const client = await VertexClient.build({
       axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
       basePath,
+      client: this.userConfig?.client,
     });
 
     const itemsWithGeometry = new Map<string, Args>();

@@ -65,6 +65,7 @@ Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         client: await VertexClient.build({
           axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
           basePath,
+          client: this.userConfig?.client,
         }),
         resource: resource,
         verbose: verbose,
