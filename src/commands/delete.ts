@@ -8,6 +8,7 @@ import {
   VertexClient,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
+import { Agent } from 'https';
 import BaseCommand from '../base';
 
 interface Deleter {
@@ -61,7 +62,10 @@ Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       cli.action.start(`Deleting ${resource}(s)...`);
 
       const deleter = getDeleter({
-        client: await VertexClient.build({ basePath: basePath }),
+        client: await VertexClient.build({
+          axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
+          basePath,
+        }),
         resource: resource,
         verbose: verbose,
       });

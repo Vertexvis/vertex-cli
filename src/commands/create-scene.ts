@@ -51,7 +51,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 
       const client = await VertexClient.build({
         axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
-        basePath: basePath,
+        basePath,
       });
       const items: SceneItem[] = JSON.parse(readFileSync(path, Utf8));
       items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
