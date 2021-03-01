@@ -80,7 +80,7 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
         if (!key) this.error('Error creating stream-key');
         writeFileSync(
           out,
-          generateHtml(key, basePath, process.env.VERTEX_CLIENT_ID)
+          generateHtml(key, basePath, this.userConfig?.client?.id)
         );
 
         this.log(`Viewer HTML written to '${out}'.`);
