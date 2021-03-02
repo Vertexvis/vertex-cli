@@ -32,7 +32,10 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
     }
 
     try {
-      const client = await VertexClient.build({ basePath });
+      const client = await VertexClient.build({
+        basePath,
+        client: this.userConfig?.client,
+      });
       const streamKeyRes = await client.streamKeys.createSceneStreamKey({
         id,
         createStreamKeyRequest: {

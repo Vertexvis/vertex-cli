@@ -61,7 +61,10 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
       this.error(`--viewer flag only allowed for scene resources.`);
 
     try {
-      const client = await VertexClient.build({ basePath });
+      const client = await VertexClient.build({
+        basePath,
+        client: this.userConfig?.client,
+      });
       if (viewer) {
         const streamKeyRes = await client.streamKeys.createSceneStreamKey({
           id: id,
@@ -77,7 +80,7 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
         if (!key) this.error('Error creating stream-key');
         writeFileSync(
           out,
-          generateHtml(key, basePath, process.env.VERTEX_CLIENT_ID)
+          generateHtml(key, basePath, this.userConfig?.client?.id)
         );
 
         this.log(`Viewer HTML written to '${out}'.`);
@@ -148,13 +151,28 @@ function generateHtml(
     ? `platstaging`
     : undefined;
 
-  return `<html>
+  return `<!DOCTYPE html>
+<html lang="">
   <head>
     <meta charset="utf-8" />
+    <title>Getting Started with Vertex</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       rel="stylesheet"
       href="https://unpkg.com/@vertexvis/viewer@0.9.x/dist/viewer/viewer.css"
     />
+    <style>
+      html,
+      body,
+      .viewer {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
     <script
       type="module"
       src="https://unpkg.com/@vertexvis/viewer@0.9.x/dist/viewer/viewer.esm.js"
@@ -163,50 +181,49 @@ function generateHtml(
       nomodule
       src="https://unpkg.com/@vertexvis/viewer@0.9.x/dist/viewer.js"
     ></script>
-  </head>
-  <body>
-    <vertex-viewer id="viewer" class="viewer" client-id="${
-      clientId || `[CLIENT_ID]`
-    }" style="width: auto; height: auto">
+
+    <vertex-viewer
+      class="viewer"
+      client-id="${clientId || `[CLIENT_ID]`}"
+    >
     </vertex-viewer>
 
     <script type="module">
-      import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/index.mjs';
-      import { defineCustomElements } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/loader.mjs';
-
-      document.addEventListener('DOMContentLoaded', () => {
-        main();
-      });
+      import { defineCustomElements } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/loader.js';
+      import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/index.js';
 
       async function main() {
-        await defineCustomElements();
+        await defineCustomElements(window);
+
         const viewer = document.querySelector('vertex-viewer');
         ${config ? `viewer.configEnv = '${config}';` : ''}
         await viewer.load('urn:vertexvis:stream-key:${streamKey}');
 
+        const scene = await viewer.scene();
+        const raycaster = scene.raycaster();
+
         viewer.addEventListener('tap', async (event) => {
-          const { position } = event.detail;
-          const scene = await viewer.scene();
-          const raycaster = await scene.raycaster();
+          const result = await raycaster.hitItems(event.detail.position);
+          const [hit] = result.hits;
 
-          const result = await raycaster.hitItems(position);
-
-          if (result.hits && result.hits.length == 0) {
+          if (hit != null) {
             await scene
-              .items((op) => op.where((q) => q.all()).clearMaterialOverrides())
+              .items((op) => [
+                op.where((q) => q.all()).deselect(),
+                op
+                  .where((q) => q.withItemId(hit.itemId.hex))
+                  .select(ColorMaterial.fromHex('#ff0000')),
+              ])
               .execute();
           } else {
             await scene
-              .items((op) => [
-                op.where((q) => q.all()).clearMaterialOverrides(),
-                op
-                  .where((q) => q.withItemId(result.hits[0].itemId.hex))
-                  .materialOverride(ColorMaterial.fromHex('#ff0000')),
-              ])
+              .items((op) => op.where((q) => q.all()).deselect())
               .execute();
           }
         });
       }
+
+      main();
     </script>
   </body>
 </html>`;

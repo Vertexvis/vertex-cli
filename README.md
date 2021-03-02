@@ -3,14 +3,16 @@
 [![Version](https://img.shields.io/npm/v/@vertexvis/vertex-cli.svg)](https://www.npmjs.com/package/@vertexvis/vertex-cli)
 [![License](https://img.shields.io/npm/l/@vertexvis/vertex-cli.svg)](https://github.com/Vertexvis/vertex-cli/blob/master/LICENSE)
 
-The Vertex command-line interface (CLI) allows you to perform operations with a single command instead of making multiple API calls. The CLI uses [`vertex-api-client`](https://github.com/vertexvis/vertex-api-client-ts) to make API calls. It requires the following exported environment variables to create OAuth tokens.
+The Vertex command-line interface (CLI) makes Vertex API calls on your behalf, simplifying common operations into single commands.
+
+To get started with the CLI, [check out our guide](https://developer.vertexvis.com/docs/guides/import-data). Below, find installation and configuration instructions along with a full list of commands and their options. 
+
+Install the CLI with either `npm install -g @vertexvis/vertex-cli` or `yarn global add @vertexvis/vertex-cli`. Then, run `vertex configure` with the optional `--basePath` option to configure your Vertex client ID and secret. The command creates `~/.config/@vertexvis/vertex-cli/config.json` on macOs/Linux and `%LOCALAPPDATA%\@vertexvis/vertex-cli/config.json` on Windows with your credentials. Alternatively, you can override this file with the following environment variables. 
 
 ```shell
 export VERTEX_CLIENT_ID={CLIENT_ID}
 export VERTEX_CLIENT_SECRET={CLIENT_SECRET}
 ```
-
-Below is a full list of commands and their options. To get started with the CLI, [check out our guide](https://developer.vertexvis.com/docs/guides/cli-quick-start).
 
 <!-- toc -->
 * [Vertex CLI](#vertex-cli)
@@ -26,7 +28,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.5.3 darwin-x64 node-v14.16.0
+@vertexvis/vertex-cli/0.6.0 darwin-x64 node-v14.16.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -37,6 +39,7 @@ USAGE
 # Commands
 
 <!-- commands -->
+* [`vertex configure`](#vertex-configure)
 * [`vertex create-items [PATH]`](#vertex-create-items-path)
 * [`vertex create-parts [PATH]`](#vertex-create-parts-path)
 * [`vertex create-scene [PATH]`](#vertex-create-scene-path)
@@ -44,6 +47,26 @@ USAGE
 * [`vertex delete [ID]`](#vertex-delete-id)
 * [`vertex help [COMMAND]`](#vertex-help-command)
 * [`vertex render-image [ID]`](#vertex-render-image-id)
+
+## `vertex configure`
+
+Configure Vertex credentials.
+
+```
+USAGE
+  $ vertex configure
+
+OPTIONS
+  -b, --basePath=basePath  [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help               show CLI help
+  -v, --verbose
+
+EXAMPLE
+  $ vertex configure
+  Saved 'https://platform.vertexvis.com' configuration to '~/.config/@vertexvis/vertex-cli/config.json'.
+```
+
+_See code: [src/commands/configure.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/configure.ts)_
 
 ## `vertex create-items [PATH]`
 
@@ -72,7 +95,7 @@ EXAMPLE
   Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
 ```
 
-_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.3/src/commands/create-items.ts)_
+_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/create-items.ts)_
 
 ## `vertex create-parts [PATH]`
 
@@ -95,7 +118,7 @@ EXAMPLE
   Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.3/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -117,7 +140,7 @@ EXAMPLE
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.3/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
 
@@ -138,7 +161,7 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.3/src/commands/create-stream-key.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/create-stream-key.ts)_
 
 ## `vertex delete [ID]`
 
@@ -160,7 +183,7 @@ EXAMPLE
   Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.3/src/commands/delete.ts)_
+_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/delete.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -202,5 +225,5 @@ EXAMPLE
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.5.3/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/render-image.ts)_
 <!-- commandsstop -->
