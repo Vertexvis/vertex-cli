@@ -1,0 +1,21 @@
+{
+  "name": "Vertex CLI",
+  "entryPoints": [
+    "./src/commands/configure.ts",
+    "./src/commands/create-items.ts",
+    "./src/commands/create-parts.ts",
+    "./src/commands/create-scene.ts",
+    "./src/commands/create-stream-key.ts",
+    "./src/commands/delete.ts",
+    "./src/commands/render-image.ts"
+  ],
+  "theme": "minimal",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "includeVersion": false,
+  "gitRevision": "master",
+  "hideGenerator": true,
+  "readme": "none",
+  "out": "docs"
+}

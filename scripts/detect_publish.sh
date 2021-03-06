@@ -1,6 +1,6 @@
-#!/bin/bash
-
-. "$(pwd)"/scripts/utils.sh
+#!/usr/bin/env bash
+# shellcheck source=./utils.sh
+source "$(pwd)"/scripts/utils.sh
 
 # Internal script used by CI to detect if we need to publish packages to NPM.
 
@@ -10,8 +10,4 @@ version=v$(get_version)
 
 git fetch --tags
 
-if test -z "$(git tag --list "$version")"; then
-  echo 1
-else
-  echo 0
-fi
+if test -z "$(git tag --list "$version")"; then echo 1; else echo 0; fi
