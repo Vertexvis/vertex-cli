@@ -7,12 +7,7 @@ The Vertex command-line interface (CLI) makes Vertex API calls on your behalf, s
 
 To get started with the CLI, [check out our guide](https://developer.vertexvis.com/docs/guides/import-data). Below, find installation and configuration instructions along with a full list of commands and their options. 
 
-Install the CLI with either `npm install -g @vertexvis/vertex-cli` or `yarn global add @vertexvis/vertex-cli`. Then, run `vertex configure` with the optional `--basePath` option to configure your Vertex client ID and secret. The command creates `~/.config/@vertexvis/vertex-cli/config.json` on macOs/Linux and `%LOCALAPPDATA%\@vertexvis/vertex-cli/config.json` on Windows with your credentials. Alternatively, you can override this file with the following environment variables. 
-
-```shell
-export VERTEX_CLIENT_ID={CLIENT_ID}
-export VERTEX_CLIENT_SECRET={CLIENT_SECRET}
-```
+Install the CLI, `npm install -g @vertexvis/vertex-cli`. Next, run `vertex configure` with the optional `--basePath` option to configure your Vertex client ID and secret. This creates `~/.config/@vertexvis/vertex-cli/config.json` on macOs/Linux and `%LOCALAPPDATA%\@vertexvis/vertex-cli/config.json` on Windows with your credentials. Then, run the other commands with the same `--basePath` option and the CLI will use the proper credentials to communicate with Vertex's API.
 
 <!-- toc -->
 * [Vertex CLI](#vertex-cli)
@@ -28,7 +23,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.6.0 darwin-x64 node-v14.16.0
+@vertexvis/vertex-cli/0.6.1 darwin-x64 node-v14.16.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -66,7 +61,7 @@ EXAMPLE
   Saved 'https://platform.vertexvis.com' configuration to '~/.config/@vertexvis/vertex-cli/config.json'.
 ```
 
-_See code: [src/commands/configure.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/configure.ts)_
+_See code: [src/commands/configure.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/configure.ts)_
 
 ## `vertex create-items [PATH]`
 
@@ -95,7 +90,7 @@ EXAMPLE
   Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
 ```
 
-_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/create-items.ts)_
+_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/create-items.ts)_
 
 ## `vertex create-parts [PATH]`
 
@@ -118,7 +113,7 @@ EXAMPLE
   Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -140,7 +135,7 @@ EXAMPLE
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
 
@@ -161,7 +156,7 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/create-stream-key.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/create-stream-key.ts)_
 
 ## `vertex delete [ID]`
 
@@ -183,7 +178,7 @@ EXAMPLE
   Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/delete.ts)_
+_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/delete.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -225,5 +220,19 @@ EXAMPLE
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.0/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/render-image.ts)_
 <!-- commandsstop -->
+
+## Local development
+
+The CLI uses [`oclif`](https://oclif.io/) framework. It's a thin layer on top of [`@vertexvis/vertex-api-client`](https://github.com/Vertexvis/vertex-api-client-ts). This means that for most changes, you'll be making modifications to both libraries. To link them, clone both repositories, then,
+
+1. In `vertex-api-client-ts`,
+  1. Install dependencies, `yarn install`
+  1. Build the project, `yarn clean-build`
+  1. Link it, `yarn link`
+1. In `vertex-cli`,
+  1. Reference the linked client, `yarn link @vertexvis/vertex-api-client`
+  1. Run the local version of the CLI, `./bin/run --help`
+
+When you're ready to publish a new version, commit your changes and then run `yarn version [--patch | --minor | --major]`. `oclif` takes care of updating the version numbers and updating the `README`.
