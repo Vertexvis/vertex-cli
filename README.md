@@ -1,7 +1,7 @@
 # Vertex CLI
 
 [![Version](https://img.shields.io/npm/v/@vertexvis/vertex-cli.svg)](https://www.npmjs.com/package/@vertexvis/vertex-cli)
-[![License](https://img.shields.io/npm/l/@vertexvis/vertex-cli.svg)](https://github.com/Vertexvis/vertex-cli/blob/master/LICENSE)
+[![License](https://img.shields.io/npm/l/@vertexvis/vertex-cli.svg)](https://github.com/Vertexvis/vertex-cli/blob/master/LICENSE) [TypeDoc Documentation](https://vertexvis.github.io/vertex-cli/)
 
 The Vertex command-line interface (CLI) makes Vertex API calls on your behalf, simplifying common operations into single commands.
 

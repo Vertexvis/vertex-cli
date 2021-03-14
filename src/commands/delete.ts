@@ -44,8 +44,9 @@ Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
   public async run(): Promise<void> {
     const {
       args: { id },
-      flags: { all, basePath, resource, verbose },
+      flags: { all, resource, verbose },
     } = this.parse(Delete);
+    const basePath = this.parsedFlags?.basePath;
     if (all) {
       const choice = await cli.prompt(
         `Are you sure you want to delete all ${resource}s? (yes/no)`

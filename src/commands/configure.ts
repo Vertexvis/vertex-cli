@@ -15,9 +15,7 @@ Saved 'https://platform.vertexvis.com' configuration to '~/.config/@vertexvis/ve
   public static flags = { ...BaseCommand.flags };
 
   public async run(): Promise<void> {
-    const {
-      flags: { basePath },
-    } = this.parse(Configure);
+    const basePath = this.parsedFlags?.basePath;
     const client = this.userConfig?.client;
     const id = await cli.prompt(`Vertex client ID`, {
       default: client?.id,

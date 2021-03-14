@@ -1,7 +1,6 @@
 import { flags } from '@oclif/command';
 import {
   BaseArgs,
-  arrayChunked,
   createPartFromFileIfNotExists,
   FileRelationshipDataTypeEnum,
   PartRevisionData,
@@ -9,8 +8,10 @@ import {
   VertexClient,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
-import { lstatSync, readFileSync } from 'fs';
+import { createReadStream, lstatSync, readFileSync } from 'fs';
 import { Agent } from 'https';
+import logUpdate from 'log-update';
+import pLimit from 'p-limit';
 import { join } from 'path';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
@@ -51,8 +52,9 @@ Uploading file(s) and creating part(s)... done
   public async run(): Promise<void> {
     const {
       args: { path },
-      flags: { basePath, directory, parallelism, verbose },
+      flags: { directory, parallelism, verbose },
     } = this.parse(CreateParts);
+    const basePath = this.parsedFlags?.basePath;
     if (!lstatSync(path).isFile()) {
       this.error(`'${path}' is not a valid file path, exiting.`);
     }
@@ -88,36 +90,22 @@ Uploading file(s) and creating part(s)... done
         }
       });
 
-    this.log(`Found ${itemsWithGeometry.size} part(s) with geometry.`);
+    const total = itemsWithGeometry.size;
+    this.log(`Found ${total} part(s) with geometry.`);
     cli.action.start(`Uploading file(s) and creating part(s)...`);
 
-    const errors = new Set<PromiseRejectedResult>();
-    // Chunk array into `parallelism` sizes and await each using `Promise.allSettled`.
-    // This ensures all uploads within each chunk finish even if some fail.
-    // `Promise.all`, in contrast, stops eval if any reject, killing connections
-    // and leaving files in a partially uploaded state.
-    const chunks = arrayChunked([...itemsWithGeometry.values()], parallelism);
-    /* eslint-disable no-await-in-loop */
-    for (const chunk of chunks) {
-      const responses = await Promise.allSettled(chunk.map(createPart));
-      const failures = (responses.filter(
-        (p) => p.status === 'rejected'
-      ) as PromiseRejectedResult[]).map((p) =>
-        p.reason.vertexErrorMessage
-          ? p.reason.vertexErrorMessage
-          : p.reason.message
-      );
-
-      // If all requests failed, something is probably wrong. Exit with error.
-      if (failures.length === parallelism)
-        this.error([...errors.values(), ...failures].join('\n\n'));
-
-      // Else add to `errors` and continue
-      for (const f of failures) errors.add(f);
-    }
-    /* eslint-enable no-await-in-loop */
-
-    if (errors.size > 0) this.error([...errors.values()].join('\n\n'));
+    let complete = 0;
+    const log = logUpdate.create(process.stdout, { showCursor: true });
+    const limit = pLimit(parallelism);
+    await Promise.all(
+      [...itemsWithGeometry.values()].map(async (req) =>
+        limit<Args[], PartRevisionData>(async (r) => {
+          const res = await createPart(r);
+          log(`${Math.round((100 * (complete += 1)) / total)}% complete...`);
+          return res;
+        }, req)
+      )
+    );
 
     cli.action.stop();
   }
@@ -136,8 +124,7 @@ async function createPart({
   return createPartFromFileIfNotExists({
     client,
     verbose,
-    // Do not pass encoding, vertex-api-client expects buffer
-    fileData: readFileSync(path),
+    fileData: createReadStream(path),
     createFileReq: {
       data: {
         attributes: { name: fileName, suppliedId: fileName },

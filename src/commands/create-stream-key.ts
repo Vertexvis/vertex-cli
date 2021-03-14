@@ -25,8 +25,9 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
   public async run(): Promise<void> {
     const {
       args: { id },
-      flags: { basePath, expiry },
+      flags: { expiry },
     } = this.parse(CreateStreamKey);
+    const basePath = this.parsedFlags?.basePath;
     if (expiry < 1) {
       this.error(`Invalid expiry ${expiry}.`);
     }

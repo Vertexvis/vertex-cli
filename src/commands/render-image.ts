@@ -53,8 +53,9 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
   public async run(): Promise<void> {
     const {
       args: { id },
-      flags: { basePath, height, output, resource, verbose, viewer, width },
+      flags: { height, output, resource, verbose, viewer, width },
     } = this.parse(RenderImage);
+    const basePath = this.parsedFlags?.basePath;
     if (height < 1) this.error(`Invalid height ${height}.`);
     if (width < 1) this.error(`Invalid width ${width}.`);
     if (viewer && resource !== 'scene')
@@ -212,7 +213,7 @@ function generateHtml(
                 op.where((q) => q.all()).deselect(),
                 op
                   .where((q) => q.withItemId(hit.itemId.hex))
-                  .select(ColorMaterial.fromHex('#ff0000')),
+                  .select(ColorMaterial.create(255, 255, 0)),
               ])
               .execute();
           } else {

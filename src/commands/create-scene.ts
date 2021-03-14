@@ -10,6 +10,7 @@ import {
 import cli from 'cli-ux';
 import { lstatSync, readFileSync } from 'fs';
 import { Agent } from 'https';
+import logUpdate from 'log-update';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
 
@@ -37,8 +38,9 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
   public async run(): Promise<void> {
     const {
       args: { path },
-      flags: { basePath, parallelism, verbose },
+      flags: { parallelism, verbose },
     } = this.parse(CreateScene);
+    const basePath = this.parsedFlags?.basePath;
     if (!lstatSync(path).isFile()) {
       this.error(`'${path}' is not a valid file path, exiting.`);
     }
@@ -56,6 +58,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       });
       const items: SceneItem[] = JSON.parse(readFileSync(path, Utf8));
       items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
+      const log = logUpdate.create(process.stdout, { showCursor: true });
       const createSceneItemReqs: CreateSceneItemRequest[] = items.map((i) => ({
         data: {
           attributes: {
@@ -82,11 +85,15 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         verbose: verbose,
         createSceneReq: () => ({
           data: {
-            attributes: {},
+            attributes: {
+              treeEnabled: true,
+            },
             type: SceneRelationshipDataTypeEnum.Scene,
           },
         }),
         createSceneItemReqs,
+        onProgress: (complete, total) =>
+          log(`${Math.round((100 * complete) / total)}% complete...`),
       });
 
       const getSceneItemsRes = await client.sceneItems.getSceneItems({
