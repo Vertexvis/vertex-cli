@@ -40,6 +40,7 @@ USAGE
 * [`vertex create-scene [PATH]`](#vertex-create-scene-path)
 * [`vertex create-stream-key [ID]`](#vertex-create-stream-key-id)
 * [`vertex delete [ID]`](#vertex-delete-id)
+* [`vertex get [ID]`](#vertex-get-id)
 * [`vertex help [COMMAND]`](#vertex-help-command)
 * [`vertex render-image [ID]`](#vertex-render-image-id)
 
@@ -109,8 +110,7 @@ OPTIONS
 
 EXAMPLE
   $ vertex create-parts -d path/to/geometry/directory path/to/file
-  Found 5 part(s) with geometry.
-  Uploading file(s) and creating part(s)... done
+     ████████████████████████████████████████ 100% | 10/10
 ```
 
 _See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/create-parts.ts)_
@@ -128,11 +128,12 @@ OPTIONS
   -h, --help                     show CLI help
   -p, --parallelism=parallelism  [default: 20] Number of scene-items to create in parallel.
   -v, --verbose
+  --suppliedId=suppliedId        SuppliedId of scene.
 
 EXAMPLE
   $ vertex create-scene -i path/to/items/file
-  Creating scene... done
-  Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
+     ████████████████████████████████████████ 100% | 10/10
+  f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 ```
 
 _See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/create-scene.ts)_
@@ -153,7 +154,7 @@ OPTIONS
 
 EXAMPLE
   $ vertex create-stream-key f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-  Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
+  hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
 ```
 
 _See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/create-stream-key.ts)_
@@ -175,10 +176,35 @@ OPTIONS
 
 EXAMPLE
   $ vertex delete --resource scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-  Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
+  Deleted scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
 _See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/delete.ts)_
+
+## `vertex get [ID]`
+
+Get resources.
+
+```
+USAGE
+  $ vertex get [ID]
+
+OPTIONS
+  -b, --basePath=basePath         [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help                      show CLI help
+  -r, --resource=file|part|scene  (required) Resource type of ID provided.
+  -v, --verbose
+  --all                           Get all of specified resource.
+  --cursor=cursor                 Cursor for next page of items.
+  --extended                      Display extended output.
+
+EXAMPLE
+  $ vertex get --resource scene 54964c61-05d8-4f37-9638-18f7c4960c80
+  Id                                   Name
+  54964c61-05d8-4f37-9638-18f7c4960c80 my-scene
+```
+
+_See code: [src/commands/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/get.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -217,7 +243,7 @@ OPTIONS
 
 EXAMPLE
   $ vertex render-image f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-  Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
+  f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg
 ```
 
 _See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/render-image.ts)_

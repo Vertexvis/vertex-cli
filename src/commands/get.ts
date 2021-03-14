@@ -27,8 +27,9 @@ export default class Get extends BaseCommand {
   public static description = `Get resources.`;
 
   public static examples = [
-    `$ vertex get --resource scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-TODO
+    `$ vertex get --resource scene 54964c61-05d8-4f37-9638-18f7c4960c80
+Id                                   Name
+54964c61-05d8-4f37-9638-18f7c4960c80 my-scene
 `,
   ];
 
