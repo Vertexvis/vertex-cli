@@ -23,7 +23,7 @@ $ npm install -g @vertexvis/vertex-cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/vertex-cli/0.6.1 darwin-x64 node-v14.16.0
+@vertexvis/vertex-cli/0.7.0 darwin-x64 node-v14.16.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -61,7 +61,7 @@ EXAMPLE
   Saved 'https://platform.vertexvis.com' configuration to '~/.config/@vertexvis/vertex-cli/config.json'.
 ```
 
-_See code: [src/commands/configure.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/configure.ts)_
+_See code: [src/commands/configure.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/configure.ts)_
 
 ## `vertex create-items [PATH]`
 
@@ -90,7 +90,7 @@ EXAMPLE
   Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
 ```
 
-_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/create-items.ts)_
+_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/create-items.ts)_
 
 ## `vertex create-parts [PATH]`
 
@@ -113,7 +113,7 @@ EXAMPLE
   Uploading file(s) and creating part(s)... done
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -135,7 +135,7 @@ EXAMPLE
   Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/create-scene.ts)_
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/create-scene.ts)_
 
 ## `vertex create-stream-key [ID]`
 
@@ -156,7 +156,7 @@ EXAMPLE
   Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
 ```
 
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/create-stream-key.ts)_
+_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/create-stream-key.ts)_
 
 ## `vertex delete [ID]`
 
@@ -178,7 +178,7 @@ EXAMPLE
   Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 ```
 
-_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/delete.ts)_
+_See code: [src/commands/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/delete.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -220,7 +220,7 @@ EXAMPLE
   Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
 ```
 
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.6.1/src/commands/render-image.ts)_
+_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.7.0/src/commands/render-image.ts)_
 <!-- commandsstop -->
 
 ## Local development
