@@ -7,7 +7,7 @@ export default class CreateStreamKey extends BaseCommand {
 
   public static examples = [
     `$ vertex create-stream-key f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 seconds.
+hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
 `,
   ];
 
@@ -49,9 +49,7 @@ Created stream-key 'hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq' expiring in 600 second
         },
       });
 
-      this.log(
-        `Created stream-key '${streamKeyRes.data.data.attributes.key}' expiring in ${expiry} seconds.`
-      );
+      this.log(streamKeyRes.data.data.attributes.key);
     } catch (error) {
       logError(error, this.error);
     }

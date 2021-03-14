@@ -7,14 +7,13 @@ import {
   Utf8,
   VertexClient,
 } from '@vertexvis/vertex-api-client';
-import cli from 'cli-ux';
-import { createReadStream, lstatSync, readFileSync } from 'fs';
+import { createReadStream, readFile } from 'fs-extra';
 import { Agent } from 'https';
-import logUpdate from 'log-update';
 import pLimit from 'p-limit';
 import { join } from 'path';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
+import { directoryExists, fileExists, progressBar } from '../util';
 
 interface Args extends BaseArgs {
   readonly directory?: string;
@@ -29,8 +28,7 @@ export default class CreateParts extends BaseCommand {
 
   public static examples = [
     `$ vertex create-parts -d path/to/geometry/directory path/to/file
-Found 5 part(s) with geometry.
-Uploading file(s) and creating part(s)... done
+  ████████████████████████████████████████ 100% | 10/10
 `,
   ];
 
@@ -55,24 +53,24 @@ Uploading file(s) and creating part(s)... done
       flags: { directory, parallelism, verbose },
     } = this.parse(CreateParts);
     const basePath = this.parsedFlags?.basePath;
-    if (!lstatSync(path).isFile()) {
+    if (!(await fileExists(path))) {
       this.error(`'${path}' is not a valid file path, exiting.`);
     }
-    if (directory && !lstatSync(directory).isDirectory()) {
+    if (directory && !(await directoryExists(directory))) {
       this.error(`'${directory}' is not a valid directory path, exiting.`);
     }
     if (parallelism < 1 || parallelism > 20) {
       this.error(`Invalid parallelism ${parallelism}.`);
     }
 
-    const items: SceneItem[] = JSON.parse(readFileSync(path, Utf8));
+    const itemsWithGeometry = new Map<string, Args>();
+    const items: SceneItem[] = JSON.parse(await readFile(path, Utf8));
     const client = await VertexClient.build({
       axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
       basePath,
       client: this.userConfig?.client,
     });
 
-    const itemsWithGeometry = new Map<string, Args>();
     items
       .filter((i) => i.source)
       .forEach((i) => {
@@ -90,24 +88,21 @@ Uploading file(s) and creating part(s)... done
         }
       });
 
-    const total = itemsWithGeometry.size;
-    this.log(`Found ${total} part(s) with geometry.`);
-    cli.action.start(`Uploading file(s) and creating part(s)...`);
-
-    let complete = 0;
-    const log = logUpdate.create(process.stdout, { showCursor: true });
+    const progress = progressBar('Creating part(s)');
     const limit = pLimit(parallelism);
+    if (!verbose) progress.start(itemsWithGeometry.size, 0);
+
     await Promise.all(
       [...itemsWithGeometry.values()].map(async (req) =>
         limit<Args[], PartRevisionData>(async (r) => {
           const res = await createPart(r);
-          log(`${Math.round((100 * (complete += 1)) / total)}% complete...`);
+          if (!verbose) progress.increment();
           return res;
         }, req)
       )
     );
 
-    cli.action.stop();
+    if (!verbose) progress.stop();
   }
 }
 
@@ -123,8 +118,6 @@ async function createPart({
   const path = directory ? join(directory, fileName) : fileName;
   return createPartFromFileIfNotExists({
     client,
-    verbose,
-    fileData: createReadStream(path),
     createFileReq: {
       data: {
         attributes: { name: fileName, suppliedId: fileName },
@@ -146,5 +139,8 @@ async function createPart({
         type: 'part',
       },
     }),
+    fileData: createReadStream(path),
+    onMsg: console.error,
+    verbose,
   });
 }

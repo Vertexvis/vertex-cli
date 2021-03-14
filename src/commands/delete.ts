@@ -21,7 +21,7 @@ export default class Delete extends BaseCommand {
 
   public static examples = [
     `$ vertex delete --resource scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
+Deleted all files.
 `,
   ];
 
@@ -48,10 +48,10 @@ Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
     } = this.parse(Delete);
     const basePath = this.parsedFlags?.basePath;
     if (all) {
-      const choice = await cli.prompt(
-        `Are you sure you want to delete all ${resource}s? (yes/no)`
+      const choice = await cli.confirm(
+        `Are you sure you want to delete all ${resource}s?`
       );
-      if (choice.toLowerCase() !== 'yes') {
+      if (!choice) {
         this.log('Aborting...');
         this.exit(0);
       }
@@ -108,7 +108,12 @@ function fileDeleter({ client, verbose }: BaseArgs): Deleter {
       await client.files.deleteFile({ id });
     },
     deleteAll: async () => {
-      await deleteAllFiles({ client, pageSize: 10, verbose });
+      await deleteAllFiles({
+        client,
+        onMsg: console.error,
+        pageSize: 10,
+        verbose,
+      });
     },
   };
 }
@@ -119,7 +124,12 @@ function partDeleter({ client, verbose }: BaseArgs): Deleter {
       await client.parts.deletePart({ id });
     },
     deleteAll: async () => {
-      await deleteAllParts({ client, pageSize: 10, verbose });
+      await deleteAllParts({
+        client,
+        onMsg: console.error,
+        pageSize: 10,
+        verbose,
+      });
     },
   };
 }
@@ -130,7 +140,12 @@ function sceneDeleter({ client, verbose }: BaseArgs): Deleter {
       await client.scenes.deleteScene({ id });
     },
     deleteAll: async () => {
-      await deleteAllScenes({ client, pageSize: 10, verbose });
+      await deleteAllScenes({
+        client,
+        onMsg: console.error,
+        pageSize: 10,
+        verbose,
+      });
     },
   };
 }
