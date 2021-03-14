@@ -85,9 +85,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         verbose: verbose,
         createSceneReq: () => ({
           data: {
-            attributes: {
-              treeEnabled: true,
-            },
+            attributes: {},
             type: SceneRelationshipDataTypeEnum.Scene,
           },
         }),
