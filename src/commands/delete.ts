@@ -21,7 +21,7 @@ export default class Delete extends BaseCommand {
 
   public static examples = [
     `$ vertex delete --resource scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-Deleted all files.
+Deleted scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 `,
   ];
 

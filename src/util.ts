@@ -8,12 +8,12 @@ interface ProgressBar {
   stop: () => void;
 }
 
-export async function fileExists(path: string): Promise<boolean> {
-  return (await lstat(path)).isFile();
-}
-
 export async function directoryExists(path: string): Promise<boolean> {
   return (await lstat(path)).isDirectory();
+}
+
+export async function fileExists(path: string): Promise<boolean> {
+  return (await lstat(path)).isFile();
 }
 
 export function progressBar(label?: string): ProgressBar {
