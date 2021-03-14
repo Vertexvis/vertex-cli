@@ -12,7 +12,7 @@ import { readFile } from 'fs-extra';
 import { Agent } from 'https';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
-import { fileExists, progressBar } from '../util';
+import { fileExists, progressBar } from '../utils';
 
 export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
@@ -33,12 +33,15 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
       description: 'Number of scene-items to create in parallel.',
       default: 20,
     }),
+    suppliedId: flags.string({
+      description: 'SuppliedId of scene.',
+    }),
   };
 
   public async run(): Promise<void> {
     const {
       args: { path },
-      flags: { parallelism, verbose },
+      flags: { parallelism, suppliedId, verbose },
     } = this.parse(CreateScene);
     const basePath = this.parsedFlags?.basePath;
     if (!(await fileExists(path))) {
@@ -85,7 +88,9 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         createSceneItemReqs,
         createSceneReq: () => ({
           data: {
-            attributes: {},
+            attributes: {
+              suppliedId: suppliedId,
+            },
             type: SceneRelationshipDataTypeEnum.Scene,
           },
         }),

@@ -13,7 +13,7 @@ import pLimit from 'p-limit';
 import { join } from 'path';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
-import { directoryExists, fileExists, progressBar } from '../util';
+import { directoryExists, fileExists, progressBar } from '../utils';
 
 interface Args extends BaseArgs {
   readonly directory?: string;

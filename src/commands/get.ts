@@ -1,0 +1,185 @@
+import { flags } from '@oclif/command';
+import {
+  BaseArgs,
+  FileMetadataData,
+  getPage,
+  logError,
+  PartData,
+  SceneData,
+  VertexClient,
+} from '@vertexvis/vertex-api-client';
+import cli from 'cli-ux';
+import { Agent } from 'https';
+import BaseCommand from '../base';
+
+interface Paged<T> {
+  items: T[];
+  cursor?: string;
+}
+
+interface Getter<T> {
+  readonly getOne: (id: string) => Promise<T>;
+  readonly getAll: (cursor?: string) => Promise<Paged<T>>;
+  readonly display: (res: Paged<T>, extended: boolean) => void;
+}
+
+export default class Get extends BaseCommand {
+  public static description = `Get resources.`;
+
+  public static examples = [
+    `$ vertex get --resource scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3
+TODO
+`,
+  ];
+
+  public static args = [{ name: 'id' }];
+
+  public static flags = {
+    ...BaseCommand.flags,
+    all: flags.boolean({
+      description: 'Get all of specified resource.',
+      default: false,
+    }),
+    cursor: flags.string({
+      description: 'Cursor for next page of items.',
+    }),
+    extended: flags.boolean({
+      description: 'Display extended output.',
+      default: false,
+    }),
+    resource: flags.string({
+      char: 'r',
+      description: 'Resource type of ID provided.',
+      options: ['file', 'part', 'scene'],
+      required: true,
+    }),
+  };
+
+  public async run(): Promise<void> {
+    const {
+      args: { id },
+      flags: { all, cursor, extended, resource, verbose },
+    } = this.parse(Get);
+    const basePath = this.parsedFlags?.basePath;
+    if (!id && !all) {
+      this.error('Either --all flag or id argument required.');
+    }
+
+    async function performGet({
+      resource,
+      ...args
+    }: BaseArgs & { resource: string }): Promise<void> {
+      switch (resource) {
+        case 'file':
+          return get(fileGetter(args));
+        case 'part':
+          return get(partGetter(args));
+        case 'scene':
+          return get(sceneGetter(args));
+        default:
+          throw new Error(`Unexpected resource ${resource}`);
+      }
+    }
+
+    async function get<T>(getter: Getter<T>): Promise<void> {
+      if (all) {
+        const res = await getter.getAll(cursor);
+        getter.display(res, extended);
+        if (res.cursor) console.log(res.cursor);
+      } else {
+        getter.display({ items: [await getter.getOne(id)] }, extended);
+      }
+    }
+
+    try {
+      performGet({
+        client: await VertexClient.build({
+          axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
+          basePath,
+          client: this.userConfig?.client,
+        }),
+        resource: resource,
+        verbose: verbose,
+      });
+    } catch (error) {
+      logError(error, this.error);
+    }
+  }
+}
+
+function fileGetter({ client }: BaseArgs): Getter<FileMetadataData> {
+  return {
+    getOne: async (id: string): Promise<FileMetadataData> => {
+      return (await client.files.getFile({ id })).data.data;
+    },
+    getAll: async (cursor?: string): Promise<Paged<FileMetadataData>> => {
+      const res = await getPage(() =>
+        client.files.getFiles({ pageCursor: cursor, pageSize: 25 })
+      );
+      return { items: res.page.data, cursor: res.cursor };
+    },
+    display: (res: Paged<FileMetadataData>, extended: boolean): void =>
+      cli.table(
+        res.items.map((f) => ({ id: f.id, ...f.attributes })),
+        {
+          id: { minWidth: 36 },
+          name: { minWidth: 12 },
+          suppliedId: { extended: true, header: 'SuppliedId' },
+          status: { extended: true },
+          created: { extended: true },
+        },
+        { extended }
+      ),
+  };
+}
+
+function partGetter({ client }: BaseArgs): Getter<PartData> {
+  return {
+    getOne: async (id: string): Promise<PartData> => {
+      return (await client.parts.getPart({ id })).data.data;
+    },
+    getAll: async (cursor?: string): Promise<Paged<PartData>> => {
+      const res = await getPage(() =>
+        client.parts.getParts({ pageCursor: cursor, pageSize: 25 })
+      );
+      return { items: res.page.data, cursor: res.cursor };
+    },
+    display: (res: Paged<PartData>, extended: boolean): void =>
+      cli.table(
+        res.items.map((f) => ({ id: f.id, ...f.attributes })),
+        {
+          id: { minWidth: 36 },
+          name: { minWidth: 12 },
+          suppliedId: { extended: true, header: 'SuppliedId' },
+          created: { extended: true },
+        },
+        { extended }
+      ),
+  };
+}
+
+function sceneGetter({ client }: BaseArgs): Getter<SceneData> {
+  return {
+    getOne: async (id: string): Promise<SceneData> => {
+      return (await client.scenes.getScene({ id })).data.data;
+    },
+    getAll: async (cursor?: string): Promise<Paged<SceneData>> => {
+      const res = await getPage(() =>
+        client.scenes.getScenes({ pageCursor: cursor, pageSize: 25 })
+      );
+      return { items: res.page.data, cursor: res.cursor };
+    },
+    display: (res: Paged<SceneData>, extended: boolean): void =>
+      cli.table(
+        res.items.map((f) => ({ id: f.id, ...f.attributes })),
+        {
+          id: { minWidth: 36 },
+          name: { minWidth: 12 },
+          suppliedId: { extended: true, header: 'SuppliedId' },
+          state: { extended: true },
+          created: { extended: true },
+        },
+        { extended }
+      ),
+  };
+}
