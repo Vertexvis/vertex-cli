@@ -6,11 +6,11 @@ import {
   renderPartRevision,
   renderScene,
   renderSceneView,
-  VertexClient,
 } from '@vertexvis/vertex-api-client';
 import { createWriteStream, writeFile } from 'fs-extra';
 import BaseCommand from '../base';
 import { cli } from 'cli-ux';
+import { vertexClient } from '../utils';
 
 export default class RenderImage extends BaseCommand {
   public static description = `Render an image for a scene, scene-view, or part-revision.`;
@@ -63,10 +63,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg
       this.error(`--viewer flag only allowed for scene resources.`);
 
     try {
-      const client = await VertexClient.build({
-        basePath,
-        client: this.userConfig?.client,
-      });
+      const client = await vertexClient(basePath, this.userConfig);
       if (viewer) {
         const streamKeyRes = await client.streamKeys.createSceneStreamKey({
           id: id,

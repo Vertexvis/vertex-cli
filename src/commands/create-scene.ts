@@ -5,14 +5,12 @@ import {
   logError,
   SceneRelationshipDataTypeEnum,
   Utf8,
-  VertexClient,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
 import { readFile } from 'fs-extra';
-import { Agent } from 'https';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
-import { fileExists, progressBar } from '../utils';
+import { fileExists, progressBar, vertexClient } from '../utils';
 
 export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
@@ -53,11 +51,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
     try {
       const progress = progressBar('Creating scene');
-      const client = await VertexClient.build({
-        axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
-        basePath,
-        client: this.userConfig?.client,
-      });
+      const client = await vertexClient(basePath, this.userConfig);
       const items: SceneItem[] = JSON.parse(await readFile(path, Utf8));
       items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
 

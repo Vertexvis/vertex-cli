@@ -1,6 +1,7 @@
 import { flags } from '@oclif/command';
 import { logError, VertexClient } from '@vertexvis/vertex-api-client';
 import BaseCommand from '../base';
+import { vertexClient } from '../utils';
 
 export default class CreateStreamKey extends BaseCommand {
   public static description = `Generate a stream-key for a scene.`;
@@ -33,10 +34,7 @@ hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
     }
 
     try {
-      const client = await VertexClient.build({
-        basePath,
-        client: this.userConfig?.client,
-      });
+      const client = await vertexClient(basePath, this.userConfig);
       const streamKeyRes = await client.streamKeys.createSceneStreamKey({
         id,
         createStreamKeyRequest: {

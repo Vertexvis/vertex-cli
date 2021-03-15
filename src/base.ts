@@ -4,7 +4,7 @@ import { BASE_PATH } from '@vertexvis/vertex-api-client';
 import { readJSON } from 'fs-extra';
 import { join } from 'path';
 
-interface Config {
+export interface Config {
   client?: {
     id?: string;
     secret?: string;

@@ -6,11 +6,10 @@ import {
   logError,
   PartData,
   SceneData,
-  VertexClient,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
-import { Agent } from 'https';
 import BaseCommand from '../base';
+import { vertexClient } from '../utils';
 
 interface Paged<T> {
   items: T[];
@@ -94,11 +93,7 @@ Id                                   Name
 
     try {
       performGet({
-        client: await VertexClient.build({
-          axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
-          basePath,
-          client: this.userConfig?.client,
-        }),
+        client: await vertexClient(basePath, this.userConfig),
         resource: resource,
         verbose: verbose,
       });

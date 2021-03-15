@@ -5,19 +5,22 @@ import {
   FileRelationshipDataTypeEnum,
   PartRevisionData,
   Utf8,
-  VertexClient,
 } from '@vertexvis/vertex-api-client';
 import { createReadStream, readFile } from 'fs-extra';
-import { Agent } from 'https';
 import pLimit from 'p-limit';
 import { join } from 'path';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
-import { directoryExists, fileExists, progressBar } from '../utils';
+import {
+  directoryExists,
+  fileExists,
+  progressBar,
+  vertexClient,
+} from '../utils';
 
 interface Args extends BaseArgs {
-  readonly directory?: string;
   readonly fileName: string;
+  readonly path: string;
   readonly indexMetadata: boolean;
   readonly suppliedPartId: string;
   readonly suppliedRevisionId: string;
@@ -65,23 +68,20 @@ export default class CreateParts extends BaseCommand {
 
     const itemsWithGeometry = new Map<string, Args>();
     const items: SceneItem[] = JSON.parse(await readFile(path, Utf8));
-    const client = await VertexClient.build({
-      axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
-      basePath,
-      client: this.userConfig?.client,
-    });
+    const client = await vertexClient(basePath, this.userConfig);
 
     items
       .filter((i) => i.source)
       .forEach((i) => {
         const mapKey = `${i.source?.suppliedPartId}:${i.source?.suppliedRevisionId}`;
+        const fileName = i.source?.fileName as string;
         if (i.source && !itemsWithGeometry.has(mapKey)) {
           itemsWithGeometry.set(mapKey, {
             client,
-            verbose: verbose,
-            directory: directory,
-            fileName: i.source?.fileName,
+            verbose,
+            fileName,
             indexMetadata: i.indexMetadata ?? false,
+            path: directory ? join(directory, fileName) : fileName,
             suppliedPartId: i.source?.suppliedPartId,
             suppliedRevisionId: i.source?.suppliedRevisionId,
           });
@@ -108,14 +108,13 @@ export default class CreateParts extends BaseCommand {
 
 async function createPart({
   client,
-  directory,
   fileName,
   indexMetadata,
+  path,
   suppliedPartId,
   suppliedRevisionId,
   verbose,
 }: Args): Promise<PartRevisionData> {
-  const path = directory ? join(directory, fileName) : fileName;
   return createPartFromFileIfNotExists({
     client,
     createFileReq: {
