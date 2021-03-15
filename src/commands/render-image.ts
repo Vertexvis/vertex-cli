@@ -201,10 +201,9 @@ function generateHtml(
         ${config ? `viewer.configEnv = '${config}';` : ''}
         await viewer.load('urn:vertexvis:stream-key:${streamKey}');
 
-        const scene = await viewer.scene();
-        const raycaster = scene.raycaster();
-
         viewer.addEventListener('tap', async (event) => {
+          const scene = await viewer.scene();
+          const raycaster = scene.raycaster();
           const result = await raycaster.hitItems(event.detail.position);
           const [hit] = result.hits;
 
