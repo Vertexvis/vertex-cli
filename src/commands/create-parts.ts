@@ -6,6 +6,7 @@ import {
   PartRevisionData,
   Utf8,
 } from '@vertexvis/vertex-api-client';
+import cli from 'cli-ux';
 import { createReadStream, readFile } from 'fs-extra';
 import pLimit from 'p-limit';
 import { join } from 'path';
@@ -88,21 +89,26 @@ export default class CreateParts extends BaseCommand {
         }
       });
 
-    const progress = progressBar('Creating part(s)');
+    const msg = 'Creating part(s)';
+    const useProgBar = itemsWithGeometry.size > 1 && !verbose;
+    const progress = progressBar(msg);
     const limit = pLimit(parallelism);
-    if (!verbose) progress.start(itemsWithGeometry.size, 0);
+
+    useProgBar
+      ? progress.start(itemsWithGeometry.size, 0)
+      : cli.action.start(msg);
 
     await Promise.all(
       [...itemsWithGeometry.values()].map(async (req) =>
         limit<Args[], PartRevisionData>(async (r) => {
           const res = await createPart(r);
-          if (!verbose) progress.increment();
+          if (useProgBar) progress.increment();
           return res;
         }, req)
       )
     );
 
-    if (!verbose) progress.stop();
+    useProgBar ? progress.stop() : cli.action.stop();
   }
 }
 
