@@ -1,8 +1,9 @@
 import { flags } from '@oclif/command';
 import { Utf8 } from '@vertexvis/vertex-api-client';
-import { lstatSync, readFileSync, writeFileSync } from 'fs';
+import { readFile, writeFile } from 'fs-extra';
 import { processPvs } from '../create-items/pvs';
 import BaseCommand from '../base';
+import { fileExists } from '../utils';
 
 export default class CreateItems extends BaseCommand {
   public static description = `Calculate path IDs and transforms for each instance in file and output JSON file containing SceneItems (as defined in src/create-items/index.d.ts).`;
@@ -42,7 +43,7 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
       args: { path },
       flags: { format, output, revisionProperty, root, verbose },
     } = this.parse(CreateItems);
-    if (!lstatSync(path).isFile()) {
+    if (!(await fileExists(path))) {
       this.error(`'${path}' is not a valid file path, exiting.`);
     }
 
@@ -50,7 +51,7 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
     switch (format) {
       case 'pvs':
         items = processPvs(
-          readFileSync(path, Utf8),
+          await readFile(path, Utf8),
           verbose,
           root,
           revisionProperty
@@ -60,7 +61,7 @@ Wrote 5 pvs item(s) from 'path/to/file' to 'items.json'.
         this.error(`Unsupported format ${format}`);
     }
 
-    writeFileSync(output, JSON.stringify(items));
+    await writeFile(output, JSON.stringify(items));
     this.log(
       `Wrote ${items.length} ${format} item(s) from '${path}' to '${output}'.`
     );

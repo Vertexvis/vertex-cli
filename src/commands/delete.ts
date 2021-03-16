@@ -5,11 +5,10 @@ import {
   deleteAllParts,
   deleteAllScenes,
   logError,
-  VertexClient,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
-import { Agent } from 'https';
 import BaseCommand from '../base';
+import { vertexClient } from '../utils';
 
 interface Deleter {
   readonly deleteOne: (id: string) => Promise<void>;
@@ -21,7 +20,7 @@ export default class Delete extends BaseCommand {
 
   public static examples = [
     `$ vertex delete --resource scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
+Deleted scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
 `,
   ];
 
@@ -44,13 +43,14 @@ Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
   public async run(): Promise<void> {
     const {
       args: { id },
-      flags: { all, basePath, resource, verbose },
+      flags: { all, resource, verbose },
     } = this.parse(Delete);
+    const basePath = this.parsedFlags?.basePath;
     if (all) {
-      const choice = await cli.prompt(
-        `Are you sure you want to delete all ${resource}s? (yes/no)`
+      const choice = await cli.confirm(
+        `Are you sure you want to delete all ${resource}s?`
       );
-      if (choice.toLowerCase() !== 'yes') {
+      if (!choice) {
         this.log('Aborting...');
         this.exit(0);
       }
@@ -62,11 +62,7 @@ Delete scene(s) f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       cli.action.start(`Deleting ${resource}(s)...`);
 
       const deleter = getDeleter({
-        client: await VertexClient.build({
-          axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
-          basePath,
-          client: this.userConfig?.client,
-        }),
+        client: await vertexClient(basePath, this.userConfig),
         resource: resource,
         verbose: verbose,
       });
@@ -107,7 +103,12 @@ function fileDeleter({ client, verbose }: BaseArgs): Deleter {
       await client.files.deleteFile({ id });
     },
     deleteAll: async () => {
-      await deleteAllFiles({ client, pageSize: 10, verbose });
+      await deleteAllFiles({
+        client,
+        onMsg: console.error,
+        pageSize: 10,
+        verbose,
+      });
     },
   };
 }
@@ -118,7 +119,12 @@ function partDeleter({ client, verbose }: BaseArgs): Deleter {
       await client.parts.deletePart({ id });
     },
     deleteAll: async () => {
-      await deleteAllParts({ client, pageSize: 10, verbose });
+      await deleteAllParts({
+        client,
+        onMsg: console.error,
+        pageSize: 10,
+        verbose,
+      });
     },
   };
 }
@@ -129,7 +135,12 @@ function sceneDeleter({ client, verbose }: BaseArgs): Deleter {
       await client.scenes.deleteScene({ id });
     },
     deleteAll: async () => {
-      await deleteAllScenes({ client, pageSize: 10, verbose });
+      await deleteAllScenes({
+        client,
+        onMsg: console.error,
+        pageSize: 10,
+        verbose,
+      });
     },
   };
 }

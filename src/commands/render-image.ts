@@ -6,17 +6,18 @@ import {
   renderPartRevision,
   renderScene,
   renderSceneView,
-  VertexClient,
 } from '@vertexvis/vertex-api-client';
-import { createWriteStream, writeFileSync } from 'fs';
+import { createWriteStream, writeFile } from 'fs-extra';
 import BaseCommand from '../base';
+import { cli } from 'cli-ux';
+import { vertexClient } from '../utils';
 
 export default class RenderImage extends BaseCommand {
   public static description = `Render an image for a scene, scene-view, or part-revision.`;
 
   public static examples = [
     `$ vertex render-image f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
+f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg
 `,
   ];
 
@@ -53,18 +54,16 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
   public async run(): Promise<void> {
     const {
       args: { id },
-      flags: { basePath, height, output, resource, verbose, viewer, width },
+      flags: { height, output, resource, verbose, viewer, width },
     } = this.parse(RenderImage);
+    const basePath = this.parsedFlags?.basePath;
     if (height < 1) this.error(`Invalid height ${height}.`);
     if (width < 1) this.error(`Invalid width ${width}.`);
     if (viewer && resource !== 'scene')
       this.error(`--viewer flag only allowed for scene resources.`);
 
     try {
-      const client = await VertexClient.build({
-        basePath,
-        client: this.userConfig?.client,
-      });
+      const client = await vertexClient(basePath, this.userConfig);
       if (viewer) {
         const streamKeyRes = await client.streamKeys.createSceneStreamKey({
           id: id,
@@ -78,16 +77,18 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
         const out = output || `${id}.html`;
         const key = streamKeyRes.data.data.attributes.key;
         if (!key) this.error('Error creating stream-key');
-        writeFileSync(
+        await writeFile(
           out,
           generateHtml(key, basePath, this.userConfig?.client?.id)
         );
 
-        this.log(`Viewer HTML written to '${out}'.`);
+        cli.open(out);
+        this.log(out);
       } else {
         const renderRes = await render(
           {
             client,
+            onMsg: console.error,
             renderReq: {
               id,
               height: height,
@@ -105,7 +106,8 @@ Image written to 'f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg'.
         renderRes.data.pipe(createWriteStream(out));
         await createFile(renderRes.data, out);
 
-        this.log(`Image written to '${out}'.`);
+        cli.open(out);
+        this.log(out);
       }
     } catch (error) {
       logError(error, this.error);
@@ -199,10 +201,9 @@ function generateHtml(
         ${config ? `viewer.configEnv = '${config}';` : ''}
         await viewer.load('urn:vertexvis:stream-key:${streamKey}');
 
-        const scene = await viewer.scene();
-        const raycaster = scene.raycaster();
-
         viewer.addEventListener('tap', async (event) => {
+          const scene = await viewer.scene();
+          const raycaster = scene.raycaster();
           const result = await raycaster.hitItems(event.detail.position);
           const [hit] = result.hits;
 
@@ -212,7 +213,7 @@ function generateHtml(
                 op.where((q) => q.all()).deselect(),
                 op
                   .where((q) => q.withItemId(hit.itemId.hex))
-                  .select(ColorMaterial.fromHex('#ff0000')),
+                  .select(ColorMaterial.create(255, 255, 0)),
               ])
               .execute();
           } else {

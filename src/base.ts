@@ -4,7 +4,7 @@ import { BASE_PATH } from '@vertexvis/vertex-api-client';
 import { readJSON } from 'fs-extra';
 import { join } from 'path';
 
-interface Config {
+export interface Config {
   client?: {
     id?: string;
     secret?: string;
@@ -14,6 +14,10 @@ interface Config {
 export interface FileConfig {
   [basePath: string]: Config;
 }
+
+const BasePathAliases = new Map<string, string>();
+BasePathAliases.set('platdev', 'https://platform.platdev.vertexvis.io');
+BasePathAliases.set('platstaging', 'https://platform.platstaging.vertexvis.io');
 
 export default abstract class BaseCommand extends Command {
   public static flags = {
@@ -33,7 +37,9 @@ export default abstract class BaseCommand extends Command {
     this.parsedFlags = this.parse(
       this.constructor as Input<typeof BaseCommand.flags>
     ).flags;
-    const basePath = this.parsedFlags.basePath;
+    const bp = this.parsedFlags.basePath;
+    const basePath = BasePathAliases.get(bp) ?? bp;
+    this.parsedFlags.basePath = basePath;
 
     let config: Config = {
       client: {

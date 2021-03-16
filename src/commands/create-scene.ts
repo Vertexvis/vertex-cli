@@ -5,21 +5,20 @@ import {
   logError,
   SceneRelationshipDataTypeEnum,
   Utf8,
-  VertexClient,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
-import { lstatSync, readFileSync } from 'fs';
-import { Agent } from 'https';
+import { readFile } from 'fs-extra';
 import BaseCommand from '../base';
 import { SceneItem } from '../create-items';
+import { fileExists, progressBar, vertexClient } from '../utils';
 
 export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
 
   public static examples = [
     `$ vertex create-scene -i path/to/items/file
-Creating scene... done
-Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
+  ████████████████████████████████████████ 100% | 10/10
+f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 `,
   ];
 
@@ -32,14 +31,18 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       description: 'Number of scene-items to create in parallel.',
       default: 20,
     }),
+    suppliedId: flags.string({
+      description: 'SuppliedId of scene.',
+    }),
   };
 
   public async run(): Promise<void> {
     const {
       args: { path },
-      flags: { basePath, parallelism, verbose },
+      flags: { parallelism, suppliedId, verbose },
     } = this.parse(CreateScene);
-    if (!lstatSync(path).isFile()) {
+    const basePath = this.parsedFlags?.basePath;
+    if (!(await fileExists(path))) {
       this.error(`'${path}' is not a valid file path, exiting.`);
     }
     if (parallelism < 1 || parallelism > 200) {
@@ -47,15 +50,11 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
     }
 
     try {
-      cli.action.start(`Creating scene...`);
-
-      const client = await VertexClient.build({
-        axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
-        basePath,
-        client: this.userConfig?.client,
-      });
-      const items: SceneItem[] = JSON.parse(readFileSync(path, Utf8));
+      const progress = progressBar('Creating scene');
+      const client = await vertexClient(basePath, this.userConfig);
+      const items: SceneItem[] = JSON.parse(await readFile(path, Utf8));
       items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
+
       const createSceneItemReqs: CreateSceneItemRequest[] = items.map((i) => ({
         data: {
           attributes: {
@@ -76,17 +75,29 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
         },
       }));
 
+      progress.start(createSceneItemReqs.length, 0);
+
       const scene = await createSceneWithSceneItems({
         client,
-        parallelism: parallelism,
-        verbose: verbose,
+        createSceneItemReqs,
         createSceneReq: () => ({
           data: {
-            attributes: {},
+            attributes: {
+              suppliedId: suppliedId,
+            },
             type: SceneRelationshipDataTypeEnum.Scene,
           },
         }),
-        createSceneItemReqs,
+        onMsg: console.error,
+        onProgress: (complete, total) => {
+          progress.update(complete);
+          if (complete === total) {
+            progress.stop();
+            cli.action.start('Created scene items. Awaiting scene completion');
+          }
+        },
+        parallelism,
+        verbose: verbose,
       });
 
       const getSceneItemsRes = await client.sceneItems.getSceneItems({
@@ -95,8 +106,7 @@ Created scene f79d4760-0b71-44e4-ad0b-22743fdd4ca3.
       });
 
       cli.action.stop();
-
-      this.log(`Created scene ${scene.id}.`);
+      this.log(scene.id);
 
       if (getSceneItemsRes.data.data.length === 0) {
         this.error(`No scene items exist in the scene.`);
