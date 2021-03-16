@@ -1,5 +1,5 @@
 import { flags } from '@oclif/command';
-import { logError, VertexClient } from '@vertexvis/vertex-api-client';
+import { logError } from '@vertexvis/vertex-api-client';
 import BaseCommand from '../base';
 import { vertexClient } from '../utils';
 
