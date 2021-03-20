@@ -6,7 +6,7 @@ import { vertexClient } from '../../lib/client';
 import { createFile, validate, validateImage } from '../../lib/renderer';
 
 export default class Render extends BaseRenderCommand {
-  public static description = `Get resources.`;
+  public static description = `Render a scene view.`;
 
   public static examples = [
     `$ vertex scene-views:render 54964c61-05d8-4f37-9638-18f7c4960c80

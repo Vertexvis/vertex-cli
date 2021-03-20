@@ -5,7 +5,7 @@ import { vertexClient } from '../../lib/client';
 import { deleter, partDeleter, validate } from '../../lib/deleter';
 
 export default class Delete extends BaseDeleteCommand {
-  public static description = `Get resources.`;
+  public static description = `Delete parts.`;
 
   public static examples = [
     `$ vertex parts:delete 54964c61-05d8-4f37-9638-18f7c4960c80

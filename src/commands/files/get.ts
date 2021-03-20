@@ -4,7 +4,7 @@ import { vertexClient } from '../../lib/client';
 import { fileGetter, getter } from '../../lib/getter';
 
 export default class Get extends BaseGetCommand {
-  public static description = `Get resources.`;
+  public static description = `Get a file.`;
 
   public static examples = [
     `$ vertex files:get 54964c61-05d8-4f37-9638-18f7c4960c80

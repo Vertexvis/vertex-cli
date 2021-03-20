@@ -4,7 +4,7 @@ import BaseCommand from '../../lib/base';
 import { vertexClient } from '../../lib/client';
 
 export default class Create extends BaseCommand {
-  public static description = `Generate a stream-key for a scene.`;
+  public static description = `Create a stream key for a scene.`;
 
   public static examples = [
     `$ vertex stream-keys:create --sceneId f79d4760-0b71-44e4-ad0b-22743fdd4ca3

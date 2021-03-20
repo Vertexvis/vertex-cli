@@ -5,7 +5,7 @@ import { vertexClient } from '../../lib/client';
 import { deleter, sceneDeleter, validate } from '../../lib/deleter';
 
 export default class Delete extends BaseDeleteCommand {
-  public static description = `Get resources.`;
+  public static description = `Delete scenes.`;
 
   public static examples = [
     `$ vertex scenes:delete 54964c61-05d8-4f37-9638-18f7c4960c80

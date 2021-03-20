@@ -4,7 +4,7 @@ import { vertexClient } from '../../lib/client';
 import { fileGetter, getter } from '../../lib/getter';
 
 export default class List extends BaseListCommand {
-  public static description = `Get resources.`;
+  public static description = `Get files.`;
 
   public static examples = [
     `$ vertex files:list

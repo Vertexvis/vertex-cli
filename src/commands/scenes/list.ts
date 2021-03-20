@@ -4,7 +4,7 @@ import { vertexClient } from '../../lib/client';
 import { sceneGetter, getter } from '../../lib/getter';
 
 export default class List extends BaseListCommand {
-  public static description = `Get resources.`;
+  public static description = `Get scenes.`;
 
   public static examples = [
     `$ vertex scenes:list

@@ -4,7 +4,7 @@ import { vertexClient } from '../../lib/client';
 import { partGetter, getter } from '../../lib/getter';
 
 export default class List extends BaseListCommand {
-  public static description = `Get resources.`;
+  public static description = `Get parts.`;
 
   public static examples = [
     `$ vertex parts:list

@@ -172,7 +172,7 @@ _See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vert
 
 ## `vertex files:delete [ID]`
 
-Get resources.
+Delete files.
 
 ```
 USAGE
@@ -194,7 +194,7 @@ _See code: [src/commands/files/delete.ts](https://github.com/Vertexvis/vertex-cl
 
 ## `vertex files:get [ID]`
 
-Get resources.
+Get a file.
 
 ```
 USAGE
@@ -216,7 +216,7 @@ _See code: [src/commands/files/get.ts](https://github.com/Vertexvis/vertex-cli/b
 
 ## `vertex files:list`
 
-Get resources.
+Get files.
 
 ```
 USAGE
@@ -257,7 +257,7 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2
 
 ## `vertex part-revisions:render [ID]`
 
-Get resources.
+Render a part revision.
 
 ```
 USAGE
@@ -280,7 +280,7 @@ _See code: [src/commands/part-revisions/render.ts](https://github.com/Vertexvis/
 
 ## `vertex parts:delete [ID]`
 
-Get resources.
+Delete parts.
 
 ```
 USAGE
@@ -302,7 +302,7 @@ _See code: [src/commands/parts/delete.ts](https://github.com/Vertexvis/vertex-cl
 
 ## `vertex parts:get [ID]`
 
-Get resources.
+Get a part.
 
 ```
 USAGE
@@ -324,7 +324,7 @@ _See code: [src/commands/parts/get.ts](https://github.com/Vertexvis/vertex-cli/b
 
 ## `vertex parts:list`
 
-Get resources.
+Get parts.
 
 ```
 USAGE
@@ -373,7 +373,7 @@ _See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cl
 
 ## `vertex scene-views:render [ID]`
 
-Get resources.
+Render a scene view.
 
 ```
 USAGE
@@ -396,7 +396,7 @@ _See code: [src/commands/scene-views/render.ts](https://github.com/Vertexvis/ver
 
 ## `vertex scenes:delete [ID]`
 
-Get resources.
+Delete scenes.
 
 ```
 USAGE
@@ -418,7 +418,7 @@ _See code: [src/commands/scenes/delete.ts](https://github.com/Vertexvis/vertex-c
 
 ## `vertex scenes:get [ID]`
 
-Get resources.
+Get a scene.
 
 ```
 USAGE
@@ -440,7 +440,7 @@ _See code: [src/commands/scenes/get.ts](https://github.com/Vertexvis/vertex-cli/
 
 ## `vertex scenes:list`
 
-Get resources.
+Get scenes.
 
 ```
 USAGE
@@ -464,7 +464,7 @@ _See code: [src/commands/scenes/list.ts](https://github.com/Vertexvis/vertex-cli
 
 ## `vertex scenes:render [ID]`
 
-Get resources.
+Render a scene.
 
 ```
 USAGE
@@ -488,7 +488,7 @@ _See code: [src/commands/scenes/render.ts](https://github.com/Vertexvis/vertex-c
 
 ## `vertex stream-keys:create`
 
-Generate a stream-key for a scene.
+Create a stream key for a scene.
 
 ```
 USAGE
