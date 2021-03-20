@@ -67,22 +67,22 @@
     ],
     "topics": {
       "files": {
-        "description": "Manage Vertex files."
+        "description": "File CRUD operations."
       },
       "part-revisions": {
-        "description": "Manage Vertex part revisions."
+        "description": "Part revision CRUD operations."
       },
       "parts": {
-        "description": "Manage Vertex parts."
+        "description": "Part CRUD operations."
       },
       "scene-views": {
-        "description": "Manage Vertex scene views."
+        "description": "Scene view CRUD operations."
       },
       "scenes": {
-        "description": "Manage Vertex scenes."
+        "description": "Scene CRUD operations."
       },
       "stream-keys": {
-        "description": "Manage Vertex stream keys."
+        "description": "Stream key CRUD operations."
       }
     }
   },
