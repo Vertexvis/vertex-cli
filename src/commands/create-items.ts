@@ -2,8 +2,8 @@ import { flags } from '@oclif/command';
 import { Utf8 } from '@vertexvis/vertex-api-client';
 import { readFile, writeFile } from 'fs-extra';
 import { processPvs } from '../create-items/pvs';
-import BaseCommand from '../base';
-import { fileExists } from '../utils';
+import BaseCommand from '../lib/base';
+import { fileExists } from '../lib/fs';
 
 export default class CreateItems extends BaseCommand {
   public static description = `Calculate path IDs and transforms for each instance in file and output JSON file containing SceneItems (as defined in src/create-items/index.d.ts).`;

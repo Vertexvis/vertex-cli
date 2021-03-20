@@ -1,8 +1,8 @@
 .github/pull_request_template.md
 README.md
 
-bin/
-docs/
-lib/
-node_modules/
-scripts/
+/bin
+/docs
+/lib
+/node_modules
+/scripts

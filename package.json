@@ -64,7 +64,15 @@
     "bin": "vertex",
     "plugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "topics": {
+      "files": { "description": "Manage Vertex files." },
+      "part-revisions": { "description": "Manage Vertex part revisions." },
+      "parts": { "description": "Manage Vertex parts." },
+      "scene-views": { "description": "Manage Vertex scene views." },
+      "scenes": { "description": "Manage Vertex scenes." },
+      "stream-keys": { "description": "Manage Vertex stream keys." }
+    }
   },
   "scripts": {
     "build": "tsc --build",

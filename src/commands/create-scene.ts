@@ -8,9 +8,11 @@ import {
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
 import { readFile } from 'fs-extra';
-import BaseCommand from '../base';
+import BaseCommand from '../lib/base';
 import { SceneItem } from '../create-items';
-import { fileExists, progressBar, vertexClient } from '../utils';
+import { vertexClient } from '../lib/client';
+import { fileExists } from '../lib/fs';
+import { progressBar } from '../lib/progress';
 
 export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
