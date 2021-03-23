@@ -1,15 +1,11 @@
-import { flags } from '@oclif/command';
 import {
   BaseArgs,
   FileMetadataData,
   getPage,
-  logError,
   PartData,
   SceneData,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
-import BaseCommand from '../base';
-import { vertexClient } from '../utils';
 
 interface Paged<T> {
   items: T[];
@@ -22,88 +18,29 @@ interface Getter<T> {
   readonly display: (res: Paged<T>, extended: boolean) => void;
 }
 
-export default class Get extends BaseCommand {
-  public static description = `Get resources.`;
-
-  public static examples = [
-    `$ vertex get --resource scene 54964c61-05d8-4f37-9638-18f7c4960c80
-Id                                   Name
-54964c61-05d8-4f37-9638-18f7c4960c80 my-scene
-`,
-  ];
-
-  public static args = [{ name: 'id' }];
-
-  public static flags = {
-    ...BaseCommand.flags,
-    all: flags.boolean({
-      description: 'Get all of specified resource.',
-      default: false,
-    }),
-    cursor: flags.string({
-      description: 'Cursor for next page of items.',
-    }),
-    extended: flags.boolean({
-      description: 'Display extended output.',
-      default: false,
-    }),
-    resource: flags.string({
-      char: 'r',
-      description: 'Resource type of ID provided.',
-      options: ['file', 'part', 'scene'],
-      required: true,
-    }),
-  };
-
-  public async run(): Promise<void> {
-    const {
-      args: { id },
-      flags: { all, cursor, extended, resource, verbose },
-    } = this.parse(Get);
-    const basePath = this.parsedFlags?.basePath;
-    if (!id && !all) {
-      this.error('Either --all flag or id argument required.');
-    }
-
-    async function performGet({
-      resource,
-      ...args
-    }: BaseArgs & { resource: string }): Promise<void> {
-      switch (resource) {
-        case 'file':
-          return get(fileGetter(args));
-        case 'part':
-          return get(partGetter(args));
-        case 'scene':
-          return get(sceneGetter(args));
-        default:
-          throw new Error(`Unexpected resource ${resource}`);
-      }
-    }
-
-    async function get<T>(getter: Getter<T>): Promise<void> {
-      if (all) {
-        const res = await getter.getAll(cursor);
-        getter.display(res, extended);
-        if (res.cursor) console.log(res.cursor);
-      } else {
-        getter.display({ items: [await getter.getOne(id)] }, extended);
-      }
-    }
-
-    try {
-      performGet({
-        client: await vertexClient(basePath, this.userConfig),
-        resource: resource,
-        verbose: verbose,
-      });
-    } catch (error) {
-      logError(error, this.error);
-    }
+export async function getter<T>({
+  all = false,
+  cursor,
+  extended = false,
+  getter,
+  id,
+}: {
+  all?: boolean;
+  cursor?: string;
+  extended?: boolean;
+  getter: Getter<T>;
+  id?: string;
+}): Promise<void> {
+  if (all) {
+    const res = await getter.getAll(cursor);
+    getter.display(res, extended);
+    if (res.cursor) console.log(res.cursor);
+  } else if (id) {
+    getter.display({ items: [await getter.getOne(id)] }, extended);
   }
 }
 
-function fileGetter({ client }: BaseArgs): Getter<FileMetadataData> {
+export function fileGetter({ client }: BaseArgs): Getter<FileMetadataData> {
   return {
     getOne: async (id: string): Promise<FileMetadataData> => {
       return (await client.files.getFile({ id })).data.data;
@@ -129,7 +66,7 @@ function fileGetter({ client }: BaseArgs): Getter<FileMetadataData> {
   };
 }
 
-function partGetter({ client }: BaseArgs): Getter<PartData> {
+export function partGetter({ client }: BaseArgs): Getter<PartData> {
   return {
     getOne: async (id: string): Promise<PartData> => {
       return (await client.parts.getPart({ id })).data.data;
@@ -154,7 +91,7 @@ function partGetter({ client }: BaseArgs): Getter<PartData> {
   };
 }
 
-function sceneGetter({ client }: BaseArgs): Getter<SceneData> {
+export function sceneGetter({ client }: BaseArgs): Getter<SceneData> {
   return {
     getOne: async (id: string): Promise<SceneData> => {
       return (await client.scenes.getScene({ id })).data.data;

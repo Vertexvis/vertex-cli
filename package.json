@@ -1,6 +1,6 @@
 {
   "name": "@vertexvis/vertex-cli",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "The Vertex platform command-line interface (CLI).",
   "license": "MIT",
   "author": "Vertex Developers <support@vertexvis.com> (https://developer.vertexvis.com)",
@@ -41,7 +41,7 @@
     "eslint-config-oclif": "^3.1",
     "eslint-config-oclif-typescript": "^0.2",
     "globby": "^11",
-    "husky": "^5.1",
+    "husky": "^5.2",
     "lint-staged": "^10.5",
     "pinst": "^2.1",
     "prettier": "^2.2",
@@ -64,7 +64,27 @@
     "bin": "vertex",
     "plugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "topics": {
+      "files": {
+        "description": "File CRUD operations."
+      },
+      "part-revisions": {
+        "description": "Part revision CRUD operations."
+      },
+      "parts": {
+        "description": "Part CRUD operations."
+      },
+      "scene-views": {
+        "description": "Scene view CRUD operations."
+      },
+      "scenes": {
+        "description": "Scene CRUD operations."
+      },
+      "stream-keys": {
+        "description": "Stream key CRUD operations."
+      }
+    }
   },
   "scripts": {
     "build": "tsc --build",

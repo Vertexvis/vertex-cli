@@ -10,14 +10,11 @@ import cli from 'cli-ux';
 import { createReadStream, readFile } from 'fs-extra';
 import pLimit from 'p-limit';
 import { join } from 'path';
-import BaseCommand from '../base';
+import BaseCommand from '../lib/base';
 import { SceneItem } from '../create-items';
-import {
-  directoryExists,
-  fileExists,
-  progressBar,
-  vertexClient,
-} from '../utils';
+import { vertexClient } from '../lib/client';
+import { directoryExists, fileExists } from '../lib/fs';
+import { progressBar } from '../lib/progress';
 
 interface Args extends BaseArgs {
   readonly fileName: string;

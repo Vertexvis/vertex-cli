@@ -1,7 +1,7 @@
 import cli from 'cli-ux';
 import { mkdirp, readJSON, writeFile } from 'fs-extra';
 import { join } from 'path';
-import BaseCommand, { FileConfig } from '../base';
+import BaseCommand, { FileConfig } from '../lib/base';
 
 export default class Configure extends BaseCommand {
   public static description = `Configure Vertex credentials.`;

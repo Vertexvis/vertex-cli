@@ -1,18 +1,16 @@
 import { flags } from '@oclif/command';
 import { logError } from '@vertexvis/vertex-api-client';
-import BaseCommand from '../lib/base';
-import { vertexClient } from '../lib/client';
+import BaseCommand from '../../lib/base';
+import { vertexClient } from '../../lib/client';
 
-export default class CreateStreamKey extends BaseCommand {
-  public static description = `Generate a stream-key for a scene.`;
+export default class Create extends BaseCommand {
+  public static description = `Create a stream key for a scene.`;
 
   public static examples = [
-    `$ vertex create-stream-key f79d4760-0b71-44e4-ad0b-22743fdd4ca3
+    `$ vertex stream-keys:create --sceneId f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
 `,
   ];
-
-  public static args = [{ name: 'id' }];
 
   public static flags = {
     ...BaseCommand.flags,
@@ -21,27 +19,25 @@ hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
       description: `Expiry in seconds to set on stream-key.`,
       default: 600,
     }),
+    sceneId: flags.string({
+      description: `Scene to access with stream key.`,
+      required: true,
+    }),
   };
 
   public async run(): Promise<void> {
     const {
-      args: { id },
-      flags: { expiry },
-    } = this.parse(CreateStreamKey);
+      flags: { expiry, sceneId },
+    } = this.parse(Create);
     const basePath = this.parsedFlags?.basePath;
     if (expiry < 1) {
       this.error(`Invalid expiry ${expiry}.`);
     }
 
-    this.log(
-      'WARNING: This command is deprecated and will soon be removed. ' +
-        'Use `vertex stream-keys:create` instead.\n'
-    );
-
     try {
       const client = await vertexClient(basePath, this.userConfig);
       const streamKeyRes = await client.streamKeys.createSceneStreamKey({
-        id,
+        id: sceneId,
         createStreamKeyRequest: {
           data: {
             attributes: {
