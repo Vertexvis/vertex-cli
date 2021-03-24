@@ -53,7 +53,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg
     if (viewer && resource !== 'scene')
       this.error(`--viewer flag only allowed for scene resources.`);
 
-    this.log(
+    this.warn(
       'WARNING: This command is deprecated and will soon be removed. ' +
         'Use `vertex scenes:render`, `vertex scene-views:render`, or ' +
         '`vertex part-revisions:render` instead.\n'

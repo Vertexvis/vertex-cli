@@ -20,6 +20,7 @@ interface Args extends BaseArgs {
   readonly fileName: string;
   readonly path: string;
   readonly indexMetadata: boolean;
+  readonly suppliedInstanceIdKey?: string;
   readonly suppliedPartId: string;
   readonly suppliedRevisionId: string;
 }
@@ -80,6 +81,7 @@ export default class CreateParts extends BaseCommand {
             fileName,
             indexMetadata: i.indexMetadata ?? false,
             path: directory ? join(directory, fileName) : fileName,
+            suppliedInstanceIdKey: i.suppliedInstanceIdKey,
             suppliedPartId: i.source?.suppliedPartId,
             suppliedRevisionId: i.source?.suppliedRevisionId,
           });
@@ -114,6 +116,7 @@ async function createPart({
   fileName,
   indexMetadata,
   path,
+  suppliedInstanceIdKey,
   suppliedPartId,
   suppliedRevisionId,
   verbose,
@@ -129,9 +132,10 @@ async function createPart({
     createPartReq: (fileId) => ({
       data: {
         attributes: {
-          indexMetadata: indexMetadata,
+          indexMetadata,
           suppliedId: suppliedPartId,
-          suppliedRevisionId: suppliedRevisionId,
+          suppliedInstanceIdKey,
+          suppliedRevisionId,
         },
         relationships: {
           source: {

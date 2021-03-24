@@ -34,6 +34,11 @@ export interface SceneItem {
   readonly indexMetadata?: boolean;
 
   /**
+   * Whether or not to index metadata in the part file.
+   */
+  readonly suppliedInstanceIdKey?: string;
+
+  /**
    * Optional {@link ColorMaterial} override for item.
    */
   readonly materialOverride?: ColorMaterial;
