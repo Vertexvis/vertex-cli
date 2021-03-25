@@ -34,6 +34,11 @@ export interface SceneItem {
   readonly indexMetadata?: boolean;
 
   /**
+   * Whether or not to use part instance supplied IDs as scene item supplied IDs.
+   */
+  readonly suppliedInstanceIdKey?: string;
+
+  /**
    * Optional {@link ColorMaterial} override for item.
    */
   readonly materialOverride?: ColorMaterial;

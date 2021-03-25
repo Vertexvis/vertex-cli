@@ -33,7 +33,7 @@ hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
       this.error(`Invalid expiry ${expiry}.`);
     }
 
-    this.log(
+    this.warn(
       'WARNING: This command is deprecated and will soon be removed. ' +
         'Use `vertex stream-keys:create` instead.\n'
     );
