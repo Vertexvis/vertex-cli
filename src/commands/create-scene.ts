@@ -1,7 +1,8 @@
 import { flags } from '@oclif/command';
 import {
+  createSceneAndSceneItems,
   CreateSceneItemRequest,
-  createSceneWithSceneItems,
+  head,
   logError,
   SceneRelationshipDataTypeEnum,
   Utf8,
@@ -28,6 +29,11 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
   public static flags = {
     ...BaseCommand.flags,
+    noFailFast: flags.boolean({
+      description:
+        'Whether or not to fail if any scene item fails initial validation.',
+      default: false,
+    }),
     parallelism: flags.integer({
       char: 'p',
       description: 'Number of scene-items to create in parallel.',
@@ -36,12 +42,16 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
     suppliedId: flags.string({
       description: 'SuppliedId of scene.',
     }),
+    treeEnabled: flags.boolean({
+      description: 'Whether or not scene trees can be viewed for this scene.',
+      default: false,
+    }),
   };
 
   public async run(): Promise<void> {
     const {
       args: { path },
-      flags: { parallelism, suppliedId, verbose },
+      flags: { noFailFast, parallelism, suppliedId, treeEnabled, verbose },
     } = this.parse(CreateScene);
     const basePath = this.parsedFlags?.basePath;
     if (!(await fileExists(path))) {
@@ -82,17 +92,16 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
       progress.start(createSceneItemReqs.length, 0);
 
-      const scene = await createSceneWithSceneItems({
+      const res = await createSceneAndSceneItems({
         client,
         createSceneItemReqs,
         createSceneReq: () => ({
           data: {
-            attributes: {
-              suppliedId: suppliedId,
-            },
+            attributes: { suppliedId, treeEnabled },
             type: SceneRelationshipDataTypeEnum.Scene,
           },
         }),
+        failFast: !noFailFast,
         onMsg: console.error,
         onProgress: (complete, total) => {
           progress.update(complete);
@@ -105,6 +114,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         verbose: verbose,
       });
 
+      const scene = res.scene.data;
       const getSceneItemsRes = await client.sceneItems.getSceneItems({
         id: scene.id,
         pageSize: 1,
@@ -112,6 +122,35 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
       cli.action.stop();
       this.log(scene.id);
+
+      if (res.errors.length > 0) {
+        this.warn(`Failed to create the following scene items...`);
+        console.log(res.errors.map((e) => e.req.data.attributes.suppliedId));
+        cli.table(
+          res.errors.map((e) => {
+            const first = (e.failure?.errors
+              ? [...e.failure?.errors]
+              : [])[0] as { title?: string; detail?: string } | undefined;
+            const error = first?.detail ? first.detail : first?.title;
+            return {
+              suppliedId: e.req.data.attributes.suppliedId,
+              suppliedPartId: e.req.data.attributes.source?.suppliedPartId,
+              suppliedRevisionId:
+                e.req.data.attributes.source?.suppliedRevisionId,
+              relSource: e.req.data.relationships.source?.data,
+              error,
+            };
+          }),
+          {
+            suppliedId: { header: 'ID' },
+            suppliedPartId: { header: 'PartId' },
+            suppliedRevisionId: { header: 'RevisionId' },
+            relSource: { header: 'Source' },
+            error: { header: 'Error' },
+          },
+          { 'no-truncate': true }
+        );
+      }
 
       if (getSceneItemsRes.data.data.length === 0) {
         this.error(`No scene items exist in the scene.`);
