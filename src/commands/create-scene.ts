@@ -2,7 +2,6 @@ import { flags } from '@oclif/command';
 import {
   createSceneAndSceneItems,
   CreateSceneItemRequest,
-  head,
   logError,
   SceneRelationshipDataTypeEnum,
   Utf8,
