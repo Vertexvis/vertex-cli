@@ -28,6 +28,9 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
   public static flags = {
     ...BaseCommand.flags,
+    name: flags.string({
+      description: 'Name of scene.',
+    }),
     noFailFast: flags.boolean({
       description:
         'Whether or not to fail if any scene item fails initial validation.',
@@ -50,7 +53,14 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
   public async run(): Promise<void> {
     const {
       args: { path },
-      flags: { noFailFast, parallelism, suppliedId, treeEnabled, verbose },
+      flags: {
+        name,
+        noFailFast,
+        parallelism,
+        suppliedId,
+        treeEnabled,
+        verbose,
+      },
     } = this.parse(CreateScene);
     const basePath = this.parsedFlags?.basePath;
     if (!(await fileExists(path))) {
@@ -96,7 +106,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         createSceneItemReqs,
         createSceneReq: () => ({
           data: {
-            attributes: { suppliedId, treeEnabled },
+            attributes: { name, suppliedId, treeEnabled },
             type: SceneRelationshipDataTypeEnum.Scene,
           },
         }),
@@ -124,24 +134,20 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
       if (res.errors.length > 0) {
         this.warn(`Failed to create the following scene items...`);
-        console.log(res.errors.map((e) => e.req.data.attributes.suppliedId));
         cli.table(
           res.errors.map((e) => {
-            const first = (e.failure?.errors
-              ? [...e.failure?.errors]
-              : [])[0] as { title?: string; detail?: string } | undefined;
-            const error = first?.detail ? first.detail : first?.title;
+            const first = (e.failure?.errors ? [...e.failure?.errors] : [])[0];
             return {
               suppliedId: e.req.data.attributes.suppliedId,
               suppliedPartId: e.req.data.attributes.source?.suppliedPartId,
               suppliedRevisionId:
                 e.req.data.attributes.source?.suppliedRevisionId,
               relSource: e.req.data.relationships.source?.data,
-              error,
+              error: first?.detail ? first.detail : first?.title,
             };
           }),
           {
-            suppliedId: { header: 'ID' },
+            suppliedId: { header: 'Id' },
             suppliedPartId: { header: 'PartId' },
             suppliedRevisionId: { header: 'RevisionId' },
             relSource: { header: 'Source' },

@@ -325,9 +325,9 @@
     prettier "^2.2.1"
 
 "@vertexvis/vertex-api-client@^0.10":
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.10.5.tgz#f5758bd16d7a20c5212e38b93c7d971c17c6e36b"
-  integrity sha512-RIy7EEnS6hwNylbD0YDb0kTg7qv6lM+mkottetHJM3TTms+4/oRL3vuqmsqMLiha3VYNvSdOEx+qZiB0W0miaA==
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.10.6.tgz#f91d5e4ff4e7c46444f4c8e7b8891dfab81232c8"
+  integrity sha512-pnhGBLwVvTD4axaD+DIeh/pVCulvtqbxRlHbj3l4G7uQDjJtIUfEKtebXg4RboBm9K9W46YuCbHUtkrUCXnlkA==
   dependencies:
     axios "^0.21"
     p-limit "^3.1"
@@ -1247,7 +1247,7 @@ http-call@^5.1.2:
     parse-json "^4.0.0"
     tunnel-agent "^0.6.0"
 
-husky@^6.0:
+husky@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/husky/-/husky-6.0.0.tgz#810f11869adf51604c32ea577edbc377d7f9319e"
   integrity sha512-SQS2gDTB7tBN486QSoKPKQItZw97BMOd+Kdb6ghfpBc0yXyzrddI0oDV5MkDAbuB4X2mO3/nj60TRMcYxwzZeQ==
@@ -1333,9 +1333,9 @@ is-core-module@^2.2.0:
     has "^1.0.3"
 
 is-docker@^2.0.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/is-docker/-/is-docker-2.1.1.tgz#4125a88e44e450d384e09047ede71adc2d144156"
-  integrity sha512-ZOoqiXfEwtGknTiuDEy8pN2CfE3TxMHprvNer1mXiqwkOT77Rw3YVrUQ52EqAOU3QAWDQ+bQdx7HJzrv7LS2Hw==
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/is-docker/-/is-docker-2.2.0.tgz#b037c8815281edaad6c2562648a5f5f18839d5f7"
+  integrity sha512-K4GwB4i/HzhAzwP/XSlspzRdFTI9N8OxJOyOU7Y5Rz+p+WBokXWVWblaJeBkggthmoSV0OoGTH5thJNvplpkvQ==
 
 is-extglob@^2.1.1:
   version "2.1.1"
@@ -2309,9 +2309,9 @@ typedoc-default-themes@^0.12.9:
   integrity sha512-fIS001cAYHkyQPidWXmHuhs8usjP5XVJjWB8oZGqkTowZaz3v7g3KDZeeqE82FBrmkAnIBOY3jgy7lnPnqATbA==
 
 typedoc@^0.20:
-  version "0.20.34"
-  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.34.tgz#763c4e1ebef55fd4f71a27f0f02249926107021a"
-  integrity sha512-es+N/KyGPcHl9cAuYh1Z5m7HzwcmfNLghkmb2pzGz7HRDS5GS2uA3hu/c2cv4gCxDsw8pPUPCOvww+Hzf48Kug==
+  version "0.20.35"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.35.tgz#c36996098cbeb2ef63d9d7991262a071b98336a3"
+  integrity sha512-7sNca19LXg2hgyGHq3b33tQ1YFApmd8aBDEzWQ2ry4VDkw/NdFWkysGiGRY1QckDCB0gVH8+MlXA4K71IB3azg==
   dependencies:
     colors "^1.4.0"
     fs-extra "^9.1.0"

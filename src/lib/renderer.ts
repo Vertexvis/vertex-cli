@@ -106,6 +106,9 @@ export function generateHtml(
           const [hit] = result.hits;
 
           if (hit != null) {
+            const suppliedId = hit.itemSuppliedId?.value;
+            console.debug(\`Selected \${hit.itemId?.hex}\${suppliedId ? \`, \${suppliedId}\` : ''}\`);
+
             await scene
               .items((op) => [
                 op.where((q) => q.all()).deselect(),
