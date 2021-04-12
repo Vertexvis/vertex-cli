@@ -2,7 +2,9 @@ import {
   BaseArgs,
   FileMetadataData,
   getPage,
+  head,
   PartData,
+  prettyJson,
   SceneData,
 } from '@vertexvis/vertex-api-client';
 import cli from 'cli-ux';
@@ -15,7 +17,8 @@ interface Paged<T> {
 interface Getter<T> {
   readonly getOne: (id: string) => Promise<T>;
   readonly getAll: (cursor?: string) => Promise<Paged<T>>;
-  readonly display: (res: Paged<T>, extended: boolean) => void;
+  readonly displayOne: (res: Paged<T>) => void;
+  readonly displayAll: (res: Paged<T>, extended: boolean) => void;
 }
 
 export async function getter<T>({
@@ -33,10 +36,10 @@ export async function getter<T>({
 }): Promise<void> {
   if (all) {
     const res = await getter.getAll(cursor);
-    getter.display(res, extended);
+    getter.displayAll(res, extended);
     if (res.cursor) console.log(res.cursor);
   } else if (id) {
-    getter.display({ items: [await getter.getOne(id)] }, extended);
+    getter.displayOne({ items: [await getter.getOne(id)] });
   }
 }
 
@@ -51,7 +54,9 @@ export function fileGetter({ client }: BaseArgs): Getter<FileMetadataData> {
       );
       return { items: res.page.data, cursor: res.cursor };
     },
-    display: (res: Paged<FileMetadataData>, extended: boolean): void =>
+    displayOne: (res: Paged<FileMetadataData>): void =>
+      console.log(prettyJson(head(res.items))),
+    displayAll: (res: Paged<FileMetadataData>, extended: boolean): void =>
       cli.table(
         res.items.map((f) => ({ id: f.id, ...f.attributes })),
         {
@@ -77,7 +82,9 @@ export function partGetter({ client }: BaseArgs): Getter<PartData> {
       );
       return { items: res.page.data, cursor: res.cursor };
     },
-    display: (res: Paged<PartData>, extended: boolean): void =>
+    displayOne: (res: Paged<PartData>): void =>
+      console.log(prettyJson(head(res.items))),
+    displayAll: (res: Paged<PartData>, extended: boolean): void =>
       cli.table(
         res.items.map((f) => ({ id: f.id, ...f.attributes })),
         {
@@ -102,7 +109,9 @@ export function sceneGetter({ client }: BaseArgs): Getter<SceneData> {
       );
       return { items: res.page.data, cursor: res.cursor };
     },
-    display: (res: Paged<SceneData>, extended: boolean): void =>
+    displayOne: (res: Paged<SceneData>): void =>
+      console.log(prettyJson(head(res.items))),
+    displayAll: (res: Paged<SceneData>, extended: boolean): void =>
       cli.table(
         res.items.map((f) => ({ id: f.id, ...f.attributes })),
         {
