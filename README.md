@@ -98,8 +98,8 @@ OPTIONS
   --root=root                              Part/assembly to use as root in file.
 
 EXAMPLE
-  $ vertex create-items --format pvs full-path-to-file
-  Wrote 5 pvs item(s) from 'full-path-to-file' to 'items.json'.
+  $ vertex create-items --format pvs [YOUR_PATH_TO_XML_FILE]
+  Wrote 5 pvs item(s) from '[YOUR_PATH_TO_XML_FILE]' to 'items.json'.
 ```
 
 _See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.9.3/src/commands/create-items.ts)_
@@ -120,7 +120,7 @@ OPTIONS
   -v, --verbose
 
 EXAMPLE
-  $ vertex create-parts --directory full-path-to-geometry-directory full-path-to-file
+  $ vertex create-parts --directory [YOUR_PATH_TO_GEOMETRY_DIRECTORY] [YOUR_PATH_TO_JSON_FILE]
      ████████████████████████████████████████ 100% | 10/10
 ```
 
@@ -145,7 +145,7 @@ OPTIONS
   --treeEnabled                  Whether or not scene trees can be viewed for this scene.
 
 EXAMPLE
-  $ vertex create-scene --name my-scene full-path-to-items-file
+  $ vertex create-scene --name my-scene [YOUR_PATH_TO_JSON_FILE]
      ████████████████████████████████████████ 100% | 10/10
   f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 ```

@@ -18,7 +18,7 @@ export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
 
   public static examples = [
-    `$ vertex create-scene --name my-scene full-path-to-items-file
+    `$ vertex create-scene --name my-scene [YOUR_PATH_TO_JSON_FILE]
   ████████████████████████████████████████ 100% | 10/10
 f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 `,
