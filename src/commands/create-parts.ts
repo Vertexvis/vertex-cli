@@ -29,7 +29,7 @@ export default class CreateParts extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), upload geometry files and create parts in Vertex Part Library.`;
 
   public static examples = [
-    `$ vertex create-parts -d path/to/geometry/directory path/to/file
+    `$ vertex create-parts --directory [YOUR_PATH_TO_GEOMETRY_DIRECTORY] [YOUR_PATH_TO_JSON_FILE]
   ████████████████████████████████████████ 100% | 10/10
 `,
   ];

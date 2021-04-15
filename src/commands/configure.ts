@@ -1,7 +1,9 @@
 import cli from 'cli-ux';
-import { mkdirp, readJSON, writeFile } from 'fs-extra';
+import { chmod, mkdirp, readJSON, writeFile } from 'fs-extra';
 import { join } from 'path';
 import BaseCommand, { FileConfig } from '../lib/base';
+
+const UserRw = 0o600; // rw- --- ---
 
 export default class Configure extends BaseCommand {
   public static description = `Configure Vertex credentials.`;
@@ -31,8 +33,13 @@ Saved 'https://platform.vertexvis.com' configuration to '~/.config/@vertexvis/ve
     await mkdirp(this.config.configDir);
     await writeFile(
       configPath,
-      JSON.stringify(await this.buildConfig(basePath, configPath, id, secret))
+      JSON.stringify(await this.buildConfig(basePath, configPath, id, secret)),
+      { mode: UserRw }
     );
+
+    // Update permissions for already existing config files
+    await chmod(configPath, UserRw);
+
     this.log(`Saved '${basePath}' configuration to '${configPath}'.`);
   }
 
