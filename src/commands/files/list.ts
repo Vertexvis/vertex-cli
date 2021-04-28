@@ -1,7 +1,7 @@
 import { logError } from '@vertexvis/vertex-api-client';
 import BaseListCommand from '../../lib/base-list';
 import { vertexClient } from '../../lib/client';
-import { fileGetter, getter } from '../../lib/getter';
+import { fileGetter, getterFn } from '../../lib/getter';
 
 export default class List extends BaseListCommand {
   public static description = `Get files.`;
@@ -23,7 +23,7 @@ a8070713-e48e-466b-b4bb-b3132895d5ce my-file-2
     const basePath = this.parsedFlags?.basePath;
 
     try {
-      return getter({
+      return getterFn({
         all: true,
         cursor,
         extended,

@@ -1,5 +1,5 @@
 import {
-  BaseArgs,
+  BaseReq,
   deleteAllFiles,
   deleteAllParts,
   deleteAllScenes,
@@ -56,7 +56,7 @@ export async function deleter({
   }
 }
 
-export function fileDeleter({ client, verbose }: BaseArgs): Deleter {
+export function fileDeleter({ client, verbose }: BaseReq): Deleter {
   return {
     deleteOne: async (id: string) => {
       await client.files.deleteFile({ id });
@@ -72,7 +72,7 @@ export function fileDeleter({ client, verbose }: BaseArgs): Deleter {
   };
 }
 
-export function partDeleter({ client, verbose }: BaseArgs): Deleter {
+export function partDeleter({ client, verbose }: BaseReq): Deleter {
   return {
     deleteOne: async (id: string) => {
       await client.parts.deletePart({ id });
@@ -88,7 +88,7 @@ export function partDeleter({ client, verbose }: BaseArgs): Deleter {
   };
 }
 
-export function sceneDeleter({ client, verbose }: BaseArgs): Deleter {
+export function sceneDeleter({ client, verbose }: BaseReq): Deleter {
   return {
     deleteOne: async (id: string) => {
       await client.scenes.deleteScene({ id });

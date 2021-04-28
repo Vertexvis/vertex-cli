@@ -1,7 +1,7 @@
 import { logError } from '@vertexvis/vertex-api-client';
 import BaseGetCommand from '../../lib/base-get';
 import { vertexClient } from '../../lib/client';
-import { partGetter, getter } from '../../lib/getter';
+import { partGetter, getterFn } from '../../lib/getter';
 
 export default class Get extends BaseGetCommand {
   public static description = `Get a part.`;
@@ -25,7 +25,7 @@ Id                                   Name
     const basePath = this.parsedFlags?.basePath;
 
     try {
-      return getter({
+      return getterFn({
         extended,
         id,
         getter: partGetter({

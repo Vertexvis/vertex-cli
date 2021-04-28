@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios';
 import { flags } from '@oclif/command';
 import {
   logError,
-  RenderImageArgs,
+  RenderImageReq,
   renderPartRevision,
   renderScene,
   renderSceneView,
@@ -113,7 +113,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg
 }
 
 async function render(
-  args: RenderImageArgs,
+  args: RenderImageReq,
   resource: string
 ): Promise<AxiosResponse<NodeJS.ReadableStream>> {
   switch (resource) {

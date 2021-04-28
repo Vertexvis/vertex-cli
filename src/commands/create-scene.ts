@@ -2,6 +2,7 @@ import { flags } from '@oclif/command';
 import {
   createSceneAndSceneItems,
   CreateSceneItemRequest,
+  isFailure,
   logError,
   SceneRelationshipDataTypeEnum,
   Utf8,
@@ -136,7 +137,10 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         this.warn(`Failed to create the following scene items...`);
         cli.table(
           res.errors.map((e) => {
-            const first = (e.failure?.errors ? [...e.failure?.errors] : [])[0];
+            const errors = isFailure(e.res)
+              ? e.res.errors
+              : e.res?.data.attributes.errors;
+            const first = (errors ? [...errors] : [])[0];
             return {
               suppliedId: e.req.data.attributes.suppliedId,
               suppliedPartId: e.req.data.attributes.source?.suppliedPartId,
