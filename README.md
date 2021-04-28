@@ -52,7 +52,6 @@ USAGE
 * [`vertex create-items [PATH]`](#vertex-create-items-path)
 * [`vertex create-parts [PATH]`](#vertex-create-parts-path)
 * [`vertex create-scene [PATH]`](#vertex-create-scene-path)
-* [`vertex create-stream-key [ID]`](#vertex-create-stream-key-id)
 * [`vertex files:delete [ID]`](#vertex-filesdelete-id)
 * [`vertex files:get [ID]`](#vertex-filesget-id)
 * [`vertex files:list`](#vertex-fileslist)
@@ -61,7 +60,6 @@ USAGE
 * [`vertex parts:delete [ID]`](#vertex-partsdelete-id)
 * [`vertex parts:get [ID]`](#vertex-partsget-id)
 * [`vertex parts:list`](#vertex-partslist)
-* [`vertex render-image [ID]`](#vertex-render-image-id)
 * [`vertex scene-views:render [ID]`](#vertex-scene-viewsrender-id)
 * [`vertex scenes:delete [ID]`](#vertex-scenesdelete-id)
 * [`vertex scenes:get [ID]`](#vertex-scenesget-id)
@@ -165,27 +163,6 @@ EXAMPLE
 ```
 
 _See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.10.0/src/commands/create-scene.ts)_
-
-## `vertex create-stream-key [ID]`
-
-Generate a stream-key for a scene.
-
-```
-USAGE
-  $ vertex create-stream-key [ID]
-
-OPTIONS
-  -b, --basePath=basePath  [default: https://platform.vertexvis.com] Vertex API base path.
-  -h, --help               show CLI help
-  -k, --expiry=expiry      [default: 600] Expiry in seconds to set on stream-key.
-  -v, --verbose
-
-EXAMPLE
-  $ vertex create-stream-key f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-  hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
-```
-
-_See code: [src/commands/create-stream-key.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.10.0/src/commands/create-stream-key.ts)_
 
 ## `vertex files:delete [ID]`
 
@@ -362,31 +339,6 @@ EXAMPLE
 ```
 
 _See code: [src/commands/parts/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.10.0/src/commands/parts/list.ts)_
-
-## `vertex render-image [ID]`
-
-Render an image for a scene, scene-view, or part-revision.
-
-```
-USAGE
-  $ vertex render-image [ID]
-
-OPTIONS
-  -b, --basePath=basePath                        [default: https://platform.vertexvis.com] Vertex API base path.
-  -h, --height=height                            [default: 100] Image height.
-  -h, --help                                     show CLI help
-  -o, --output=output                            Path to output file.
-  -r, --resource=scene|scene-view|part-revision  [default: scene] Resource type of ID provided.
-  -v, --verbose
-  -w, --width=width                              [default: 100] Image width.
-  --viewer                                       Create Web SDK Viewer HTML instead of jpg image.
-
-EXAMPLE
-  $ vertex render-image f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-  f79d4760-0b71-44e4-ad0b-22743fdd4ca3.jpg
-```
-
-_See code: [src/commands/render-image.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.10.0/src/commands/render-image.ts)_
 
 ## `vertex scene-views:render [ID]`
 
