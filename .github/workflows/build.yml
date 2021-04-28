@@ -13,4 +13,5 @@ jobs:
       - name: Build and Verify
         run: |
           yarn install --frozen-lockfile
+          yarn build
           yarn test
