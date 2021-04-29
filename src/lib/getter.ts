@@ -1,5 +1,5 @@
 import {
-  BaseArgs,
+  BaseReq,
   FileMetadataData,
   getPage,
   head,
@@ -21,7 +21,7 @@ interface Getter<T> {
   readonly displayAll: (res: Paged<T>, extended: boolean) => void;
 }
 
-export async function getter<T>({
+export async function getterFn<T>({
   all = false,
   cursor,
   extended = false,
@@ -43,7 +43,7 @@ export async function getter<T>({
   }
 }
 
-export function fileGetter({ client }: BaseArgs): Getter<FileMetadataData> {
+export function fileGetter({ client }: BaseReq): Getter<FileMetadataData> {
   return {
     getOne: async (id: string): Promise<FileMetadataData> => {
       return (await client.files.getFile({ id })).data.data;
@@ -71,7 +71,7 @@ export function fileGetter({ client }: BaseArgs): Getter<FileMetadataData> {
   };
 }
 
-export function partGetter({ client }: BaseArgs): Getter<PartData> {
+export function partGetter({ client }: BaseReq): Getter<PartData> {
   return {
     getOne: async (id: string): Promise<PartData> => {
       return (await client.parts.getPart({ id })).data.data;
@@ -98,7 +98,7 @@ export function partGetter({ client }: BaseArgs): Getter<PartData> {
   };
 }
 
-export function sceneGetter({ client }: BaseArgs): Getter<SceneData> {
+export function sceneGetter({ client }: BaseReq): Getter<SceneData> {
   return {
     getOne: async (id: string): Promise<SceneData> => {
       return (await client.scenes.getScene({ id })).data.data;

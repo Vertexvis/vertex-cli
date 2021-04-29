@@ -1,6 +1,6 @@
 import { flags } from '@oclif/command';
 import {
-  BaseArgs,
+  BaseReq,
   createPartFromFileIfNotExists,
   FileRelationshipDataTypeEnum,
   PartRevisionData,
@@ -16,7 +16,7 @@ import { vertexClient } from '../lib/client';
 import { directoryExists, fileExists } from '../lib/fs';
 import { progressBar } from '../lib/progress';
 
-interface Args extends BaseArgs {
+interface Args extends BaseReq {
   readonly fileName: string;
   readonly path: string;
   readonly indexMetadata: boolean;
@@ -68,25 +68,33 @@ export default class CreateParts extends BaseCommand {
     const itemsWithGeometry = new Map<string, Args>();
     const items: SceneItem[] = JSON.parse(await readFile(path, Utf8));
     const client = await vertexClient(basePath, this.userConfig);
+    await Promise.all(
+      items
+        .filter((i) => i.source)
+        .map(async (i) => {
+          const mapKey = `${i.source?.suppliedPartId}:${i.source?.suppliedRevisionId}`;
+          const fileName = i.source?.fileName as string;
+          if (i.source && !itemsWithGeometry.has(mapKey)) {
+            const srcPath = directory ? join(directory, fileName) : fileName;
+            if (!(await fileExists(srcPath))) {
+              this.error(
+                `'${srcPath}' is not a valid file path. Did you forget the '--directory' flag?`
+              );
+            }
 
-    items
-      .filter((i) => i.source)
-      .forEach((i) => {
-        const mapKey = `${i.source?.suppliedPartId}:${i.source?.suppliedRevisionId}`;
-        const fileName = i.source?.fileName as string;
-        if (i.source && !itemsWithGeometry.has(mapKey)) {
-          itemsWithGeometry.set(mapKey, {
-            client,
-            verbose,
-            fileName,
-            indexMetadata: i.indexMetadata ?? false,
-            path: directory ? join(directory, fileName) : fileName,
-            suppliedInstanceIdKey: i.suppliedInstanceIdKey,
-            suppliedPartId: i.source?.suppliedPartId,
-            suppliedRevisionId: i.source?.suppliedRevisionId,
-          });
-        }
-      });
+            itemsWithGeometry.set(mapKey, {
+              client,
+              verbose,
+              fileName,
+              indexMetadata: i.indexMetadata ?? false,
+              path,
+              suppliedInstanceIdKey: i.suppliedInstanceIdKey,
+              suppliedPartId: i.source?.suppliedPartId,
+              suppliedRevisionId: i.source?.suppliedRevisionId,
+            });
+          }
+        })
+    );
 
     const msg = 'Creating part(s)';
     const useProgBar = itemsWithGeometry.size > 1 && !verbose;
