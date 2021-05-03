@@ -28,7 +28,7 @@
     "@vertexvis/vertex-api-client": "^0.11",
     "cli-ux": "^5.5",
     "fast-xml-parser": "^3.19",
-    "fs-extra": "^9.1",
+    "fs-extra": "^10.0",
     "p-limit": "^3.1.0",
     "tslib": "^2"
   },
