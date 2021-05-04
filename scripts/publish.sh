@@ -23,5 +23,3 @@ curl -s -X POST "https://api.github.com/repos/$REPOSITORY/releases" \
   "prelease": false
 }
 EOF
-
-npm deprecate @vertexvis/vertex-cli "Package is deprecated. Use @vertexvis/cli instead."
