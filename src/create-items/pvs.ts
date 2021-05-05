@@ -5,7 +5,7 @@ import {
   toFloats,
   to4x4Transform,
   toTransform,
-} from '@vertexvis/vertex-api-client';
+} from '@vertexvis/api-client-node';
 import { parse } from 'fast-xml-parser';
 import { SceneItem } from '.';
 

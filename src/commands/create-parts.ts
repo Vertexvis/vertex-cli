@@ -5,7 +5,7 @@ import {
   FileRelationshipDataTypeEnum,
   PartRevisionData,
   Utf8,
-} from '@vertexvis/vertex-api-client';
+} from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
 import { createReadStream, readFile } from 'fs-extra';
 import pLimit from 'p-limit';

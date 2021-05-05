@@ -1,4 +1,4 @@
-import { logError } from '@vertexvis/vertex-api-client';
+import { logError } from '@vertexvis/api-client-node';
 import BaseListCommand from '../../lib/base-list';
 import { vertexClient } from '../../lib/client';
 import { sceneGetter, getterFn } from '../../lib/getter';

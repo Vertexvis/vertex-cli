@@ -1,5 +1,5 @@
 import { flags } from '@oclif/command';
-import { Utf8 } from '@vertexvis/vertex-api-client';
+import { Utf8 } from '@vertexvis/api-client-node';
 import { readFile, writeFile } from 'fs-extra';
 import { processPvs } from '../create-items/pvs';
 import BaseCommand from '../lib/base';

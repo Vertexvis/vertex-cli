@@ -6,7 +6,7 @@ import {
   logError,
   SceneRelationshipDataTypeEnum,
   Utf8,
-} from '@vertexvis/vertex-api-client';
+} from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
 import { readFile } from 'fs-extra';
 import BaseCommand from '../lib/base';

@@ -304,6 +304,14 @@
     "@typescript-eslint/types" "4.22.0"
     eslint-visitor-keys "^2.0.0"
 
+"@vertexvis/api-client-node@^0.12":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@vertexvis/api-client-node/-/api-client-node-0.12.2.tgz#012bf80557f68d7ad6b5dca53dd227b76961e004"
+  integrity sha512-2Ppizoh9jSx+0SKTkZulHVG4SEFeQhUwdx7o4vZ+/6JxCxJW+4xmYy5N/QnOfbg9Md+XoeQdoQHIqkE5FwGLPA==
+  dependencies:
+    axios "^0.21"
+    p-limit "^3.1"
+
 "@vertexvis/eslint-config-vertexvis-typescript@0.4":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@vertexvis/eslint-config-vertexvis-typescript/-/eslint-config-vertexvis-typescript-0.4.0.tgz#2728ac7a6723e4a7b312329c566b73763dc7c803"
@@ -323,14 +331,6 @@
     eslint-config-prettier "^7.2.0"
     eslint-plugin-prettier "^3.3.1"
     prettier "^2.2.1"
-
-"@vertexvis/vertex-api-client@^0.11":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@vertexvis/vertex-api-client/-/vertex-api-client-0.11.1.tgz#c458299a8d2cf4566f7b00ca8b55655e3e040839"
-  integrity sha512-fsMwNn1zS2B+9tg9Iimtu0ouzVW46rLNJePRKSD96dd10xYkmtMGZQiUxfqdMp4ZWh64kqS6DtAVWCshEdYA8g==
-  dependencies:
-    axios "^0.21"
-    p-limit "^3.1"
 
 acorn-jsx@^5.3.1:
   version "5.3.1"

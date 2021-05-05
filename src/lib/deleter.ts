@@ -3,7 +3,7 @@ import {
   deleteAllFiles,
   deleteAllParts,
   deleteAllScenes,
-} from '@vertexvis/vertex-api-client';
+} from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
 
 interface Deleter {

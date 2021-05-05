@@ -11,14 +11,14 @@ Install the CLI, `npm install -g @vertexvis/cli`. Next, run `vertex configure` w
 
 ## Local development
 
-The CLI uses [`oclif`](https://oclif.io/) framework. It's a thin layer on top of [`@vertexvis/vertex-api-client`](https://github.com/Vertexvis/vertex-api-client-ts). This means that for most changes, you'll be making modifications to both libraries. To link them, clone both repositories, then,
+The CLI uses [`oclif`](https://oclif.io/) framework. It's a thin layer on top of [`@vertexvis/api-client-node`](https://github.com/Vertexvis/vertex-api-client-node). This means that for most changes, you'll be making modifications to both libraries. To link them, clone both repositories, then,
 
-1. In `vertex-api-client-ts`,
+1. In `vertex-api-client-node`,
   1. Install dependencies, `yarn install`
   1. Build the project, `yarn clean-build`
   1. Link it, `yarn link`
 1. In `vertex-cli`,
-  1. Reference the linked client, `yarn link @vertexvis/vertex-api-client`
+  1. Reference the linked client, `yarn link @vertexvis/api-client-node`
   1. Run the local version of the CLI, `./bin/run --help`
 
 When you're ready to publish a new version, commit your changes and then run `yarn version [--patch | --minor | --major]`. `oclif` takes care of updating the version numbers and updating the `README`.

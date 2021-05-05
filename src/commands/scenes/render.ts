@@ -1,5 +1,5 @@
 import { flags } from '@oclif/command';
-import { logError, renderScene } from '@vertexvis/vertex-api-client';
+import { logError, renderScene } from '@vertexvis/api-client-node';
 import { cli } from 'cli-ux';
 import { createWriteStream, writeFile } from 'fs-extra';
 import BaseRenderCommand from '../../lib/base-render';
