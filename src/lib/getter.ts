@@ -6,7 +6,7 @@ import {
   PartData,
   prettyJson,
   SceneData,
-} from '@vertexvis/vertex-api-client';
+} from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
 
 interface Paged<T> {

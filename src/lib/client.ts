@@ -1,4 +1,4 @@
-import { VertexClient } from '@vertexvis/vertex-api-client';
+import { VertexClient } from '@vertexvis/api-client-node';
 import { Agent } from 'https';
 import { Config } from './base';
 

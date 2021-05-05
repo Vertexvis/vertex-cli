@@ -1,4 +1,4 @@
-import { logError, renderSceneView } from '@vertexvis/vertex-api-client';
+import { logError, renderSceneView } from '@vertexvis/api-client-node';
 import { cli } from 'cli-ux';
 import { createWriteStream } from 'fs-extra';
 import BaseRenderCommand from '../../lib/base-render';

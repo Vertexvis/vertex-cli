@@ -1,4 +1,4 @@
-import { ColorMaterial, Matrix4 } from '@vertexvis/vertex-api-client';
+import { ColorMaterial, Matrix4 } from '@vertexvis/api-client-node';
 
 interface Source {
   /**
