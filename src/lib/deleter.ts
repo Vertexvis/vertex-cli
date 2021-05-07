@@ -65,7 +65,7 @@ export function fileDeleter({ client, verbose }: BaseReq): Deleter {
       await deleteAllFiles({
         client,
         onMsg: console.error,
-        pageSize: 10,
+        pageSize: 200,
         verbose,
       });
     },
@@ -81,7 +81,7 @@ export function partDeleter({ client, verbose }: BaseReq): Deleter {
       await deleteAllParts({
         client,
         onMsg: console.error,
-        pageSize: 10,
+        pageSize: 200,
         verbose,
       });
     },
@@ -97,7 +97,7 @@ export function sceneDeleter({ client, verbose }: BaseReq): Deleter {
       await deleteAllScenes({
         client,
         onMsg: console.error,
-        pageSize: 10,
+        pageSize: 200,
         verbose,
       });
     },
