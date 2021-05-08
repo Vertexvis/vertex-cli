@@ -87,7 +87,7 @@ export default class CreateParts extends BaseCommand {
               verbose,
               fileName,
               indexMetadata: i.indexMetadata ?? false,
-              path,
+              path: srcPath,
               suppliedInstanceIdKey: i.suppliedInstanceIdKey,
               suppliedPartId: i.source?.suppliedPartId,
               suppliedRevisionId: i.source?.suppliedRevisionId,
