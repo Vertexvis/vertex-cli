@@ -1,5 +1,5 @@
 import { VertexClient } from '@vertexvis/api-client-node';
-import { HttpsAgent } from 'agentkeepalive';
+import { Agent } from 'https';
 import { Config } from './base';
 
 export async function vertexClient(
@@ -7,7 +7,7 @@ export async function vertexClient(
   config?: Config
 ): Promise<VertexClient> {
   return VertexClient.build({
-    axiosOptions: { httpsAgent: new HttpsAgent({ keepAlive: true }) },
+    axiosOptions: { httpsAgent: new Agent({ keepAlive: true }) },
     basePath,
     client: config?.client,
   });

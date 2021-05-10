@@ -26,7 +26,6 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
     "@vertexvis/api-client-node": "^0.12",
-    "agentkeepalive": "^4.1.4",
     "cli-ux": "^5.5",
     "fast-xml-parser": "^3.19",
     "fs-extra": "^10.0",
