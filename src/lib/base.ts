@@ -41,13 +41,16 @@ export default abstract class BaseCommand extends Command {
     const basePath = BasePathAliases.get(bp) ?? bp;
     this.parsedFlags.basePath = basePath;
 
-    let config: Config = {
-      client: {
-        id: process.env.VERTEX_CLIENT_ID,
-        secret: process.env.VERTEX_CLIENT_SECRET,
-      },
-    };
-    if (!config.client?.id || !config.client?.secret) {
+    const id = process.env.VERTEX_CLIENT_ID;
+    const secret = process.env.VERTEX_CLIENT_SECRET;
+    let config: Config = { client: { id, secret } };
+    if (id || secret) {
+      this.warn(
+        'VERTEX_CLIENT_ID and/or VERTEX_CLIENT_SECRET exported, this overrides credentials set with `configure` command.'
+      );
+    }
+
+    if (!id || !secret) {
       try {
         const configPath = join(this.config.configDir, 'config.json');
         const fileConfig: FileConfig = await readJSON(configPath);
