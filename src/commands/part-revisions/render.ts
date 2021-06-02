@@ -1,6 +1,7 @@
 import { logError, renderPartRevision } from '@vertexvis/api-client-node';
 import { cli } from 'cli-ux';
 import { createWriteStream } from 'fs-extra';
+
 import BaseRenderCommand from '../../lib/base-render';
 import { vertexClient } from '../../lib/client';
 import { createFile, validate, validateImage } from '../../lib/renderer';
@@ -48,7 +49,7 @@ export default class Render extends BaseRenderCommand {
       renderRes.data.pipe(createWriteStream(out));
       await createFile(renderRes.data, out);
 
-      cli.open(out);
+      await cli.open(out);
       this.log(out);
     } catch (error) {
       logError(error, this.error);

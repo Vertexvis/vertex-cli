@@ -1,5 +1,6 @@
 import { flags } from '@oclif/command';
 import { Input, OutputFlags } from '@oclif/parser';
+
 import BaseCommand from './base';
 
 export default abstract class BaseRenderCommand extends BaseCommand {

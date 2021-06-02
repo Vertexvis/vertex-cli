@@ -2,11 +2,12 @@
 import {
   is4x4Identity,
   multiply,
-  toFloats,
   to4x4Transform,
+  toFloats,
   toTransform,
 } from '@vertexvis/api-client-node';
 import { parse } from 'fast-xml-parser';
+
 import { SceneItem } from '.';
 
 interface CreateSceneItemArgs {

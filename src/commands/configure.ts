@@ -1,6 +1,7 @@
 import cli from 'cli-ux';
 import { chmod, mkdirp, readJSON, writeFile } from 'fs-extra';
 import { join } from 'path';
+
 import BaseCommand, { FileConfig } from '../lib/base';
 import { deleteFile, fileExists } from '../lib/fs';
 

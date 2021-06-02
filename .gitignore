@@ -1,7 +1,7 @@
 *-debug.log
 *-error.log
-.husky/
 /.nyc_output
+/coverage
 /dist
 /lib
 /package-lock.json

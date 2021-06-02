@@ -1,5 +1,6 @@
 import { logError } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
+
 import BaseDeleteCommand from '../../lib/base-delete';
 import { vertexClient } from '../../lib/client';
 import { deleter, partDeleter, validate } from '../../lib/deleter';
