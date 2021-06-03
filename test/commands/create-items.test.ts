@@ -4,9 +4,10 @@ import { join } from 'path';
 
 import { deleteFile } from '../../src/lib/fs';
 
-const GoldenPath = join(__dirname, 'golden.pvs.json');
+const TestDataPath = join(__dirname, '..', 'test-data');
+const GoldenPath = join(TestDataPath, 'golden.pvs.json');
 const DstPath = join(__dirname, 'out.json');
-const SrcPath = join(__dirname, 'golden.pvs.xml');
+const SrcPath = join(TestDataPath, 'golden.pvs.xml');
 
 describe('create-items', () => {
   afterEach(() => {
@@ -14,7 +15,6 @@ describe('create-items', () => {
   });
 
   test
-    .stderr()
     .command(['create-items'])
     .catch((error) => {
       expect(error.message).to.contain('Missing required flag:');
@@ -23,7 +23,6 @@ describe('create-items', () => {
     .it('requires --format');
 
   test
-    .stderr()
     .command(['create-items', '-f', 'xml'])
     .catch((error) => {
       expect(error.message).to.contain(
@@ -31,6 +30,15 @@ describe('create-items', () => {
       );
     })
     .it('requires valid --format');
+
+  test
+    .command(['create-items', '-f', 'pvs'])
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "'undefined' is not a valid file path, exiting."
+      );
+    })
+    .it('requires path');
 
   test
     .stdout()

@@ -1,8 +1,12 @@
 .github/pull_request_template.md
 README.md
 
+/.nyc_output
 /bin
+/coverage
 /docs
 /lib
 /node_modules
 /scripts
+
+/test/test-data/*

@@ -2,6 +2,7 @@ import { flags } from '@oclif/command';
 import {
   BaseReq,
   createPartFromFileIfNotExists,
+  CreatePartFromFileReq,
   FileRelationshipDataTypeEnum,
   PartRevisionData,
   Utf8,
@@ -17,7 +18,10 @@ import { vertexClient } from '../lib/client';
 import { directoryExists, fileExists } from '../lib/fs';
 import { progressBar } from '../lib/progress';
 
+type CreatePartsFn = (args: CreatePartFromFileReq) => Promise<PartRevisionData>;
+
 interface Args extends BaseReq {
+  readonly createPartsFn: CreatePartsFn;
   readonly fileName: string;
   readonly path: string;
   readonly indexMetadata: boolean;
@@ -51,6 +55,10 @@ export default class CreateParts extends BaseCommand {
   };
 
   public async run(): Promise<void> {
+    await this.innerRun(createPartFromFileIfNotExists);
+  }
+
+  public async innerRun(createPartsFn: CreatePartsFn): Promise<void> {
     const {
       args: { path },
       flags: { directory, parallelism, verbose },
@@ -63,7 +71,7 @@ export default class CreateParts extends BaseCommand {
       this.error(`'${directory}' is not a valid directory path, exiting.`);
     }
     if (parallelism < 1 || parallelism > 20) {
-      this.error(`Invalid parallelism ${parallelism}.`);
+      this.error(`Invalid parallelism '${parallelism}'.`);
     }
 
     const itemsWithGeometry = new Map<string, Args>();
@@ -84,6 +92,7 @@ export default class CreateParts extends BaseCommand {
             }
 
             itemsWithGeometry.set(mapKey, {
+              createPartsFn,
               client,
               verbose,
               fileName,
@@ -122,6 +131,7 @@ export default class CreateParts extends BaseCommand {
 
 function createPart({
   client,
+  createPartsFn,
   fileName,
   indexMetadata,
   path,
@@ -130,7 +140,7 @@ function createPart({
   suppliedRevisionId,
   verbose,
 }: Args): Promise<PartRevisionData> {
-  return createPartFromFileIfNotExists({
+  return createPartsFn({
     client,
     createFileReq: {
       data: {
