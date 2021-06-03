@@ -34,19 +34,21 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
+    "@types/chai": "^4.2",
     "@types/fs-extra": "^9.0",
-    "@types/jest": "^26.0.23",
+    "@types/mocha": "^8.2",
     "@types/node": "^15",
     "@vertexvis/eslint-config-vertexvis-typescript": "0.4",
+    "chai": "^4.3",
     "eslint": "^7",
     "eslint-config-oclif": "^3.1",
     "eslint-config-oclif-typescript": "^0.2",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "globby": "^11",
-    "jest": "^27.0.3",
+    "mocha": "^8.4",
+    "nyc": "^15.1",
     "prettier": "^2.3",
-    "ts-jest": "^27.0.2",
     "ts-node": "^10",
     "typedoc": "^0.20",
     "typescript": "4.2.x"
@@ -102,7 +104,7 @@
     "pre-commit": "yarn lint && yarn format",
     "prepack": "yarn clean && yarn build && oclif-dev manifest && oclif-dev readme",
     "setup": "yarn && yarn link",
-    "test": "jest --passWithNoTests",
+    "test": "echo 'No tests'",
     "version": "oclif-dev readme && git add README.md"
   }
 }
