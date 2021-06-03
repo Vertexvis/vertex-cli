@@ -29,7 +29,7 @@ export function validateImage({
   }
 }
 
-export async function createFile(
+export function createFile(
   stream: NodeJS.ReadableStream,
   path: string
 ): Promise<void> {

@@ -1,4 +1,5 @@
 import { logError } from '@vertexvis/api-client-node';
+
 import BaseListCommand from '../../lib/base-list';
 import { vertexClient } from '../../lib/client';
 import { fileGetter, getterFn } from '../../lib/getter';

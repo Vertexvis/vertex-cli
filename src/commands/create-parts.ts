@@ -10,8 +10,9 @@ import cli from 'cli-ux';
 import { createReadStream, readFile } from 'fs-extra';
 import pLimit from 'p-limit';
 import { join } from 'path';
-import BaseCommand from '../lib/base';
+
 import { SceneItem } from '../create-items';
+import BaseCommand from '../lib/base';
 import { vertexClient } from '../lib/client';
 import { directoryExists, fileExists } from '../lib/fs';
 import { progressBar } from '../lib/progress';
@@ -106,7 +107,7 @@ export default class CreateParts extends BaseCommand {
       : cli.action.start(msg);
 
     await Promise.all(
-      [...itemsWithGeometry.values()].map(async (req) =>
+      [...itemsWithGeometry.values()].map((req) =>
         limit<Args[], PartRevisionData>(async (r) => {
           const res = await createPart(r);
           if (useProgBar) progress.increment();
@@ -119,7 +120,7 @@ export default class CreateParts extends BaseCommand {
   }
 }
 
-async function createPart({
+function createPart({
   client,
   fileName,
   indexMetadata,

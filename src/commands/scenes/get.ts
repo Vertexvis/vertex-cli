@@ -1,7 +1,8 @@
 import { logError } from '@vertexvis/api-client-node';
+
 import BaseGetCommand from '../../lib/base-get';
 import { vertexClient } from '../../lib/client';
-import { sceneGetter, getterFn } from '../../lib/getter';
+import { getterFn, sceneGetter } from '../../lib/getter';
 
 export default class Get extends BaseGetCommand {
   public static description = `Get a scene.`;

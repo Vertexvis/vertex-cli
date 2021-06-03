@@ -9,8 +9,9 @@ import {
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
 import { readFile } from 'fs-extra';
-import BaseCommand from '../lib/base';
+
 import { SceneItem } from '../create-items';
+import BaseCommand from '../lib/base';
 import { vertexClient } from '../lib/client';
 import { fileExists } from '../lib/fs';
 import { progressBar } from '../lib/progress';

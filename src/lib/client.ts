@@ -1,8 +1,9 @@
 import { VertexClient } from '@vertexvis/api-client-node';
 import { Agent } from 'https';
+
 import { Config } from './base';
 
-export async function vertexClient(
+export function vertexClient(
   basePath: string,
   config?: Config
 ): Promise<VertexClient> {
