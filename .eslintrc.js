@@ -1,6 +1,5 @@
 module.exports = {
   extends: ['oclif', 'oclif-typescript', '@vertexvis/vertexvis-typescript'],
-  parserOptions: { project: './tsconfig.json' },
   plugins: ['promise', 'simple-import-sort'],
   rules: {
     '@typescript-eslint/no-floating-promises': 'warn',

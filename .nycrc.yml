@@ -1,0 +1,9 @@
+check-coverage: true
+extension: .ts
+forbid-only: 'test/**/*.test.ts'
+reporter: [lcov, text]
+
+branches: 10
+lines: 10
+functions: 10
+statements: 10

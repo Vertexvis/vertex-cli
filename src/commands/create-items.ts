@@ -48,21 +48,16 @@ Wrote 5 pvs item(s) from '[YOUR_PATH_TO_XML_FILE]' to 'items.json'.
       this.error(`'${path}' is not a valid file path, exiting.`);
     }
 
-    let items = [];
-    switch (format) {
-      case 'pvs':
-        items = processPvs(
-          await readFile(path, Utf8),
-          verbose,
-          root,
-          revisionProperty
-        );
-        break;
-      default:
-        this.error(`Unsupported format ${format}`);
-    }
+    if (format !== 'pvs') this.error(`Unsupported format ${format}`);
 
+    const items = processPvs(
+      await readFile(path, Utf8),
+      verbose,
+      root,
+      revisionProperty
+    );
     await writeFile(output, JSON.stringify(items));
+
     this.log(
       `Wrote ${items.length} ${format} item(s) from '${path}' to '${output}'.`
     );
