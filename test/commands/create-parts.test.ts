@@ -59,6 +59,9 @@ describe('create-parts', () => {
     .it('requires below upper-bound');
 
   test
+    .do(() => {
+      sinon.stub(vc, 'vertexClient').resolves(client);
+    })
     .command(['create-parts', GoldenPath])
     .catch((error) => {
       expect(error.message).to.contain(
