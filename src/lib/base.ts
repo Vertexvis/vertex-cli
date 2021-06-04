@@ -27,7 +27,7 @@ export default abstract class BaseCommand extends Command {
       description: 'Vertex API base path.',
       default: BASE_PATH,
     }),
-    verbose: flags.boolean({ char: 'v' }),
+    verbose: flags.boolean({ char: 'v', default: false }),
   };
 
   protected parsedFlags?: OutputFlags<typeof BaseCommand.flags>;

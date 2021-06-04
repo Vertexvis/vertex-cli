@@ -1,6 +1,8 @@
 import { flags } from '@oclif/command';
 import {
   createSceneAndSceneItems,
+  CreateSceneAndSceneItemsReq,
+  CreateSceneAndSceneItemsRes,
   CreateSceneItemRequest,
   isFailure,
   logError,
@@ -16,6 +18,9 @@ import { vertexClient } from '../lib/client';
 import { fileExists } from '../lib/fs';
 import { progressBar } from '../lib/progress';
 
+type CreateSceneFn = (
+  args: CreateSceneAndSceneItemsReq
+) => Promise<CreateSceneAndSceneItemsRes>;
 export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
 
@@ -53,6 +58,13 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
   };
 
   public async run(): Promise<void> {
+    await this.innerRun(createSceneAndSceneItems);
+  }
+
+  public async innerRun(
+    createSceneFn: CreateSceneFn,
+    showProgress = true
+  ): Promise<void> {
     const {
       args: { path },
       flags: {
@@ -69,7 +81,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
       this.error(`'${path}' is not a valid file path, exiting.`);
     }
     if (parallelism < 1 || parallelism > 200) {
-      this.error(`Invalid parallelism ${parallelism}.`);
+      this.error(`Invalid parallelism '${parallelism}'.`);
     }
 
     try {
@@ -101,9 +113,9 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         },
       }));
 
-      progress.start(createSceneItemReqs.length, 0);
+      if (showProgress) progress.start(createSceneItemReqs.length, 0);
 
-      const res = await createSceneAndSceneItems({
+      const res = await createSceneFn({
         client,
         createSceneItemReqs,
         createSceneReq: () => ({
@@ -115,14 +127,14 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         failFast: !noFailFast,
         onMsg: console.error,
         onProgress: (complete, total) => {
-          progress.update(complete);
+          if (showProgress) progress.update(complete);
           if (complete === total) {
-            progress.stop();
+            if (showProgress) progress.stop();
             cli.action.start('Created scene items. Awaiting scene completion');
           }
         },
         parallelism,
-        verbose: verbose,
+        verbose,
       });
 
       const scene = res.scene.data;

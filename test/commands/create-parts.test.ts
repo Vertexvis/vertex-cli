@@ -3,12 +3,13 @@ import { expect, test } from '@oclif/test';
 import {
   CreatePartFromFileReq,
   FileRelationshipDataTypeEnum,
+  PartRevisionData,
   Utf8,
   VertexClient,
 } from '@vertexvis/api-client-node';
 import { readFile } from 'fs-extra';
 import { join } from 'path';
-import sinon, { assert } from 'sinon';
+import sinon, { assert, SinonSpyCall } from 'sinon';
 
 import CreateParts from '../../src/commands/create-parts';
 import { SceneItem } from '../../src/create-items';
@@ -21,6 +22,10 @@ const PN0FileName = 'PN0.ol';
 const PN1FileName = 'PN1.ol';
 
 describe('create-parts', () => {
+  afterEach(() => {
+    sinon.restore();
+  });
+
   test
     .command(['create-parts'])
     .catch((error) => {
@@ -44,14 +49,14 @@ describe('create-parts', () => {
     .catch((error) => {
       expect(error.message).to.contain(`Invalid parallelism '0'.`);
     })
-    .it('requires parallelism > 0');
+    .it('requires above lower-bound');
 
   test
     .command(['create-parts', '-p', '21', GoldenPath])
     .catch((error) => {
       expect(error.message).to.contain(`Invalid parallelism '21'.`);
     })
-    .it('requires parallelism <= 20');
+    .it('requires below upper-bound');
 
   test
     .command(['create-parts', GoldenPath])
@@ -75,27 +80,29 @@ describe('create-parts', () => {
       ).innerRun(createPartsFn);
 
       assert.calledTwice(createPartsFn);
+
+      const calls = createPartsFn.getCalls();
       assertCreatePartsCall(
-        createPartsFn.getCall(0).args[0],
-        createReq(PN1FileName, items)
+        createReq(PN1FileName, items),
+        getCall(PN1FileName, calls)
       );
       assertCreatePartsCall(
-        createPartsFn.getCall(1).args[0],
-        createReq(PN0FileName, items)
+        createReq(PN0FileName, items),
+        getCall(PN0FileName, calls)
       );
     })
     .it('works');
 });
 
 function assertCreatePartsCall(
-  act: CreatePartFromFileReq,
-  exp: CreatePartFromFileReq
+  exp: CreatePartFromFileReq,
+  act?: CreatePartFromFileReq
 ): void {
-  expect(act.client).to.equal(exp.client);
-  expect(act.createFileReq).to.deep.equal(exp.createFileReq);
+  expect(act?.client).to.equal(exp.client);
+  expect(act?.createFileReq).to.deep.equal(exp.createFileReq);
   const fId = 'f-id';
-  expect(act.createPartReq(fId)).to.deep.equal(exp.createPartReq(fId));
-  expect(act.verbose).to.equal(exp.verbose);
+  expect(act?.createPartReq(fId)).to.deep.equal(exp.createPartReq(fId));
+  expect(act?.verbose).to.equal(exp.verbose);
 }
 
 function createReq(
@@ -131,4 +138,13 @@ function createReq(
     onMsg: console.error,
     verbose: true,
   };
+}
+
+function getCall(
+  fileName: string,
+  calls: SinonSpyCall<CreatePartFromFileReq[], Promise<PartRevisionData>>[]
+): CreatePartFromFileReq | undefined {
+  return calls.find(
+    (c) => c.args[0].createFileReq.data.attributes.name === fileName
+  )?.args[0];
 }
