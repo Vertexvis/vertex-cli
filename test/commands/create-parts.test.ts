@@ -1,13 +1,24 @@
 import { IConfig } from '@oclif/config';
 import { expect, test } from '@oclif/test';
+import {
+  CreatePartFromFileReq,
+  FileRelationshipDataTypeEnum,
+  Utf8,
+  VertexClient,
+} from '@vertexvis/api-client-node';
+import { readFile } from 'fs-extra';
 import { join } from 'path';
-import sinon from 'sinon';
+import sinon, { assert } from 'sinon';
 
 import CreateParts from '../../src/commands/create-parts';
-import * as client from '../../src/lib/client';
+import { SceneItem } from '../../src/create-items';
+import * as vc from '../../src/lib/client';
 
+const client = {} as VertexClient;
 const TestDataPath = join(__dirname, '..', 'test-data');
 const GoldenPath = join(TestDataPath, 'golden.pvs.json');
+const PN0FileName = 'PN0.ol';
+const PN1FileName = 'PN1.ol';
 
 describe('create-parts', () => {
   test
@@ -54,54 +65,70 @@ describe('create-parts', () => {
   test
     .stdout()
     .do(async () => {
-      sinon.stub(client, 'vertexClient');
+      const createPartsFn = sinon.stub();
+      const items = JSON.parse(await readFile(GoldenPath, Utf8));
+      sinon.stub(vc, 'vertexClient').resolves(client);
+
       await new CreateParts(
         ['-v', '-d', TestDataPath, GoldenPath],
         {} as IConfig
-      ).innerRun(sinon.stub());
+      ).innerRun(createPartsFn);
+
+      assert.calledTwice(createPartsFn);
+      assertCreatePartsCall(
+        createPartsFn.getCall(0).args[0],
+        createReq(PN1FileName, items)
+      );
+      assertCreatePartsCall(
+        createPartsFn.getCall(1).args[0],
+        createReq(PN0FileName, items)
+      );
     })
     .it('works');
 });
 
-// describe('auth:whoami', () => {
-//   test
-// .nock('https://api.heroku.com', (api) =>
-//   api
-//     .get('/account')
-//     // user is logged in, return their name
-//     .reply(200, { email: 'jeff@example.com' })
-// )
-//     .stdout()
-//     .command(['auth:whoami'])
-//     .it('shows user email when logged in', (ctx) => {
-//       expect(ctx.stdout).to.equal('jeff@example.com\n');
-//     });
+function assertCreatePartsCall(
+  act: CreatePartFromFileReq,
+  exp: CreatePartFromFileReq
+): void {
+  expect(act.client).to.equal(exp.client);
+  expect(act.createFileReq).to.deep.equal(exp.createFileReq);
+  const fId = 'f-id';
+  expect(act.createPartReq(fId)).to.deep.equal(exp.createPartReq(fId));
+  expect(act.verbose).to.equal(exp.verbose);
+}
 
-//   test
-//     .nock('https://api.heroku.com', (api) =>
-//       api
-//         .get('/account')
-//         // HTTP 401 means the user is not logged in with valid credentials
-//         .reply(401)
-//     )
-//     .command(['auth:whoami'])
-//     // checks to ensure the command exits with status 100
-//     .exit(100)
-//     .it('exits with status 100 when not logged in');
-// });
-
-// describe('hello', () => {
-//   test
-//     .stdout()
-//     .command(['hello'])
-//     .it('runs hello', (ctx) => {
-//       expect(ctx.stdout).to.contain('hello world');
-//     });
-
-//   test
-//     .stdout()
-//     .command(['hello', '--name', 'jeff'])
-//     .it('runs hello --name jeff', (ctx) => {
-//       expect(ctx.stdout).to.contain('hello jeff');
-//     });
-// });
+function createReq(
+  fileName: string,
+  items: SceneItem[]
+): CreatePartFromFileReq {
+  const item = items.find((i) => i.source?.fileName === fileName);
+  return {
+    client,
+    createFileReq: {
+      data: {
+        attributes: { name: fileName, suppliedId: fileName },
+        type: 'file',
+      },
+    },
+    createPartReq: (fileId) => ({
+      data: {
+        attributes: {
+          indexMetadata: false,
+          suppliedId: item?.source?.suppliedPartId,
+          suppliedInstanceIdKey: undefined,
+          suppliedRevisionId: item?.source?.suppliedRevisionId,
+        },
+        relationships: {
+          source: {
+            data: { id: fileId, type: FileRelationshipDataTypeEnum.File },
+          },
+        },
+        type: 'part',
+      },
+    }),
+    fileData: sinon.match.any,
+    onMsg: console.error,
+    verbose: true,
+  };
+}

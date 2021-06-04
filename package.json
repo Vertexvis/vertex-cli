@@ -33,6 +33,7 @@
     "tslib": "^2"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0",
     "@oclif/dev-cli": "^1",
     "@oclif/test": "^1.2.8",
     "@types/chai": "^4.2",
@@ -51,7 +52,8 @@
     "nyc": "^15.1",
     "prettier": "^2.3",
     "sinon": "^11.1.1",
-    "ts-node": "^10",
+    "source-map-support": "^0.5",
+    "ts-node": "^10.0",
     "typedoc": "^0.20",
     "typescript": "4.2.x"
   },
@@ -97,7 +99,7 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "clean": "rm -rf lib && rm -f oclif.manifest.json",
+    "clean": "rm -rf coverage lib && rm -f oclif.manifest.json",
     "format": "prettier --write './**/*.+(js|jsx|ts|tsx|json|yml|yaml|md|mdx|html|css)'",
     "generate:docs": "typedoc --tsconfig tsconfig.docs.json",
     "lint": "eslint . --ext .ts",
