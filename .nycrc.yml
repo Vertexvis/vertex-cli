@@ -1,0 +1,11 @@
+extends: '@istanbuljs/nyc-config-typescript'
+
+check-coverage: true
+extension: .ts
+forbid-only: 'test/**/*.test.ts'
+reporter: [lcov, text]
+
+branches: 25
+lines: 60
+functions: 25
+statements: 60
