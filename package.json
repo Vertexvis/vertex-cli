@@ -35,7 +35,7 @@
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0",
     "@oclif/dev-cli": "^1",
-    "@oclif/test": "^1.2.8",
+    "@oclif/test": "^1.2",
     "@types/chai": "^4.2",
     "@types/fs-extra": "^9.0",
     "@types/mocha": "^8",
@@ -51,7 +51,7 @@
     "mocha": "^8",
     "nyc": "^15.1",
     "prettier": "^2.3",
-    "sinon": "^11.1.1",
+    "sinon": "^11.1",
     "source-map-support": "^0.5",
     "ts-node": "^10.0",
     "typedoc": "^0.20",
