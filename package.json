@@ -83,6 +83,9 @@
       "parts": {
         "description": "Part CRUD operations."
       },
+      "scene-view-states": {
+        "description": "Scene view state CRUD operations."
+      },
       "scene-views": {
         "description": "Scene view CRUD operations."
       },
