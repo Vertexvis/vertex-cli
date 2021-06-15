@@ -103,3 +103,14 @@ export function sceneDeleter({ client, verbose }: BaseReq): Deleter {
     },
   };
 }
+
+export function sceneViewStateDeleter({ client }: BaseReq): Deleter {
+  return {
+    deleteOne: async (id: string) => {
+      await client.sceneViewStates.deleteSceneViewState({ id });
+    },
+    deleteAll: () => {
+      throw new Error('Not implemented');
+    },
+  };
+}
