@@ -6,6 +6,7 @@ import {
   PartData,
   prettyJson,
   SceneData,
+  SceneViewData,
   SceneViewStateData,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
@@ -113,6 +114,41 @@ export function sceneGetter({ client }: BaseReq): Getter<SceneData> {
     displayOne: (res: Paged<SceneData>): void =>
       console.log(prettyJson(head(res.items))),
     displayAll: (res: Paged<SceneData>, extended: boolean): void =>
+      cli.table(
+        res.items.map((f) => ({ id: f.id, ...f.attributes })),
+        {
+          id: { minWidth: 36 },
+          name: { minWidth: 12 },
+          suppliedId: { extended: true, header: 'SuppliedId' },
+          state: { extended: true },
+          created: { extended: true },
+        },
+        { extended }
+      ),
+  };
+}
+
+export function sceneViewGetter({ client }: BaseReq): Getter<SceneViewData> {
+  return {
+    getOne: async (id: string): Promise<SceneViewData> => {
+      return (await client.sceneViews.getSceneView({ id })).data.data;
+    },
+    getAll: async (
+      cursor?: string,
+      id?: string
+    ): Promise<Paged<SceneViewData>> => {
+      const res = await getPage(() =>
+        client.sceneViews.getSceneViews({
+          id: id ?? '',
+          pageCursor: cursor,
+          pageSize: 25,
+        })
+      );
+      return { items: res.page.data, cursor: res.cursor };
+    },
+    displayOne: (res: Paged<SceneViewData>): void =>
+      console.log(prettyJson(head(res.items))),
+    displayAll: (res: Paged<SceneViewData>, extended: boolean): void =>
       cli.table(
         res.items.map((f) => ({ id: f.id, ...f.attributes })),
         {
