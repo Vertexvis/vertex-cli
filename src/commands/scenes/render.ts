@@ -21,7 +21,7 @@ export default class Render extends BaseRenderCommand {
 `,
   ];
 
-  public static args = [{ name: 'id' }];
+  public static args = [{ name: 'id', required: true }];
 
   public static flags = {
     ...BaseRenderCommand.flags,

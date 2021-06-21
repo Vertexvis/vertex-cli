@@ -15,7 +15,7 @@ Deleting file(s)...... done
 `,
   ];
 
-  public static args = [{ name: 'id' }];
+  public static args = [{ name: 'id', required: true }];
 
   public static flags = BaseDeleteCommand.flags;
 
