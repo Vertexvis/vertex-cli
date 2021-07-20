@@ -89,7 +89,7 @@ export function generateHtml(
     </vertex-viewer>
 
     <script type="module">
-      import { applyPolyfills, defineCustomElements } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/loader.js';
+      import { applyPolyfills, defineCustomElements } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/loader/index.js';
       import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/index.js';
 
       async function main() {
