@@ -1,10 +1,10 @@
 import { flags } from '@oclif/command';
 import {
   BaseReq,
-  createPartFromFileIfNotExists,
+  createPartFromFile,
   CreatePartFromFileReq,
+  CreatePartFromFileRes,
   FileRelationshipDataTypeEnum,
-  PartRevisionData,
   Utf8,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
@@ -18,7 +18,9 @@ import { vertexClient } from '../lib/client';
 import { directoryExists, fileExists } from '../lib/fs';
 import { progressBar } from '../lib/progress';
 
-type CreatePartsFn = (args: CreatePartFromFileReq) => Promise<PartRevisionData>;
+type CreatePartsFn = (
+  args: CreatePartFromFileReq
+) => Promise<CreatePartFromFileRes>;
 
 interface Args extends BaseReq {
   readonly createPartsFn: CreatePartsFn;
@@ -55,7 +57,7 @@ export default class CreateParts extends BaseCommand {
   };
 
   public async run(): Promise<void> {
-    await this.innerRun(createPartFromFileIfNotExists);
+    await this.innerRun(createPartFromFile);
   }
 
   public async innerRun(createPartsFn: CreatePartsFn): Promise<void> {
@@ -117,7 +119,7 @@ export default class CreateParts extends BaseCommand {
 
     await Promise.all(
       [...itemsWithGeometry.values()].map((req) =>
-        limit<Args[], PartRevisionData>(async (r) => {
+        limit<Args[], CreatePartFromFileRes>(async (r) => {
           const res = await createPart(r);
           if (useProgBar) progress.increment();
           return res;
@@ -139,7 +141,7 @@ function createPart({
   suppliedPartId,
   suppliedRevisionId,
   verbose,
-}: Args): Promise<PartRevisionData> {
+}: Args): Promise<CreatePartFromFileRes> {
   return createPartsFn({
     client,
     createFileReq: {
