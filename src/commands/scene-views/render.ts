@@ -1,4 +1,8 @@
-import { logError, renderSceneView } from '@vertexvis/api-client-node';
+import {
+  logError,
+  renderSceneView,
+  VertexError,
+} from '@vertexvis/api-client-node';
 import { cli } from 'cli-ux';
 import { createWriteStream } from 'fs-extra';
 
@@ -52,7 +56,7 @@ export default class Render extends BaseRenderCommand {
       await cli.open(out);
       this.log(out);
     } catch (error) {
-      logError(error, this.error);
+      logError(error as VertexError, this.error);
     }
   }
 }

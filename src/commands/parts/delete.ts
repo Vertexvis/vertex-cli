@@ -1,4 +1,4 @@
-import { logError } from '@vertexvis/api-client-node';
+import { logError, VertexError } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
 
 import BaseDeleteCommand from '../../lib/base-delete';
@@ -44,7 +44,7 @@ Deleting part(s)...... done
 
       cli.action.stop();
     } catch (error) {
-      logError(error, this.error);
+      logError(error as VertexError, this.error);
     }
   }
 }

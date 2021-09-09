@@ -8,6 +8,7 @@ import {
   logError,
   SceneRelationshipDataTypeEnum,
   Utf8,
+  VertexError,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
 import { readFile } from 'fs-extra';
@@ -178,7 +179,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         this.error(`No scene items exist in the scene.`);
       }
     } catch (error) {
-      logError(error, this.error);
+      logError(error as VertexError, this.error);
     }
   }
 }
