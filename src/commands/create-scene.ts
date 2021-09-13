@@ -4,6 +4,7 @@ import {
   createSceneAndSceneItemsEXPERIMENTAL,
   CreateSceneAndSceneItemsReq,
   CreateSceneAndSceneItemsRes,
+  CreateSceneAndSceneItemsResEXPERIMENTAL,
   CreateSceneItemRequest,
   isFailure,
   logError,
@@ -24,6 +25,10 @@ import { progressBar } from '../lib/progress';
 type CreateSceneFn = (
   args: CreateSceneAndSceneItemsReq
 ) => Promise<CreateSceneAndSceneItemsRes>;
+
+type CreateSceneFnEXPERIMENTAL = (
+  args: CreateSceneAndSceneItemsReq
+) => Promise<CreateSceneAndSceneItemsResEXPERIMENTAL>;
 export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
 
@@ -65,11 +70,15 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
   };
 
   public async run(): Promise<void> {
-    await this.innerRun(createSceneAndSceneItems);
+    await this.innerRun(
+      createSceneAndSceneItems,
+      createSceneAndSceneItemsEXPERIMENTAL
+    );
   }
 
   public async innerRun(
     createSceneFn: CreateSceneFn,
+    createSceneFnEXPERIMENTAL: CreateSceneFnEXPERIMENTAL,
     showProgress = true
   ): Promise<void> {
     const {
@@ -125,7 +134,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
       let sceneData: SceneData | undefined;
       if (experimental) {
-        const res = await createSceneAndSceneItemsEXPERIMENTAL({
+        const res = await createSceneFnEXPERIMENTAL({
           client,
           createSceneItemReqs,
           createSceneReq: () => ({
