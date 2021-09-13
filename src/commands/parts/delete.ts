@@ -15,7 +15,7 @@ Deleting part(s)...... done
 `,
   ];
 
-  public static args = [{ name: 'id', required: true }];
+  public static args = [{ name: 'id' }];
 
   public static flags = BaseDeleteCommand.flags;
 
