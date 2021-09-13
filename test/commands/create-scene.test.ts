@@ -102,7 +102,8 @@ describe('create-scene', () => {
 
       await new CreateScene([GoldenPath], {} as IConfig).innerRun(
         createSceneFn,
-        sinon.stub()
+        sinon.stub(),
+        false
       );
 
       assert.calledOnce(createSceneFn);
@@ -179,7 +180,7 @@ describe('create-scene', () => {
       await new CreateScene(
         ['--experimental', GoldenPath],
         {} as IConfig
-      ).innerRun(sinon.stub(), createSceneFn);
+      ).innerRun(sinon.stub(), createSceneFn, false);
 
       assert.calledOnce(createSceneFn);
       const act: CreateSceneAndSceneItemsReq = createSceneFn.getCall(0).args[0];
