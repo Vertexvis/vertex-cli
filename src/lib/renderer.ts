@@ -59,7 +59,7 @@ export function generateHtml(
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/@vertexvis/viewer@0.9.x/dist/viewer/viewer.css"
+      href="https://unpkg.com/@vertexvis/viewer@0.10.x/dist/viewer/viewer.css"
     />
     <style>
       html,
@@ -75,11 +75,11 @@ export function generateHtml(
   <body>
     <script
       type="module"
-      src="https://unpkg.com/@vertexvis/viewer@0.9.x/dist/viewer/viewer.esm.js"
+      src="https://unpkg.com/@vertexvis/viewer@0.10.x/dist/viewer/viewer.esm.js"
     ></script>
     <script
       nomodule
-      src="https://unpkg.com/@vertexvis/viewer@0.9.x/dist/viewer.js"
+      src="https://unpkg.com/@vertexvis/viewer@0.10.x/dist/viewer.js"
     ></script>
 
     <vertex-viewer
@@ -89,8 +89,8 @@ export function generateHtml(
     </vertex-viewer>
 
     <script type="module">
-      import { applyPolyfills, defineCustomElements } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/loader/index.js';
-      import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.9.x/dist/esm/index.js';
+      import { applyPolyfills, defineCustomElements } from 'https://unpkg.com/@vertexvis/viewer@0.10.x/loader/index.js';
+      import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.10.x/dist/esm/index.js';
 
       async function main() {
         await applyPolyfills();
@@ -99,6 +99,7 @@ export function generateHtml(
         const viewer = document.querySelector('vertex-viewer');
         ${config ? `viewer.configEnv = '${config}';` : ''}
         await viewer.load('urn:vertexvis:stream-key:${streamKey}');
+        let selectedItemId;
 
         viewer.addEventListener('tap', async (event) => {
           const scene = await viewer.scene();
@@ -107,20 +108,31 @@ export function generateHtml(
           const [hit] = result.hits;
 
           if (hit != null) {
+            const itemId = hit.itemId?.hex;
             const suppliedId = hit.itemSuppliedId?.value;
-            console.debug(\`Selected \${hit.itemId?.hex}\${suppliedId ? \`, \${suppliedId}\` : ''}\`);
+            console.debug(
+              \`Selected \${itemId}\${suppliedId ? \`, \${suppliedId}\` : ''}\`
+            );
 
             await scene
-              .items((op) => [
-                op.where((q) => q.all()).deselect(),
-                op
-                  .where((q) => q.withItemId(hit.itemId.hex))
-                  .select(ColorMaterial.create(255, 255, 0)),
-              ])
+              .items((op) => {
+                const deselect = selectedItemId
+                  ? [op.where((q) => q.withItemId(selectedItemId)).deselect()]
+                  : [];
+                return [
+                  ...deselect,
+                  op
+                    .where((q) => q.withItemId(itemId))
+                    .select(ColorMaterial.create(255, 255, 0)),
+                ];
+              })
               .execute();
-          } else {
+            selectedItemId = itemId;
+          } else if (selectedItemId) {
             await scene
-              .items((op) => op.where((q) => q.all()).deselect())
+              .items((op) => [
+                op.where((q) => q.withItemId(selectedItemId)).deselect(),
+              ])
               .execute();
           }
         });

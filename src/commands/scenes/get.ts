@@ -1,4 +1,4 @@
-import { logError } from '@vertexvis/api-client-node';
+import { logError, VertexError } from '@vertexvis/api-client-node';
 
 import BaseGetCommand from '../../lib/base-get';
 import { vertexClient } from '../../lib/client';
@@ -35,7 +35,7 @@ Id                                   Name
         }),
       });
     } catch (error) {
-      logError(error, this.error);
+      logError(error as VertexError, this.error);
     }
   }
 }

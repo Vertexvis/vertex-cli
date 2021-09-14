@@ -1,4 +1,4 @@
-import { logError } from '@vertexvis/api-client-node';
+import { logError, VertexError } from '@vertexvis/api-client-node';
 
 import BaseListCommand from '../../lib/base-list';
 import { vertexClient } from '../../lib/client';
@@ -34,7 +34,7 @@ a8070713-e48e-466b-b4bb-b3132895d5ce my-file-2
         }),
       });
     } catch (error) {
-      logError(error, this.error);
+      logError(error as VertexError, this.error);
     }
   }
 }

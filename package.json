@@ -1,6 +1,6 @@
 {
   "name": "@vertexvis/cli",
-  "version": "0.13.6",
+  "version": "0.13.7",
   "description": "The Vertex platform command-line interface (CLI).",
   "license": "MIT",
   "author": "Vertex Developers <support@vertexvis.com> (https://developer.vertexvis.com)",
@@ -27,7 +27,7 @@
     "@oclif/plugin-help": "^3",
     "@vertexvis/api-client-node": "^0.14",
     "cli-ux": "^5.6",
-    "fast-xml-parser": "^3.19",
+    "fast-xml-parser": "^3.20",
     "fs-extra": "^10.0",
     "p-limit": "^3.1",
     "tslib": "^2"
@@ -50,15 +50,15 @@
     "globby": "^11",
     "mocha": "^9",
     "nyc": "^15.1",
-    "prettier": "^2.3",
+    "prettier": "^2.4",
     "sinon": "^11.1",
     "source-map-support": "^0.5",
     "ts-node": "^10.2",
-    "typedoc": "^0.21",
-    "typescript": "4.3.x"
+    "typedoc": "^0.22",
+    "typescript": "4.4.x"
   },
   "engines": {
-    "node": ">=12.10"
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
   "files": [
     "/bin",

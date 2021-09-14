@@ -1,13 +1,17 @@
 import { flags } from '@oclif/command';
 import {
   createSceneAndSceneItems,
+  createSceneAndSceneItemsEXPERIMENTAL,
   CreateSceneAndSceneItemsReq,
   CreateSceneAndSceneItemsRes,
+  CreateSceneAndSceneItemsResEXPERIMENTAL,
   CreateSceneItemRequest,
   isFailure,
   logError,
+  SceneData,
   SceneRelationshipDataTypeEnum,
   Utf8,
+  VertexError,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
 import { readFile } from 'fs-extra';
@@ -21,6 +25,10 @@ import { progressBar } from '../lib/progress';
 type CreateSceneFn = (
   args: CreateSceneAndSceneItemsReq
 ) => Promise<CreateSceneAndSceneItemsRes>;
+
+type CreateSceneFnEXPERIMENTAL = (
+  args: CreateSceneAndSceneItemsReq
+) => Promise<CreateSceneAndSceneItemsResEXPERIMENTAL>;
 export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
 
@@ -35,6 +43,10 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
   public static flags = {
     ...BaseCommand.flags,
+    experimental: flags.boolean({
+      description: 'Whether or not to use batch scene item creation.',
+      default: false,
+    }),
     name: flags.string({
       description: 'Name of scene.',
     }),
@@ -58,16 +70,21 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
   };
 
   public async run(): Promise<void> {
-    await this.innerRun(createSceneAndSceneItems);
+    await this.innerRun(
+      createSceneAndSceneItems,
+      createSceneAndSceneItemsEXPERIMENTAL
+    );
   }
 
   public async innerRun(
     createSceneFn: CreateSceneFn,
+    createSceneFnEXPERIMENTAL: CreateSceneFnEXPERIMENTAL,
     showProgress = true
   ): Promise<void> {
     const {
       args: { path },
       flags: {
+        experimental,
         name,
         noFailFast,
         parallelism,
@@ -115,70 +132,144 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
       if (showProgress) progress.start(createSceneItemReqs.length, 0);
 
-      const res = await createSceneFn({
-        client,
-        createSceneItemReqs,
-        createSceneReq: () => ({
-          data: {
-            attributes: { name, suppliedId, treeEnabled },
-            type: SceneRelationshipDataTypeEnum.Scene,
+      let sceneData: SceneData | undefined;
+      if (experimental) {
+        const res = await createSceneFnEXPERIMENTAL({
+          client,
+          createSceneItemReqs,
+          createSceneReq: () => ({
+            data: {
+              attributes: { name, suppliedId, treeEnabled },
+              type: SceneRelationshipDataTypeEnum.Scene,
+            },
+          }),
+          failFast: !noFailFast,
+          onMsg: console.error,
+          onProgress: (complete, total) => {
+            if (showProgress) progress.update(complete);
+            if (complete === total) {
+              if (showProgress) progress.stop();
+              cli.action.start(
+                'Created scene items. Awaiting scene completion'
+              );
+            }
           },
-        }),
-        failFast: !noFailFast,
-        onMsg: console.error,
-        onProgress: (complete, total) => {
-          if (showProgress) progress.update(complete);
-          if (complete === total) {
-            if (showProgress) progress.stop();
-            cli.action.start('Created scene items. Awaiting scene completion');
-          }
-        },
-        parallelism,
-        verbose,
-      });
+          parallelism,
+          verbose,
+        });
 
-      const scene = res.scene.data;
-      const getSceneItemsRes = await client.sceneItems.getSceneItems({
-        id: scene.id,
-        pageSize: 1,
-      });
+        sceneData = res.scene.data;
+        if (res.errors.length > 0) {
+          this.warn(`Failed to create the following batches...`);
+          cli.table(
+            res.errors.map((e) => {
+              const batchErrors = isFailure(e.res)
+                ? e.res.errors
+                : e.res?.data.attributes.errors;
+              const first = (batchErrors ? [...batchErrors] : [])[0];
+              return {
+                error: first?.detail ? first.detail : first?.title,
+              };
+            }),
+            {
+              error: { header: 'Error' },
+            },
+            { 'no-truncate': true }
+          );
+        }
+
+        if (res.sceneItemErrors.length > 0) {
+          this.warn(`Failed to create the following scene-items...`);
+          cli.table(
+            res.sceneItemErrors.map((e) => {
+              return {
+                suppliedId: e.req.attributes.suppliedId,
+                suppliedPartId: e.req.attributes.source?.suppliedPartId,
+                suppliedRevisionId: e.req.attributes.source?.suppliedRevisionId,
+                relSource: e.req.relationships.source?.data,
+                error: e.res?.detail ? e.res.detail : e.res?.title,
+              };
+            }),
+            {
+              suppliedId: { header: 'Id' },
+              suppliedPartId: { header: 'PartId' },
+              suppliedRevisionId: { header: 'RevisionId' },
+              relSource: { header: 'Source' },
+              error: { header: 'Error' },
+            },
+            { 'no-truncate': true }
+          );
+        }
+      } else {
+        const res = await createSceneFn({
+          client,
+          createSceneItemReqs,
+          createSceneReq: () => ({
+            data: {
+              attributes: { name, suppliedId, treeEnabled },
+              type: SceneRelationshipDataTypeEnum.Scene,
+            },
+          }),
+          failFast: !noFailFast,
+          onMsg: console.error,
+          onProgress: (complete, total) => {
+            if (showProgress) progress.update(complete);
+            if (complete === total) {
+              if (showProgress) progress.stop();
+              cli.action.start(
+                'Created scene items. Awaiting scene completion'
+              );
+            }
+          },
+          parallelism,
+          verbose,
+        });
+
+        sceneData = res.scene.data;
+        if (res.errors.length > 0) {
+          this.warn(`Errors when creating the following scene items...`);
+          cli.table(
+            res.errors.map((e) => {
+              const errors = isFailure(e.res)
+                ? e.res.errors
+                : e.res?.data.attributes.errors;
+              const first = (errors ? [...errors] : [])[0];
+              return {
+                suppliedId: e.req.data.attributes.suppliedId,
+                suppliedPartId: e.req.data.attributes.source?.suppliedPartId,
+                suppliedRevisionId:
+                  e.req.data.attributes.source?.suppliedRevisionId,
+                relSource: e.req.data.relationships.source?.data,
+                error: first?.detail ? first.detail : first?.title,
+              };
+            }),
+            {
+              suppliedId: { header: 'Id' },
+              suppliedPartId: { header: 'PartId' },
+              suppliedRevisionId: { header: 'RevisionId' },
+              relSource: { header: 'Source' },
+              error: { header: 'Error' },
+            },
+            { 'no-truncate': true }
+          );
+        }
+      }
+
+      if (sceneData) {
+        this.log(sceneData.id);
+
+        const getSceneItemsRes = await client.sceneItems.getSceneItems({
+          id: sceneData.id,
+          pageSize: 1,
+        });
+        if (getSceneItemsRes.data.data.length === 0) {
+          this.error(`No scene items exist in the scene.`);
+        }
+      }
 
       cli.action.stop();
-      this.log(scene.id);
-
-      if (res.errors.length > 0) {
-        this.warn(`Failed to create the following scene items...`);
-        cli.table(
-          res.errors.map((e) => {
-            const errors = isFailure(e.res)
-              ? e.res.errors
-              : e.res?.data.attributes.errors;
-            const first = (errors ? [...errors] : [])[0];
-            return {
-              suppliedId: e.req.data.attributes.suppliedId,
-              suppliedPartId: e.req.data.attributes.source?.suppliedPartId,
-              suppliedRevisionId:
-                e.req.data.attributes.source?.suppliedRevisionId,
-              relSource: e.req.data.relationships.source?.data,
-              error: first?.detail ? first.detail : first?.title,
-            };
-          }),
-          {
-            suppliedId: { header: 'Id' },
-            suppliedPartId: { header: 'PartId' },
-            suppliedRevisionId: { header: 'RevisionId' },
-            relSource: { header: 'Source' },
-            error: { header: 'Error' },
-          },
-          { 'no-truncate': true }
-        );
-      }
-
-      if (getSceneItemsRes.data.data.length === 0) {
-        this.error(`No scene items exist in the scene.`);
-      }
     } catch (error) {
-      logError(error, this.error);
+      logError(error as VertexError, this.error);
     }
   }
 }

@@ -8,7 +8,7 @@ import {
 } from '@vertexvis/api-client-node';
 import { parse } from 'fast-xml-parser';
 
-import { SceneItem } from '.';
+import { SceneItem } from './index.d';
 
 interface CreateSceneItemArgs {
   readonly pathId: string;

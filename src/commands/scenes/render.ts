@@ -1,5 +1,5 @@
 import { flags } from '@oclif/command';
-import { logError, renderScene } from '@vertexvis/api-client-node';
+import { logError, renderScene, VertexError } from '@vertexvis/api-client-node';
 import { cli } from 'cli-ux';
 import { createWriteStream, writeFile } from 'fs-extra';
 
@@ -85,7 +85,7 @@ export default class Render extends BaseRenderCommand {
         this.log(out);
       }
     } catch (error) {
-      logError(error, this.error);
+      logError(error as VertexError, this.error);
     }
   }
 }

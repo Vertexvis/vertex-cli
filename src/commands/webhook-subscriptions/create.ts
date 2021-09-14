@@ -1,5 +1,5 @@
 import { flags } from '@oclif/command';
-import { logError } from '@vertexvis/api-client-node';
+import { logError, VertexError } from '@vertexvis/api-client-node';
 
 import BaseCommand from '../../lib/base';
 import { vertexClient } from '../../lib/client';
@@ -51,7 +51,7 @@ ta47eOIQtg13pSyf/PgpAB47r4JYJoAZfyzAcB5x8IHo+gQ
 
       this.log(res.data.data.attributes.secret);
     } catch (error) {
-      logError(error, this.error);
+      logError(error as VertexError, this.error);
     }
   }
 }
