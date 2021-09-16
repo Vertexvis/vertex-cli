@@ -115,17 +115,14 @@ export function generateHtml(
             );
 
             await scene
-              .items((op) => {
-                const deselect = selectedItemId
+              .items((op) => [
+                  ...(selectedItemId
                   ? [op.where((q) => q.withItemId(selectedItemId)).deselect()]
-                  : [];
-                return [
-                  ...deselect,
+                  : []),
                   op
                     .where((q) => q.withItemId(itemId))
                     .select(ColorMaterial.create(255, 255, 0)),
-                ];
-              })
+                ])
               .execute();
             selectedItemId = itemId;
           } else if (selectedItemId) {
