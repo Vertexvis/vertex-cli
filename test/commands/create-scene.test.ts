@@ -11,7 +11,7 @@ import { join } from 'path';
 import sinon, { assert } from 'sinon';
 
 import CreateScene from '../../src/commands/create-scene';
-import { SceneItem } from '../../src/create-items';
+import { SceneItem } from '../../src/create-items/index.d';
 import * as vc from '../../src/lib/client';
 
 const TestDataPath = join(__dirname, '..', 'test-data');

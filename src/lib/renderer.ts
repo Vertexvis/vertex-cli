@@ -24,7 +24,7 @@ export function validateImage({
   onError: (msg: string) => void;
   resource: string;
 }): void {
-  if (parseInt(length, 10) < 140) {
+  if (Number.parseInt(length, 10) < 140) {
     onError(`Received empty image for ${resource} ${id}.`);
   }
 }

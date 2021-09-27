@@ -8,11 +8,11 @@ import {
   Utf8,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
-import { createReadStream, readFile } from 'fs-extra';
+import { readFile } from 'fs-extra';
 import pLimit from 'p-limit';
 import { join } from 'path';
 
-import { SceneItem } from '../create-items';
+import { SceneItem } from '../create-items/index.d';
 import BaseCommand from '../lib/base';
 import { vertexClient } from '../lib/client';
 import { directoryExists, fileExists } from '../lib/fs';
@@ -25,7 +25,7 @@ type CreatePartsFn = (
 interface Args extends BaseReq {
   readonly createPartsFn: CreatePartsFn;
   readonly fileName: string;
-  readonly path: string;
+  readonly filePath: string;
   readonly indexMetadata: boolean;
   readonly suppliedInstanceIdKey?: string;
   readonly suppliedPartId: string;
@@ -99,7 +99,7 @@ export default class CreateParts extends BaseCommand {
               verbose,
               fileName,
               indexMetadata: i.indexMetadata ?? false,
-              path: srcPath,
+              filePath: srcPath,
               suppliedInstanceIdKey: i.suppliedInstanceIdKey,
               suppliedPartId: i.source?.suppliedPartId,
               suppliedRevisionId: i.source?.suppliedRevisionId,
@@ -136,7 +136,7 @@ function createPart({
   createPartsFn,
   fileName,
   indexMetadata,
-  path,
+  filePath,
   suppliedInstanceIdKey,
   suppliedPartId,
   suppliedRevisionId,
@@ -166,7 +166,7 @@ function createPart({
         type: 'part',
       },
     }),
-    fileData: createReadStream(path),
+    filePath,
     onMsg: console.error,
     verbose,
   });
