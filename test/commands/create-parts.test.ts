@@ -12,7 +12,7 @@ import { join } from 'path';
 import sinon, { assert, SinonSpyCall } from 'sinon';
 
 import CreateParts from '../../src/commands/create-parts';
-import { SceneItem } from '../../src/create-items';
+import { SceneItem } from '../../src/create-items/index.d';
 import * as vc from '../../src/lib/client';
 
 const client = {} as VertexClient;
@@ -137,7 +137,7 @@ function createReq(
         type: 'part',
       },
     }),
-    fileData: sinon.match.any,
+    filePath: join(TestDataPath, fileName),
     onMsg: console.error,
     verbose: true,
   };

@@ -16,7 +16,7 @@ import {
 import cli from 'cli-ux';
 import { readFile } from 'fs-extra';
 
-import { SceneItem } from '../create-items';
+import { SceneItem } from '../create-items/index.d';
 import BaseCommand from '../lib/base';
 import { vertexClient } from '../lib/client';
 import { fileExists } from '../lib/fs';
