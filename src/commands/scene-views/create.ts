@@ -5,49 +5,41 @@ import BaseCommand from '../../lib/base';
 import { vertexClient } from '../../lib/client';
 
 export default class Create extends BaseCommand {
-  public static description = `Create a stream key for a scene.`;
+  public static description = `Create a scene view for a scene.`;
 
   public static examples = [
-    `$ vertex stream-keys:create --sceneId f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
+    `$ vertex scene-views:create --sceneId f79d4760-0b71-44e4-ad0b-22743fdd4ca3
+bf0c4343-96eb-4aa9-8dee-e79c6458dedf
 `,
   ];
 
   public static flags = {
     ...BaseCommand.flags,
-    expiry: flags.integer({
-      char: 'k',
-      description: `Expiry in seconds to set on stream-key.`,
-      default: 600,
-    }),
     sceneId: flags.string({
-      description: `Scene to access with stream key.`,
+      description: `Scene to base scene view on.`,
       required: true,
     }),
   };
 
   public async run(): Promise<void> {
     const {
-      flags: { expiry, sceneId },
+      flags: { sceneId },
     } = this.parse(Create);
     const basePath = this.parsedFlags?.basePath;
-    if (expiry < 1) {
-      this.error(`Invalid expiry ${expiry}.`);
-    }
 
     try {
       const client = await vertexClient(basePath, this.userConfig);
-      const createRes = await client.streamKeys.createSceneStreamKey({
+      const createRes = await client.sceneViews.createSceneView({
         id: sceneId,
-        createStreamKeyRequest: {
+        createSceneViewRequest: {
           data: {
-            attributes: { expiry: expiry },
-            type: 'stream-key',
+            attributes: {},
+            type: 'scene-view',
           },
         },
       });
 
-      this.log(createRes.data.data.attributes.key);
+      this.log(createRes.data.data.id);
     } catch (error) {
       logError(error as VertexError, this.error);
     }
