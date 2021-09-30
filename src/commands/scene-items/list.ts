@@ -3,23 +3,23 @@ import { logError, VertexError } from '@vertexvis/api-client-node';
 
 import BaseListCommand from '../../lib/base-list';
 import { vertexClient } from '../../lib/client';
-import { getterFn, sceneViewGetter } from '../../lib/getter';
+import { getterFn, sceneItemGetter } from '../../lib/getter';
 
 export default class List extends BaseListCommand {
-  public static description = `Get scene views.`;
+  public static description = `Get scene items.`;
 
   public static examples = [
-    `$ vertex scene-views:list
+    `$ vertex scene-items:list
 Id                                   Name
-54964c61-05d8-4f37-9638-18f7c4960c80 my-scene-view-1
-a8070713-e48e-466b-b4bb-b3132895d5ce my-scene-view-2
+54964c61-05d8-4f37-9638-18f7c4960c80 my-scene-item-1
+a8070713-e48e-466b-b4bb-b3132895d5ce my-scene-item-2
 `,
   ];
 
   public static flags = {
     ...BaseListCommand.flags,
     sceneId: flags.string({
-      description: `Scene to list scene views.`,
+      description: `Scene to list scene items.`,
       required: true,
     }),
   };
@@ -36,7 +36,7 @@ a8070713-e48e-466b-b4bb-b3132895d5ce my-scene-view-2
         cursor,
         extended,
         id: sceneId,
-        getter: sceneViewGetter({
+        getter: sceneItemGetter({
           client: await vertexClient(basePath, this.userConfig),
           verbose,
         }),

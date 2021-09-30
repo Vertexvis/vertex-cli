@@ -6,6 +6,7 @@ import {
   PartData,
   prettyJson,
   SceneData,
+  SceneItemData,
   SceneViewData,
   SceneViewStateData,
 } from '@vertexvis/api-client-node';
@@ -122,6 +123,41 @@ export function sceneGetter({ client }: BaseReq): Getter<SceneData> {
           suppliedId: { extended: true, header: 'SuppliedId' },
           state: { extended: true },
           created: { extended: true },
+        },
+        { extended }
+      ),
+  };
+}
+
+export function sceneItemGetter({ client }: BaseReq): Getter<SceneItemData> {
+  return {
+    getOne: async (id: string): Promise<SceneItemData> => {
+      return (await client.sceneItems.getSceneItem({ id })).data.data;
+    },
+    getAll: async (
+      cursor?: string,
+      id?: string
+    ): Promise<Paged<SceneItemData>> => {
+      const res = await getPage(() =>
+        client.sceneItems.getSceneItems({
+          id: id ?? '',
+          pageCursor: cursor,
+          pageSize: 25,
+        })
+      );
+      return { items: res.page.data, cursor: res.cursor };
+    },
+    displayOne: (res: Paged<SceneItemData>): void =>
+      console.log(prettyJson(head(res.items))),
+    displayAll: (res: Paged<SceneItemData>, extended: boolean): void =>
+      cli.table(
+        res.items.map((f) => ({ id: f.id, ...f.attributes })),
+        {
+          id: { minWidth: 36 },
+          name: { minWidth: 12 },
+          suppliedId: { extended: true, header: 'SuppliedId' },
+          created: { extended: true },
+          visible: { extended: true },
         },
         { extended }
       ),
