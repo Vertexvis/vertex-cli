@@ -59,7 +59,7 @@ export function generateHtml(
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/@vertexvis/viewer@0.10.x/dist/viewer/viewer.css"
+      href="https://unpkg.com/@vertexvis/viewer@0.11.x/dist/viewer/viewer.css"
     />
     <style>
       html,
@@ -75,11 +75,11 @@ export function generateHtml(
   <body>
     <script
       type="module"
-      src="https://unpkg.com/@vertexvis/viewer@0.10.x/dist/viewer/viewer.esm.js"
+      src="https://unpkg.com/@vertexvis/viewer@0.11.x/dist/viewer/viewer.esm.js"
     ></script>
     <script
       nomodule
-      src="https://unpkg.com/@vertexvis/viewer@0.10.x/dist/viewer.js"
+      src="https://unpkg.com/@vertexvis/viewer@0.11.x/dist/viewer.js"
     ></script>
 
     <vertex-viewer
@@ -89,8 +89,8 @@ export function generateHtml(
     </vertex-viewer>
 
     <script type="module">
-      import { applyPolyfills, defineCustomElements } from 'https://unpkg.com/@vertexvis/viewer@0.10.x/loader/index.js';
-      import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.10.x/dist/esm/index.js';
+      import { applyPolyfills, defineCustomElements } from 'https://unpkg.com/@vertexvis/viewer@0.11.x/loader/index.js';
+      import { ColorMaterial } from 'https://unpkg.com/@vertexvis/viewer@0.11.x/dist/esm/index.js';
 
       async function main() {
         await applyPolyfills();
