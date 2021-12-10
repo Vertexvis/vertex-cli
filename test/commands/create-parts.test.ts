@@ -137,7 +137,7 @@ function createReq(
         type: 'part',
       },
     }),
-    filePath: join(TestDataPath, fileName),
+    fileData: sinon.match.any as unknown as Buffer,
     onMsg: console.error,
     verbose: true,
   };

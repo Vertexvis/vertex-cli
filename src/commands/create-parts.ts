@@ -8,6 +8,7 @@ import {
   Utf8,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
+import { readFileSync } from 'fs';
 import { readFile } from 'fs-extra';
 import pLimit from 'p-limit';
 import { join } from 'path';
@@ -98,8 +99,8 @@ export default class CreateParts extends BaseCommand {
               client,
               verbose,
               fileName,
-              indexMetadata: i.indexMetadata ?? false,
               filePath: srcPath,
+              indexMetadata: i.indexMetadata ?? false,
               suppliedInstanceIdKey: i.suppliedInstanceIdKey,
               suppliedPartId: i.source?.suppliedPartId,
               suppliedRevisionId: i.source?.suppliedRevisionId,
@@ -135,8 +136,8 @@ function createPart({
   client,
   createPartsFn,
   fileName,
-  indexMetadata,
   filePath,
+  indexMetadata,
   suppliedInstanceIdKey,
   suppliedPartId,
   suppliedRevisionId,
@@ -166,7 +167,7 @@ function createPart({
         type: 'part',
       },
     }),
-    filePath,
+    fileData: readFileSync(filePath),
     onMsg: console.error,
     verbose,
   });
