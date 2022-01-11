@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@oclif/command": "^1",
-    "@oclif/config": "^1",
+    "@oclif/config": "^1.18.2",
     "@oclif/plugin-help": "^3",
     "@vertexvis/api-client-node": "^0.15.6",
     "cli-ux": "^5.6",
