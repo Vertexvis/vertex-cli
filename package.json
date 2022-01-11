@@ -22,7 +22,7 @@
     "vertex": "./bin/run"
   },
   "dependencies": {
-    "@oclif/command": "^1",
+    "@oclif/command": "^1.8.16",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
     "@vertexvis/api-client-node": "^0.15.6",
