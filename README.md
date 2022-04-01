@@ -54,6 +54,7 @@ USAGE
 * [`vertex create-items [PATH]`](#vertex-create-items-path)
 * [`vertex create-parts [PATH]`](#vertex-create-parts-path)
 * [`vertex create-scene [PATH]`](#vertex-create-scene-path)
+* [`vertex exports:create [PATH]`](#vertex-exportscreate-id)
 * [`vertex files:delete [ID]`](#vertex-filesdelete-id)
 * [`vertex files:get ID`](#vertex-filesget-id)
 * [`vertex files:list`](#vertex-fileslist)
@@ -174,7 +175,48 @@ EXAMPLE
   f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 ```
 
-_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/create-scene.ts)_
+## `vertex exports:create ID format`
+
+Export a given scene to a file
+
+```
+USAGE
+  $ vertex exports:create ID format
+
+OPTIONS
+  -b, --basePath=basePath        [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help                     show CLI help
+  -v, --verbose
+  --sceneId=sceneId              ID of the scene to export
+  --format=format                File format to use for the exported scene.  Currently supports jt and step
+
+EXAMPLE
+  $ vertex exports:create --sceneId 0aaa951c-283e-4695-9e95-9c6708d9a643 --format jt
+  f79d4760-0b71-44e4-ad0b-22743fdd4ca3
+```
+
+_See code: [src/commands/exports/create.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/exports/create.ts)_
+
+## `vertex exports:get ID`
+
+Get an export and download the exported file
+
+```
+USAGE
+  $ vertex exports:get ID
+
+OPTIONS
+  -b, --basePath=basePath        [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help                     show CLI help
+  -v, --verbose
+  --id=exportId                  ID of the export
+
+EXAMPLE
+  $ vertex exports:get f79d4760-0b71-44e4-ad0b-22743fdd4ca3
+  Export saved as: f79d4760-0b71-44e4-ad0b-22743fdd4ca3
+```
+
+_See code: [src/commands/exports/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/exports/get.ts)_
 
 ## `vertex files:delete [ID]`
 
