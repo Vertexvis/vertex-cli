@@ -49,19 +49,24 @@ export async function getterFn<T>({
   }
 }
 
-export function exportGetter({ client }: BaseReq): Getter<ExportData> {
+export function exportGetter(
+  { client }: BaseReq,
+  download = false
+): Getter<ExportData> {
   return {
     getOne: async (id: string): Promise<ExportData> => {
       const theExport = (await client.exports.getExport({ id })).data.data;
 
-      const file = createWriteStream(theExport.id);
-      get(theExport.attributes.downloadUrl, (res) => {
-        res.pipe(file);
-        file.on('finish', () => {
-          file.close();
-          cli.log(`Export saved as: ${theExport.id}`);
+      if (download) {
+        const file = createWriteStream(theExport.id);
+        get(theExport.attributes.downloadUrl, (res) => {
+          res.pipe(file);
+          file.on('finish', () => {
+            file.close();
+            cli.log(`Export saved as: ${theExport.id}`);
+          });
         });
-      });
+      }
 
       return theExport;
     },
