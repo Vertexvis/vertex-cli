@@ -39,7 +39,7 @@ $ npm install -g @vertexvis/cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/cli/0.14.5 darwin-x64 node-v16.13.1
+@vertexvis/cli/0.16.1 darwin-x64 node-v16.14.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
@@ -54,7 +54,9 @@ USAGE
 * [`vertex create-items [PATH]`](#vertex-create-items-path)
 * [`vertex create-parts [PATH]`](#vertex-create-parts-path)
 * [`vertex create-scene [PATH]`](#vertex-create-scene-path)
-* [`vertex exports:create [PATH]`](#vertex-exportscreate-id)
+* [`vertex exports:create`](#vertex-exportscreate)
+* [`vertex exports:download ID`](#vertex-exportsdownload-id)
+* [`vertex exports:get ID`](#vertex-exportsget-id)
 * [`vertex files:delete [ID]`](#vertex-filesdelete-id)
 * [`vertex files:get ID`](#vertex-filesget-id)
 * [`vertex files:list`](#vertex-fileslist)
@@ -97,7 +99,7 @@ EXAMPLE
   Saved 'https://platform.vertexvis.com' configuration to '~/.config/@vertexvis/cli/config.json'.
 ```
 
-_See code: [src/commands/configure.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/configure.ts)_
+_See code: [src/commands/configure.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/configure.ts)_
 
 ## `vertex create-items [PATH]`
 
@@ -126,7 +128,7 @@ EXAMPLE
   Wrote 5 pvs item(s) from '[YOUR_PATH_TO_XML_FILE]' to 'items.json'.
 ```
 
-_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/create-items.ts)_
+_See code: [src/commands/create-items.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/create-items.ts)_
 
 ## `vertex create-parts [PATH]`
 
@@ -145,10 +147,10 @@ OPTIONS
 
 EXAMPLE
   $ vertex create-parts --directory [YOUR_PATH_TO_GEOMETRY_DIRECTORY] [YOUR_PATH_TO_JSON_FILE]
-     ████████████████████████████████████████ 100% | 10/10
+    ████████████████████████████████████████ 100% | 10/10
 ```
 
-_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/create-parts.ts)_
+_See code: [src/commands/create-parts.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/create-parts.ts)_
 
 ## `vertex create-scene [PATH]`
 
@@ -171,52 +173,76 @@ OPTIONS
 
 EXAMPLE
   $ vertex create-scene --name my-scene [YOUR_PATH_TO_JSON_FILE]
-     ████████████████████████████████████████ 100% | 10/10
+    ████████████████████████████████████████ 100% | 10/10
   f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 ```
 
-## `vertex exports:create ID format`
+_See code: [src/commands/create-scene.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/create-scene.ts)_
 
-Export a given scene to a file
+## `vertex exports:create`
+
+Create an export for a scene.
 
 ```
 USAGE
-  $ vertex exports:create ID format
+  $ vertex exports:create
 
 OPTIONS
-  -b, --basePath=basePath        [default: https://platform.vertexvis.com] Vertex API base path.
-  -h, --help                     show CLI help
+  -b, --basePath=basePath  [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help               show CLI help
   -v, --verbose
-  --sceneId=sceneId              ID of the scene to export
-  --format=format                File format to use for the exported scene.  Currently supports jt and step
+  --format=format          (required) Type of file to export. Currently supports 'step' and 'jt'
+  --sceneId=sceneId        (required) Scene to export.
 
 EXAMPLE
-  $ vertex exports:create --sceneId 0aaa951c-283e-4695-9e95-9c6708d9a643 --format jt
-  f79d4760-0b71-44e4-ad0b-22743fdd4ca3
+  $ vertex exports:create --sceneId f79d4760-0b71-44e4-ad0b-22743fdd4ca3 --format jt
+  bf0c4343-96eb-4aa9-8dee-e79c6458dedf
 ```
 
-_See code: [src/commands/exports/create.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/exports/create.ts)_
+_See code: [src/commands/exports/create.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/exports/create.ts)_
+
+## `vertex exports:download ID`
+
+Download an export.
+
+```
+USAGE
+  $ vertex exports:download ID
+
+OPTIONS
+  -b, --basePath=basePath  [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help               show CLI help
+  -v, --verbose
+  --extended               Display extended output.
+
+EXAMPLE
+  $ vertex exports:download 54964c61-05d8-4f37-9638-18f7c4960c80
+  Export saved as: 54964c61-05d8-4f37-9638-18f7c4960c80
+```
+
+_See code: [src/commands/exports/download.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/exports/download.ts)_
 
 ## `vertex exports:get ID`
 
-Get an export and download the exported file
+Get an export.
 
 ```
 USAGE
   $ vertex exports:get ID
 
 OPTIONS
-  -b, --basePath=basePath        [default: https://platform.vertexvis.com] Vertex API base path.
-  -h, --help                     show CLI help
+  -b, --basePath=basePath  [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help               show CLI help
   -v, --verbose
-  --id=exportId                  ID of the export
+  --extended               Display extended output.
 
 EXAMPLE
-  $ vertex exports:get f79d4760-0b71-44e4-ad0b-22743fdd4ca3
-  Export saved as: f79d4760-0b71-44e4-ad0b-22743fdd4ca3
+  $ vertex exports:get 54964c61-05d8-4f37-9638-18f7c4960c80
+  Id                                   DownloadUrl
+  54964c61-05d8-4f37-9638-18f7c4960c80 https://some-url.com/some-file
 ```
 
-_See code: [src/commands/exports/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/exports/get.ts)_
+_See code: [src/commands/exports/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/exports/get.ts)_
 
 ## `vertex files:delete [ID]`
 
@@ -238,7 +264,7 @@ EXAMPLE
   Deleting file(s)...... done
 ```
 
-_See code: [src/commands/files/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/files/delete.ts)_
+_See code: [src/commands/files/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/files/delete.ts)_
 
 ## `vertex files:get ID`
 
@@ -260,7 +286,7 @@ EXAMPLE
   54964c61-05d8-4f37-9638-18f7c4960c80 my-file
 ```
 
-_See code: [src/commands/files/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/files/get.ts)_
+_See code: [src/commands/files/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/files/get.ts)_
 
 ## `vertex files:list`
 
@@ -284,7 +310,7 @@ EXAMPLE
   a8070713-e48e-466b-b4bb-b3132895d5ce my-file-2
 ```
 
-_See code: [src/commands/files/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/files/list.ts)_
+_See code: [src/commands/files/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/files/list.ts)_
 
 ## `vertex help [COMMAND]`
 
@@ -301,7 +327,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.3.1/src/commands/help.ts)_
 
 ## `vertex part-revisions:render ID`
 
@@ -324,7 +350,7 @@ EXAMPLE
   54964c61-05d8-4f37-9638-18f7c4960c80.jpg
 ```
 
-_See code: [src/commands/part-revisions/render.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/part-revisions/render.ts)_
+_See code: [src/commands/part-revisions/render.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/part-revisions/render.ts)_
 
 ## `vertex parts:delete [ID]`
 
@@ -346,7 +372,7 @@ EXAMPLE
   Deleting part(s)...... done
 ```
 
-_See code: [src/commands/parts/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/parts/delete.ts)_
+_See code: [src/commands/parts/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/parts/delete.ts)_
 
 ## `vertex parts:get ID`
 
@@ -368,7 +394,7 @@ EXAMPLE
   54964c61-05d8-4f37-9638-18f7c4960c80 my-part
 ```
 
-_See code: [src/commands/parts/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/parts/get.ts)_
+_See code: [src/commands/parts/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/parts/get.ts)_
 
 ## `vertex parts:list`
 
@@ -392,7 +418,7 @@ EXAMPLE
   a8070713-e48e-466b-b4bb-b3132895d5ce my-part-2
 ```
 
-_See code: [src/commands/parts/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/parts/list.ts)_
+_See code: [src/commands/parts/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/parts/list.ts)_
 
 ## `vertex scene-items:get ID`
 
@@ -414,7 +440,7 @@ EXAMPLE
   54964c61-05d8-4f37-9638-18f7c4960c80 my-scene-item
 ```
 
-_See code: [src/commands/scene-items/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scene-items/get.ts)_
+_See code: [src/commands/scene-items/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scene-items/get.ts)_
 
 ## `vertex scene-items:list`
 
@@ -439,7 +465,7 @@ EXAMPLE
   a8070713-e48e-466b-b4bb-b3132895d5ce my-scene-item-2
 ```
 
-_See code: [src/commands/scene-items/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scene-items/list.ts)_
+_See code: [src/commands/scene-items/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scene-items/list.ts)_
 
 ## `vertex scene-view-states:delete [ID]`
 
@@ -461,7 +487,7 @@ EXAMPLE
   Deleting scene view state(s)...... done
 ```
 
-_See code: [src/commands/scene-view-states/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scene-view-states/delete.ts)_
+_See code: [src/commands/scene-view-states/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scene-view-states/delete.ts)_
 
 ## `vertex scene-view-states:get ID`
 
@@ -483,7 +509,7 @@ EXAMPLE
   54964c61-05d8-4f37-9638-18f7c4960c80 my-scene-view-state
 ```
 
-_See code: [src/commands/scene-view-states/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scene-view-states/get.ts)_
+_See code: [src/commands/scene-view-states/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scene-view-states/get.ts)_
 
 ## `vertex scene-view-states:list`
 
@@ -508,7 +534,7 @@ EXAMPLE
   a8070713-e48e-466b-b4bb-b3132895d5ce my-scene-view-state-2
 ```
 
-_See code: [src/commands/scene-view-states/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scene-view-states/list.ts)_
+_See code: [src/commands/scene-view-states/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scene-view-states/list.ts)_
 
 ## `vertex scene-views:create`
 
@@ -529,7 +555,7 @@ EXAMPLE
   bf0c4343-96eb-4aa9-8dee-e79c6458dedf
 ```
 
-_See code: [src/commands/scene-views/create.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scene-views/create.ts)_
+_See code: [src/commands/scene-views/create.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scene-views/create.ts)_
 
 ## `vertex scene-views:get ID`
 
@@ -551,7 +577,7 @@ EXAMPLE
   54964c61-05d8-4f37-9638-18f7c4960c80 my-scene-view
 ```
 
-_See code: [src/commands/scene-views/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scene-views/get.ts)_
+_See code: [src/commands/scene-views/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scene-views/get.ts)_
 
 ## `vertex scene-views:list`
 
@@ -576,7 +602,7 @@ EXAMPLE
   a8070713-e48e-466b-b4bb-b3132895d5ce my-scene-view-2
 ```
 
-_See code: [src/commands/scene-views/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scene-views/list.ts)_
+_See code: [src/commands/scene-views/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scene-views/list.ts)_
 
 ## `vertex scene-views:render ID`
 
@@ -599,7 +625,7 @@ EXAMPLE
   54964c61-05d8-4f37-9638-18f7c4960c80.jpg
 ```
 
-_See code: [src/commands/scene-views/render.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scene-views/render.ts)_
+_See code: [src/commands/scene-views/render.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scene-views/render.ts)_
 
 ## `vertex scenes:delete [ID]`
 
@@ -621,7 +647,7 @@ EXAMPLE
   Deleting scene(s)...... done
 ```
 
-_See code: [src/commands/scenes/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scenes/delete.ts)_
+_See code: [src/commands/scenes/delete.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scenes/delete.ts)_
 
 ## `vertex scenes:get ID`
 
@@ -643,7 +669,7 @@ EXAMPLE
   54964c61-05d8-4f37-9638-18f7c4960c80 my-scene
 ```
 
-_See code: [src/commands/scenes/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scenes/get.ts)_
+_See code: [src/commands/scenes/get.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scenes/get.ts)_
 
 ## `vertex scenes:list`
 
@@ -667,7 +693,7 @@ EXAMPLE
   a8070713-e48e-466b-b4bb-b3132895d5ce my-scene-2
 ```
 
-_See code: [src/commands/scenes/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scenes/list.ts)_
+_See code: [src/commands/scenes/list.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scenes/list.ts)_
 
 ## `vertex scenes:render ID`
 
@@ -691,7 +717,7 @@ EXAMPLE
   54964c61-05d8-4f37-9638-18f7c4960c80.jpg
 ```
 
-_See code: [src/commands/scenes/render.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/scenes/render.ts)_
+_See code: [src/commands/scenes/render.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/scenes/render.ts)_
 
 ## `vertex stream-keys:create`
 
@@ -713,7 +739,7 @@ EXAMPLE
   hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
 ```
 
-_See code: [src/commands/stream-keys/create.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/stream-keys/create.ts)_
+_See code: [src/commands/stream-keys/create.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/stream-keys/create.ts)_
 
 ## `vertex webhook-subscriptions:create`
 
@@ -735,5 +761,5 @@ EXAMPLE
   ta47eOIQtg13pSyf/PgpAB47r4JYJoAZfyzAcB5x8IHo+gQ
 ```
 
-_See code: [src/commands/webhook-subscriptions/create.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.14.5/src/commands/webhook-subscriptions/create.ts)_
+_See code: [src/commands/webhook-subscriptions/create.ts](https://github.com/Vertexvis/vertex-cli/blob/v0.16.1/src/commands/webhook-subscriptions/create.ts)_
 <!-- commandsstop -->
