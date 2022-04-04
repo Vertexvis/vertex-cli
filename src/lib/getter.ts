@@ -1,5 +1,6 @@
 import {
   BaseReq,
+  ExportData,
   FileMetadataData,
   getPage,
   head,
@@ -11,6 +12,8 @@ import {
   SceneViewStateData,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
+import { createWriteStream } from 'fs';
+import { get } from 'https';
 
 interface Paged<T> {
   items: T[];
@@ -44,6 +47,39 @@ export async function getterFn<T>({
   } else if (id) {
     getter.displayOne({ items: [await getter.getOne(id)] });
   }
+}
+
+export function exportGetter({ client }: BaseReq): Getter<ExportData> {
+  return {
+    getOne: async (id: string): Promise<ExportData> => {
+      const theExport = (await client.exports.getExport({ id })).data.data;
+
+      const file = createWriteStream(theExport.id);
+      get(theExport.attributes.downloadUrl, (res) => {
+        res.pipe(file);
+        file.on('finish', () => {
+          file.close();
+          cli.log(`Export saved as: ${theExport.id}`);
+        });
+      });
+
+      return theExport;
+    },
+    getAll: () => {
+      throw new Error('Not implemented');
+    },
+    displayOne: (res: Paged<ExportData>): void =>
+      console.log(prettyJson(head(res.items))),
+    displayAll: (res: Paged<ExportData>, extended: boolean): void =>
+      cli.table(
+        res.items.map((f) => ({ id: f.id, ...f.attributes })),
+        {
+          id: { minWidth: 36 },
+          downloadUrl: { minWidth: 12 },
+        },
+        { extended }
+      ),
+  };
 }
 
 export function fileGetter({ client }: BaseReq): Getter<FileMetadataData> {
