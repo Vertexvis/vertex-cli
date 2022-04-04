@@ -1,6 +1,6 @@
 {
   "name": "@vertexvis/cli",
-  "version": "0.14.5",
+  "version": "0.16.0",
   "description": "The Vertex platform command-line interface (CLI).",
   "license": "MIT",
   "author": "Vertex Developers <support@vertexvis.com> (https://developer.vertexvis.com)",
@@ -24,7 +24,7 @@
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1.18.2",
-    "@oclif/plugin-help": "^3.3.1",
+    "@oclif/plugin-help": "^5.1.12",
     "@vertexvis/api-client-node": "^0.17.0",
     "cli-ux": "^5.6.7",
     "fast-xml-parser": "^3.21",
@@ -75,6 +75,9 @@
       "@oclif/plugin-help"
     ],
     "topics": {
+      "exports": {
+        "description": "Exports CRUD operations."
+      },
       "files": {
         "description": "File CRUD operations."
       },
