@@ -636,10 +636,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@vertexvis/api-client-node@^0.17.0":
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/@vertexvis/api-client-node/-/api-client-node-0.17.0.tgz#a129bf3a4ba3bd2a6feba42503926945b797542d"
-  integrity sha512-n9TU//qXpaCM8DZx3Wn/mudrOoLfETF+OnM59VXD0brYYvfDx+ZvZzzO/EWqD1jTLi4J5g/fQUgo+ja2rj3lyA==
+"@vertexvis/api-client-node@^0.17.1":
+  version "0.17.3"
+  resolved "https://registry.yarnpkg.com/@vertexvis/api-client-node/-/api-client-node-0.17.3.tgz#730ae163bebea176fc63d7f96aded2bfaecd895d"
+  integrity sha512-bauAmvxa1au66h7yPWqBAogjgjr/Oi2rjdmt9CHbtZQ/hUkQfKBtwftabU7uKx4XiclKaNtUMNKa+uNhg+peSA==
   dependencies:
     axios "^0.24"
     p-limit "^3"
