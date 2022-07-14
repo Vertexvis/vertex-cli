@@ -25,7 +25,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1.18.2",
     "@oclif/plugin-help": "^3.3.1",
-    "@vertexvis/api-client-node": "^0.18.1",
+    "@vertexvis/api-client-node": "^0.20.0",
     "cli-ux": "^5.6.7",
     "fast-xml-parser": "^3.21",
     "fs-extra": "^10.1.0",
