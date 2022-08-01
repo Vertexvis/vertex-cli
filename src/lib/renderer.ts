@@ -83,7 +83,6 @@ export function generateHtml(
   <body>
     <vertex-viewer
       class="viewer"
-      client-id="${clientId || `[CLIENT_ID]`}"
     >
     </vertex-viewer>
 
