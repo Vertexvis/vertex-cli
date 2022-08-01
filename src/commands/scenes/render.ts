@@ -54,7 +54,7 @@ export default class Render extends BaseRenderCommand {
         if (!key) this.error('Error creating stream-key');
         await writeFile(
           out,
-          generateHtml(key, basePath, this.userConfig?.client?.id)
+          generateHtml(key, basePath)
         );
 
         await cli.open(out);

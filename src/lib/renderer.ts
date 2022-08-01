@@ -42,8 +42,7 @@ export function createFile(
 
 export function generateHtml(
   streamKey: string,
-  basePath: string,
-  clientId?: string
+  basePath: string
 ): string {
   const config = basePath.includes('platdev')
     ? `platdev`
