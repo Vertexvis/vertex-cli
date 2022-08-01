@@ -52,10 +52,7 @@ export default class Render extends BaseRenderCommand {
         const out = output || `${id}.html`;
         const key = streamKeyRes.data.data.attributes.key;
         if (!key) this.error('Error creating stream-key');
-        await writeFile(
-          out,
-          generateHtml(key, basePath, this.userConfig?.client?.id)
-        );
+        await writeFile(out, generateHtml(key, basePath));
 
         await cli.open(out);
         this.log(out);
