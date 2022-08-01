@@ -40,10 +40,7 @@ export function createFile(
   });
 }
 
-export function generateHtml(
-  streamKey: string,
-  basePath: string
-): string {
+export function generateHtml(streamKey: string, basePath: string): string {
   const config = basePath.includes('platdev')
     ? `platdev`
     : basePath.includes('platstaging')
