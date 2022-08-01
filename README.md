@@ -39,7 +39,7 @@ $ npm install -g @vertexvis/cli
 $ vertex COMMAND
 running command...
 $ vertex (-v|--version|version)
-@vertexvis/cli/0.16.2 darwin-x64 node-v14.17.3
+@vertexvis/cli/0.16.2 darwin-x64 node-v16.16.0
 $ vertex --help [COMMAND]
 USAGE
   $ vertex COMMAND
