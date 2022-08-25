@@ -11,7 +11,7 @@ import cli from 'cli-ux';
 import { readFileSync } from 'fs';
 import { readFile } from 'fs-extra';
 import pLimit from 'p-limit';
-import { join, basename } from 'path';
+import { basename, join } from 'path';
 
 import { SceneItem } from '../create-items/index.d';
 import BaseCommand from '../lib/base';
