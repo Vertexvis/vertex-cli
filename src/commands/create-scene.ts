@@ -3,12 +3,15 @@ import {
   createSceneAndSceneItems,
   createSceneAndSceneItemsEXPERIMENTAL,
   CreateSceneAndSceneItemsReq,
+  CreateSceneAndSceneItemsReqEXPERIMENTAL,
   CreateSceneAndSceneItemsRes,
   CreateSceneAndSceneItemsResEXPERIMENTAL,
   CreateSceneItemRequest,
+  getPage,
   isFailure,
   logError,
   SceneData,
+  SceneItemData,
   SceneRelationshipDataTypeEnum,
   Utf8,
   VertexError,
@@ -27,7 +30,7 @@ type CreateSceneFn = (
 ) => Promise<CreateSceneAndSceneItemsRes>;
 
 type CreateSceneFnEXPERIMENTAL = (
-  args: CreateSceneAndSceneItemsReq
+  args: CreateSceneAndSceneItemsReqEXPERIMENTAL
 ) => Promise<CreateSceneAndSceneItemsResEXPERIMENTAL>;
 export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
@@ -105,38 +108,43 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
       const progress = progressBar('Creating scene');
       const client = await vertexClient(basePath, this.userConfig);
       const items: SceneItem[] = JSON.parse(await readFile(path, Utf8));
-      items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
-
-      const createSceneItemReqs: CreateSceneItemRequest[] = items.map((i) => ({
-        data: {
-          attributes: {
-            materialOverride: i.materialOverride,
-            parent: i.parentId,
-            partInstanceSuppliedIdsAsSuppliedIds: Boolean(
-              i.suppliedInstanceIdKey
-            ),
-            source: i.source
-              ? {
-                  suppliedPartId: i.source.suppliedPartId,
-                  suppliedRevisionId: i.source.suppliedRevisionId,
-                }
-              : undefined,
-            suppliedId: i.suppliedId,
-            transform: i.transform,
-            visible: true,
-          },
-          relationships: {},
-          type: 'scene-item',
-        },
-      }));
-
-      if (showProgress) progress.start(createSceneItemReqs.length, 0);
 
       let sceneData: SceneData | undefined;
       if (experimental) {
+        const createSceneItemReqs: CreateSceneItemRequest[][] = [];
+        // sort into array of arrays per scene item depth
+        items.forEach((i) => {
+          const depth = i.depth || 0;
+          while (createSceneItemReqs.length <= depth) {
+            createSceneItemReqs.push([]);
+          }
+          createSceneItemReqs[depth].push({
+            data: {
+              attributes: {
+                materialOverride: i.materialOverride,
+                parent: i.parentId,
+                partInstanceSuppliedIdsAsSuppliedIds: Boolean(
+                  i.suppliedInstanceIdKey
+                ),
+                source: i.source
+                  ? {
+                      suppliedPartId: i.source.suppliedPartId,
+                      suppliedRevisionId: i.source.suppliedRevisionId,
+                    }
+                  : undefined,
+                suppliedId: i.suppliedId,
+                transform: i.transform,
+                visible: true,
+              },
+              relationships: {},
+              type: 'scene-item',
+            },
+          });
+        });
+
         const res = await createSceneFnEXPERIMENTAL({
           client,
-          createSceneItemReqs,
+          createSceneItemReqs: createSceneItemReqs,
           createSceneReq: () => ({
             data: {
               attributes: { name, suppliedId, treeEnabled },
@@ -150,7 +158,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
             if (complete === total) {
               if (showProgress) progress.stop();
               cli.action.start(
-                'Created scene items. Awaiting scene completion'
+                'Created scene items. Awaiting scene completion...'
               );
             }
           },
@@ -159,6 +167,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         });
 
         sceneData = res.scene.data;
+
         if (res.errors.length > 0) {
           this.warn(`Failed to create the following batches...`);
           cli.table(
@@ -179,7 +188,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         }
 
         if (res.sceneItemErrors.length > 0) {
-          this.warn(`Failed to create the following scene-items...`);
+          this.warn(`Failed to create the following scene items...`);
           cli.table(
             res.sceneItemErrors.map((e) => {
               return {
@@ -201,6 +210,35 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
           );
         }
       } else {
+        items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
+
+        const createSceneItemReqs: CreateSceneItemRequest[] = items.map(
+          (i) => ({
+            data: {
+              attributes: {
+                materialOverride: i.materialOverride,
+                parent: i.parentId,
+                partInstanceSuppliedIdsAsSuppliedIds: Boolean(
+                  i.suppliedInstanceIdKey
+                ),
+                source: i.source
+                  ? {
+                      suppliedPartId: i.source.suppliedPartId,
+                      suppliedRevisionId: i.source.suppliedRevisionId,
+                    }
+                  : undefined,
+                suppliedId: i.suppliedId,
+                transform: i.transform,
+                visible: true,
+              },
+              relationships: {},
+              type: 'scene-item',
+            },
+          })
+        );
+
+        if (showProgress) progress.start(createSceneItemReqs.length, 0);
+
         const res = await createSceneFn({
           client,
           createSceneItemReqs,
@@ -255,16 +293,78 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         }
       }
 
-      if (sceneData) {
-        this.log(sceneData.id);
-
-        const getSceneItemsRes = await client.sceneItems.getSceneItems({
-          id: sceneData.id,
-          pageSize: 1,
-        });
-        if (getSceneItemsRes.data.data.length === 0) {
-          this.error(`No scene items exist in the scene.`);
+      if (sceneData && sceneData.id) {
+        const sceneId = sceneData.id;
+        if (experimental) {
+          if (verbose) cli.info(`Validating scene items...`);
+          let sceneItemCount = 0;
+          const reqItemMap: Record<string, SceneItem> = items.reduce<
+            Record<string, SceneItem>
+          >((itemMap, item) => {
+            itemMap[item.suppliedId] = item;
+            return itemMap;
+          }, {});
+          let cursor: string | undefined;
+          let itemsRemain = items.length > 0;
+          while (itemsRemain) {
+            // eslint-disable-next-line no-await-in-loop
+            const res = await getPage(() =>
+              client.sceneItems.getSceneItems({
+                id: sceneId,
+                pageSize: 200,
+                pageCursor: cursor,
+              })
+            );
+            cursor = res.cursor;
+            itemsRemain = cursor !== undefined;
+            const sceneItems: Array<SceneItemData> = res.page.data;
+            sceneItems.forEach((sceneItem) => {
+              if (sceneItem.attributes.suppliedId) {
+                delete reqItemMap[sceneItem.attributes.suppliedId];
+              }
+            });
+            sceneItemCount += sceneItems.length;
+          }
+          const missingItems = Object.keys(reqItemMap).map(
+            (key) => reqItemMap[key]
+          );
+          if (missingItems.length > 0) {
+            this.warn(`The following scene items were missing...`);
+            cli.table(
+              missingItems
+                .sort((a, b) => (a.depth || 0) - (b.depth || 0))
+                .sort((a, b) => a.suppliedId.localeCompare(b.suppliedId))
+                .map((sceneItem) => {
+                  return {
+                    depth: sceneItem.depth,
+                    suppliedId: sceneItem.suppliedId,
+                    suppliedPartId: sceneItem.source?.suppliedPartId || '',
+                    suppliedRevisionId:
+                      sceneItem.source?.suppliedRevisionId || '',
+                  };
+                }),
+              {
+                depth: { header: 'Depth' },
+                suppliedId: { header: 'SuppliedId' },
+                suppliedPartId: { header: 'PartId' },
+                suppliedRevisionId: { header: 'RevisionId' },
+              },
+              { 'no-truncate': true }
+            );
+          } else if (verbose) {
+            cli.info(`Validated all ${sceneItemCount} scene items.`);
+          }
+        } else {
+          const getSceneItemsRes = await client.sceneItems.getSceneItems({
+            id: sceneData.id,
+            pageSize: 1,
+          });
+          if (getSceneItemsRes.data.data.length === 0) {
+            this.error(`No scene items exist in the scene.`);
+          }
         }
+
+        this.log(sceneId);
       }
 
       cli.action.stop();

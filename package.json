@@ -12,7 +12,6 @@
   "bugs": {
     "url": "https://github.com/Vertexvis/vertex-cli/issues"
   },
-  "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
