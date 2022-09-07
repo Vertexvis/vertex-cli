@@ -636,7 +636,7 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@vertexvis/api-client-node@0.20.3":
+"@vertexvis/api-client-node@^0.20.3":
   version "0.20.3"
   resolved "https://registry.yarnpkg.com/@vertexvis/api-client-node/-/api-client-node-0.20.3.tgz#529bce96ff8a64ac86356ab5efc382325ec3e8f3"
   integrity sha512-h+eVGFgo6+WHNQ/0pauIoulkRUFW/LO/uIIv3RRtU5zvdp0wTB4zdXBS/LLtjOwEM1fSqymt3fafUOrlQJSopw==
