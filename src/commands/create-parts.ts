@@ -11,7 +11,7 @@ import cli from 'cli-ux';
 import { readFileSync } from 'fs';
 import { readFile } from 'fs-extra';
 import pLimit from 'p-limit';
-import { join } from 'path';
+import { basename, join } from 'path';
 
 import { SceneItem } from '../create-items/index.d';
 import BaseCommand from '../lib/base';
@@ -147,7 +147,7 @@ function createPart({
     client,
     createFileReq: {
       data: {
-        attributes: { name: fileName, suppliedId: fileName },
+        attributes: { name: basename(fileName), suppliedId: fileName },
         type: 'file',
       },
     },
