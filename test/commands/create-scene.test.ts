@@ -2,6 +2,8 @@ import { IConfig } from '@oclif/config';
 import { expect, test } from '@oclif/test';
 import {
   CreateSceneAndSceneItemsReq,
+  CreateSceneAndSceneItemsReqEXPERIMENTAL,
+  CreateSceneItemRequest,
   SceneRelationshipDataTypeEnum,
   Utf8,
   VertexClient,
@@ -129,30 +131,39 @@ describe('create-scene', () => {
       const client = {
         sceneItems: { getSceneItems },
       } as unknown as VertexClient;
-      const exp: CreateSceneAndSceneItemsReq = {
+      const exp: CreateSceneAndSceneItemsReqEXPERIMENTAL = {
         client,
-        createSceneItemReqs: items.map((i) => ({
-          data: {
-            attributes: {
-              materialOverride: i.materialOverride,
-              parent: i.parentId,
-              partInstanceSuppliedIdsAsSuppliedIds: Boolean(
-                i.suppliedInstanceIdKey
-              ),
-              source: i.source
-                ? {
-                    suppliedPartId: i.source.suppliedPartId,
-                    suppliedRevisionId: i.source.suppliedRevisionId,
-                  }
-                : undefined,
-              suppliedId: i.suppliedId,
-              transform: i.transform,
-              visible: true,
-            },
-            relationships: {},
-            type: 'scene-item',
+        createSceneItemReqs: items.reduce<Array<Array<CreateSceneItemRequest>>>(
+          (res, i) => {
+            while (res.length <= i.depth) {
+              res.push([]);
+            }
+            res[i.depth].push({
+              data: {
+                attributes: {
+                  materialOverride: i.materialOverride,
+                  parent: i.parentId,
+                  partInstanceSuppliedIdsAsSuppliedIds: Boolean(
+                    i.suppliedInstanceIdKey
+                  ),
+                  source: i.source
+                    ? {
+                        suppliedPartId: i.source.suppliedPartId,
+                        suppliedRevisionId: i.source.suppliedRevisionId,
+                      }
+                    : undefined,
+                  suppliedId: i.suppliedId,
+                  transform: i.transform,
+                  visible: true,
+                },
+                relationships: {},
+                type: 'scene-item',
+              },
+            });
+            return res;
           },
-        })),
+          []
+        ),
         createSceneReq: () => ({
           data: {
             attributes: {
@@ -175,7 +186,7 @@ describe('create-scene', () => {
         sceneItemErrors: [],
         scene: { data: { id: sceneId } },
       });
-      getSceneItems.resolves({ data: { data: [{}] } });
+      getSceneItems.resolves({ data: { data: [], links: {} } });
 
       await new CreateScene(
         ['--experimental', GoldenPath],
