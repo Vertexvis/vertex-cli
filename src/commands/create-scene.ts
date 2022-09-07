@@ -14,6 +14,7 @@ import {
   SceneItemData,
   SceneRelationshipDataTypeEnum,
   Utf8,
+  VertexClient,
   VertexError,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
@@ -304,27 +305,12 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
             itemMap[item.suppliedId] = item;
             return itemMap;
           }, {});
-          let cursor: string | undefined;
-          let itemsRemain = items.length > 0;
-          while (itemsRemain) {
-            // eslint-disable-next-line no-await-in-loop
-            const res = await getPage(() =>
-              client.sceneItems.getSceneItems({
-                id: sceneId,
-                pageSize: 200,
-                pageCursor: cursor,
-              })
-            );
-            cursor = res.cursor;
-            itemsRemain = cursor !== undefined;
-            const sceneItems: Array<SceneItemData> = res.page.data;
-            sceneItems.forEach((sceneItem) => {
-              if (sceneItem.attributes.suppliedId) {
-                delete reqItemMap[sceneItem.attributes.suppliedId];
-              }
-            });
-            sceneItemCount += sceneItems.length;
-          }
+          await iterateSceneItems(client, sceneId, (si: SceneItemData) => {
+            if (si.attributes.suppliedId) {
+              delete reqItemMap[si.attributes.suppliedId];
+            }
+            sceneItemCount++;
+          });
           const missingItems = Object.keys(reqItemMap).map(
             (key) => reqItemMap[key]
           );
@@ -371,5 +357,28 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
     } catch (error) {
       logError(error as VertexError, this.error);
     }
+  }
+}
+
+async function iterateSceneItems(
+  client: VertexClient,
+  sceneId: string,
+  callback: (item: SceneItemData) => void
+): Promise<void> {
+  let cursor: string | undefined;
+  let itemsRemain = true;
+  while (itemsRemain) {
+    // eslint-disable-next-line no-await-in-loop
+    const res = await getPage(() =>
+      client.sceneItems.getSceneItems({
+        id: sceneId,
+        pageSize: 200,
+        pageCursor: cursor,
+      })
+    );
+    cursor = res.cursor;
+    itemsRemain = cursor !== undefined;
+    const sceneItems: Array<SceneItemData> = res.page.data;
+    sceneItems.forEach((i) => callback(i));
   }
 }
