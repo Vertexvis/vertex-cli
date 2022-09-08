@@ -109,38 +109,46 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
       const progress = progressBar('Creating scene');
       const client = await vertexClient(basePath, this.userConfig);
       const items: SceneItem[] = JSON.parse(await readFile(path, Utf8));
-
+      const itemsMap: Record<string, SceneItem> = {};
       let sceneData: SceneData | undefined;
+      let errors = false;
       if (experimental) {
         const createSceneItemReqs: CreateSceneItemRequest[][] = [];
         // sort into array of arrays per scene item depth
         items.forEach((i) => {
-          const depth = i.depth || 0;
-          while (createSceneItemReqs.length <= depth) {
-            createSceneItemReqs.push([]);
-          }
-          createSceneItemReqs[depth].push({
-            data: {
-              attributes: {
-                materialOverride: i.materialOverride,
-                parent: i.parentId,
-                partInstanceSuppliedIdsAsSuppliedIds: Boolean(
-                  i.suppliedInstanceIdKey
-                ),
-                source: i.source
-                  ? {
-                      suppliedPartId: i.source.suppliedPartId,
-                      suppliedRevisionId: i.source.suppliedRevisionId,
-                    }
-                  : undefined,
-                suppliedId: i.suppliedId,
-                transform: i.transform,
-                visible: true,
+          if (itemsMap[i.suppliedId]) {
+            this.warn(
+              `Ignoring entry with duplicate suppliedId: ${i.suppliedId}.`
+            );
+          } else {
+            itemsMap[i.suppliedId] = i;
+            const depth = i.depth || 0;
+            while (createSceneItemReqs.length <= depth) {
+              createSceneItemReqs.push([]);
+            }
+            createSceneItemReqs[depth].push({
+              data: {
+                attributes: {
+                  materialOverride: i.materialOverride,
+                  parent: i.parentId,
+                  partInstanceSuppliedIdsAsSuppliedIds: Boolean(
+                    i.suppliedInstanceIdKey
+                  ),
+                  source: i.source
+                    ? {
+                        suppliedPartId: i.source.suppliedPartId,
+                        suppliedRevisionId: i.source.suppliedRevisionId,
+                      }
+                    : undefined,
+                  suppliedId: i.suppliedId,
+                  transform: i.transform,
+                  visible: true,
+                },
+                relationships: {},
+                type: 'scene-item',
               },
-              relationships: {},
-              type: 'scene-item',
-            },
-          });
+            });
+          }
         });
 
         const res = await createSceneFnEXPERIMENTAL({
@@ -170,6 +178,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         sceneData = res.scene.data;
 
         if (res.errors.length > 0) {
+          errors = true;
           this.warn(`Failed to create the following batches...`);
           cli.table(
             res.errors.map((e) => {
@@ -189,6 +198,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         }
 
         if (res.sceneItemErrors.length > 0) {
+          errors = true;
           this.warn(`Failed to create the following scene items...`);
           cli.table(
             res.sceneItemErrors.map((e) => {
@@ -296,23 +306,17 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 
       if (sceneData && sceneData.id) {
         const sceneId = sceneData.id;
-        if (experimental) {
+        if (experimental && !errors) {
           if (verbose) cli.info(`Validating scene items...`);
           let sceneItemCount = 0;
-          const reqItemMap: Record<string, SceneItem> = items.reduce<
-            Record<string, SceneItem>
-          >((itemMap, item) => {
-            itemMap[item.suppliedId] = item;
-            return itemMap;
-          }, {});
           await iterateSceneItems(client, sceneId, (si: SceneItemData) => {
             if (si.attributes.suppliedId) {
-              delete reqItemMap[si.attributes.suppliedId];
+              delete itemsMap[si.attributes.suppliedId];
             }
             sceneItemCount++;
           });
-          const missingItems = Object.keys(reqItemMap).map(
-            (key) => reqItemMap[key]
+          const missingItems = Object.keys(itemsMap).map(
+            (key) => itemsMap[key]
           );
           if (missingItems.length > 0) {
             this.warn(`The following scene items were missing...`);
@@ -338,7 +342,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
               { 'no-truncate': true }
             );
           } else if (verbose) {
-            cli.info(`Validated all ${sceneItemCount} scene items.`);
+            cli.info(`Validated ${sceneItemCount} scene items.`);
           }
         } else {
           const getSceneItemsRes = await client.sceneItems.getSceneItems({
