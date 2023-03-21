@@ -669,10 +669,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@vertexvis/api-client-node@^0.20.5":
-  version "0.20.5"
-  resolved "https://registry.yarnpkg.com/@vertexvis/api-client-node/-/api-client-node-0.20.5.tgz#2718c39166db12ee6f25e02d886fcc4fbc325f86"
-  integrity sha512-X3s3LlLBSkzlvyz4bk7HxEe6iR0zh4KSE2oDgGhpLuemV0sL10h1Ao614Kz5OcncLWlqgt1LMQ6wNvSctVapNw==
+"@vertexvis/api-client-node@^0.20.6":
+  version "0.20.6"
+  resolved "https://registry.yarnpkg.com/@vertexvis/api-client-node/-/api-client-node-0.20.6.tgz#8bf75f4d0226a33a43f24ae030c979fc121b8155"
+  integrity sha512-5EqwWBcZzHSZyxlOJLM4Q54Ym/qml5HWrmKHbD80DFzMcEgVszvqySiVKuZWBG8kUoTnvs6xy6yS0uuM7JFlxw==
   dependencies:
     axios "^0.27.2"
     p-limit "^3"
@@ -3319,11 +3319,6 @@ tslib@^2.0.0, tslib@^2.0.3, tslib@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
-
-tslib@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.1.tgz#0d0bfbaac2880b91e22df0768e55be9753a5b17e"
-  integrity sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==
 
 tslib@^2.5.0:
   version "2.5.0"
