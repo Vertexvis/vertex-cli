@@ -25,6 +25,7 @@ interface ComponentInstance {
   readonly index: string;
   readonly orientation?: string;
   readonly translation?: string;
+  origOccId: string;
 }
 
 interface ShapeSource {
@@ -36,6 +37,7 @@ interface Component {
   readonly name: string;
   readonly shape_source?: ShapeSource;
   vertexIndex: number;
+  version: string;
 }
 
 interface Property {
@@ -104,50 +106,50 @@ function createItems(
   const items: SceneItem[] = [];
 
   function recurse(
-    comps: Component[],
-    comp: Component,
+    components: Component[],
+    component: Component,
     pathId: string,
-    tran?: number[][]
+    transform?: number[][]
   ): void {
-    if (comp.component_instance) {
+    if (component.component_instance) {
       const processInstance = (compInst: ComponentInstance): void => {
         if (compInst.hide_self || compInst.hide_child) return;
 
-        const instTran = to4x4Transform(
+        const instTransform = to4x4Transform(
           toFloats('1,0,0,0,1,0,0,0,1', compInst.orientation),
           toFloats('0,0,0', compInst.translation),
           1000
         );
         const idx = parseInt(compInst.index, 10);
-        comps[idx].vertexIndex = idx;
+        components[idx].vertexIndex = idx;
         recurse(
-          comps,
-          comps[idx],
-          `${pathId}/${compInst.id}`,
-          tran ? multiply(tran, instTran) : instTran
+          components,
+          components[idx],
+          `${pathId}/${compInst.origOccId}`,
+          transform ? multiply(transform, instTransform) : instTransform
         );
       };
 
       items.push(
         createSceneItem({
           pathId,
-          partName: comp.name,
-          partRevision: getRevisionId(comp.vertexIndex, properties),
+          partName: component.name,
+          partRevision: getRevisionId(component.vertexIndex, properties),
         })
       );
 
-      if (Array.isArray(comp.component_instance)) {
-        for (const compInst of comp.component_instance)
+      if (Array.isArray(component.component_instance)) {
+        for (const compInst of component.component_instance)
           processInstance(compInst);
-      } else processInstance(comp.component_instance);
-    } else if (comp.shape_source) {
+      } else processInstance(component.component_instance);
+    } else if (component.shape_source) {
       items.push(
         createSceneItem({
           pathId,
-          partName: comp.name,
-          partRevision: getRevisionId(comp.vertexIndex, properties),
-          fileName: comp.shape_source.file_name,
-          transform: tran,
+          partName: component.name,
+          partRevision: getRevisionIdByOlName(component),
+          fileName: component.shape_source.file_name,
+          transform,
         })
       );
     }
@@ -157,34 +159,37 @@ function createItems(
   return items;
 }
 
-function createSceneItem({
-  pathId,
-  partName,
-  partRevision,
-  fileName,
-  transform,
-}: CreateSceneItemArgs): SceneItem {
-  const suppliedId = pathId === '' ? PathIdSeparator : pathId;
+function createSceneItem(args: CreateSceneItemArgs): SceneItem {
+  const suppliedId = args.pathId === '' ? PathIdSeparator : args.pathId;
   const pId =
     suppliedId === PathIdSeparator
       ? undefined
       : suppliedId.split(PathIdSeparator).slice(0, -1).join(PathIdSeparator);
   const parentId = pId === '' ? PathIdSeparator : pId;
-  const t = transform;
+  const t = args.transform;
 
   return {
-    depth: pathId.split(PathIdSeparator).length - 1,
+    depth: args.pathId.split(PathIdSeparator).length - 1,
     parentId,
-    source: fileName
+    source: args.fileName
       ? {
-          fileName: fileName,
-          suppliedPartId: partName,
-          suppliedRevisionId: partRevision,
+          fileName: args.fileName,
+          suppliedPartId: args.partName,
+          suppliedRevisionId: args.partRevision,
         }
       : undefined,
     suppliedId,
     transform: !t || is4x4Identity(t) ? undefined : toTransform(t),
   };
+}
+
+function getRevisionIdByOlName(component: Component): string {
+  const ol_file_name = component.shape_source?.file_name;
+  const revId =
+    component.version +
+    '_' +
+    ol_file_name?.substr(0, ol_file_name.indexOf('.'));
+  return revId;
 }
 
 function getRevisionId(idx: number, properties?: Properties): string {
