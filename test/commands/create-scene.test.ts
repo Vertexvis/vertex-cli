@@ -2,8 +2,6 @@ import { IConfig } from '@oclif/config';
 import { expect, test } from '@oclif/test';
 import {
   CreateSceneAndSceneItemsReq,
-  CreateSceneAndSceneItemsReqEXPERIMENTAL,
-  CreateSceneItemRequest,
   SceneRelationshipDataTypeEnum,
   Utf8,
   VertexClient,
@@ -52,7 +50,6 @@ describe('create-scene', () => {
     .do(async () => {
       const createSceneFn = sinon.stub();
       const items: SceneItem[] = JSON.parse(await readFile(GoldenPath, Utf8));
-      items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
       const sceneId = 's-id';
       const getSceneItems = sinon.stub();
       const client = {
@@ -77,6 +74,8 @@ describe('create-scene', () => {
               suppliedId: i.suppliedId,
               transform: i.transform,
               visible: true,
+              name: i.name ?? undefined,
+              ordinal: i.ordinal ?? undefined,
             },
             relationships: {},
             type: 'scene-item',
@@ -99,12 +98,15 @@ describe('create-scene', () => {
         verbose: false,
       };
       sinon.stub(vc, 'vertexClient').resolves(client);
-      createSceneFn.resolves({ errors: [], scene: { data: { id: sceneId } } });
+      createSceneFn.resolves({
+        errors: [],
+        sceneItemErrors: [],
+        scene: { data: { id: sceneId } },
+      });
       getSceneItems.resolves({ data: { data: [{}] } });
 
       await new CreateScene([GoldenPath], {} as IConfig).innerRun(
         createSceneFn,
-        sinon.stub(),
         false
       );
 
@@ -119,89 +121,4 @@ describe('create-scene', () => {
       expect(act.verbose).to.equal(exp.verbose);
     })
     .it('works');
-
-  test
-    .stdout()
-    .do(async () => {
-      const createSceneFn = sinon.stub();
-      const items: SceneItem[] = JSON.parse(await readFile(GoldenPath, Utf8));
-      items.sort((a, b) => (a.depth || 0) - (b.depth || 0));
-      const sceneId = 's-id';
-      const getSceneItems = sinon.stub();
-      const client = {
-        sceneItems: { getSceneItems },
-      } as unknown as VertexClient;
-      const exp: CreateSceneAndSceneItemsReqEXPERIMENTAL = {
-        client,
-        createSceneItemReqs: items.reduce<Array<Array<CreateSceneItemRequest>>>(
-          (res, i) => {
-            while (res.length <= i.depth) {
-              res.push([]);
-            }
-            res[i.depth].push({
-              data: {
-                attributes: {
-                  materialOverride: i.materialOverride,
-                  parent: i.parentId,
-                  partInstanceSuppliedIdsAsSuppliedIds: Boolean(
-                    i.suppliedInstanceIdKey
-                  ),
-                  source: i.source
-                    ? {
-                        suppliedPartId: i.source.suppliedPartId,
-                        suppliedRevisionId: i.source.suppliedRevisionId,
-                      }
-                    : undefined,
-                  suppliedId: i.suppliedId,
-                  transform: i.transform,
-                  visible: true,
-                },
-                relationships: {},
-                type: 'scene-item',
-              },
-            });
-            return res;
-          },
-          []
-        ),
-        createSceneReq: () => ({
-          data: {
-            attributes: {
-              name: undefined,
-              suppliedId: undefined,
-              treeEnabled: false,
-            },
-            type: SceneRelationshipDataTypeEnum.Scene,
-          },
-        }),
-        failFast: true,
-        onMsg: console.error,
-        onProgress: () => sinon.match.any,
-        parallelism: 20,
-        verbose: false,
-      };
-      sinon.stub(vc, 'vertexClient').resolves(client);
-      createSceneFn.resolves({
-        errors: [],
-        sceneItemErrors: [],
-        scene: { data: { id: sceneId } },
-      });
-      getSceneItems.resolves({ data: { data: [], links: {} } });
-
-      await new CreateScene(
-        ['--experimental', GoldenPath],
-        {} as IConfig
-      ).innerRun(sinon.stub(), createSceneFn, false);
-
-      assert.calledOnce(createSceneFn);
-      const act: CreateSceneAndSceneItemsReq = createSceneFn.getCall(0).args[0];
-      expect(act.client).to.equal(exp.client);
-      expect(act.createSceneItemReqs).to.deep.equal(exp.createSceneItemReqs);
-      expect(act.createSceneReq()).to.deep.equal(exp.createSceneReq());
-      expect(act.failFast).to.equal(exp.failFast);
-      expect(act.onMsg).to.equal(exp.onMsg);
-      expect(act.parallelism).to.equal(exp.parallelism);
-      expect(act.verbose).to.equal(exp.verbose);
-    })
-    .it('works with experimental flag');
 });

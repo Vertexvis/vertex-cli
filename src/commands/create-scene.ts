@@ -127,7 +127,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
                 suppliedId: i.suppliedId,
                 transform: i.transform,
                 visible: true,
-                name: i.name ?? i.suppliedId ?? undefined,
+                name: i.name ?? undefined,
                 ordinal: i.ordinal ?? undefined,
               },
               relationships: {},
