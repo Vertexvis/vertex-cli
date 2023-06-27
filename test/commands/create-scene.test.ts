@@ -121,4 +121,80 @@ describe('create-scene', () => {
       expect(act.verbose).to.equal(exp.verbose);
     })
     .it('works');
+
+  test
+    .stdout()
+    .do(async () => {
+      const createSceneFn = sinon.stub();
+      const items: SceneItem[] = JSON.parse(await readFile(GoldenPath, Utf8));
+      const sceneId = 's-id';
+      const getSceneItems = sinon.stub();
+      const client = {
+        sceneItems: { getSceneItems },
+      } as unknown as VertexClient;
+      const createSceneItemReqs = items.map((i) => ({
+        data: {
+          attributes: {
+            materialOverride: i.materialOverride,
+            parent: i.parentId,
+            partInstanceSuppliedIdsAsSuppliedIds: Boolean(
+              i.suppliedInstanceIdKey
+            ),
+            source: i.source
+              ? {
+                  suppliedPartId: i.source.suppliedPartId,
+                  suppliedRevisionId: i.source.suppliedRevisionId,
+                }
+              : undefined,
+            suppliedId: i.suppliedId,
+            transform: i.transform,
+            visible: true,
+            name: i.name ?? undefined,
+            ordinal: i.ordinal ?? undefined,
+          },
+          relationships: {},
+          type: 'scene-item',
+        },
+      }));
+
+      sinon.stub(vc, 'vertexClient').resolves(client);
+      createSceneFn.resolves({
+        errors: [
+          {
+            ops: [],
+            res: {
+              errors: new Set([
+                {
+                  status: '404',
+                  code: 'NotFound',
+                  title: 'The requested resource was not found.',
+                  source: { pointer: '/body/data/attributes/parent' },
+                },
+              ]),
+            },
+          },
+        ],
+        sceneItemErrors: createSceneItemReqs.map((csir) => {
+          return {
+            req: csir.data,
+            res: {
+              status: '404',
+              code: 'NotFound',
+              title: 'The requested resource was not found.',
+              source: { pointer: '/body/data/attributes/parent' },
+            },
+          };
+        }),
+        scene: { data: { id: sceneId } },
+      });
+      getSceneItems.resolves({ data: { data: [{}] } });
+
+      await new CreateScene([GoldenPath], {} as IConfig).innerRun(
+        createSceneFn,
+        false
+      );
+
+      assert.calledOnce(createSceneFn);
+    })
+    .it('handles errors');
 });
