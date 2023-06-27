@@ -149,9 +149,13 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         failFast: !noFailFast,
         onMsg: console.error,
         onProgress: (complete, total) => {
-          if (showProgress) progress.update(complete);
+          if (showProgress) {
+            progress.update(complete);
+          }
           if (complete === total) {
-            if (showProgress) progress.stop();
+            if (showProgress) {
+              progress.stop();
+            }
             cli.action.start(
               'Created scene items. Awaiting scene completion...'
             );
@@ -212,7 +216,9 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
       if (sceneData && sceneData.id) {
         const sceneId = sceneData.id;
         if (validate && !errors) {
-          if (verbose) cli.info(`Validating scene items...`);
+          if (verbose) {
+            cli.info(`Validating scene items...`);
+          }
           let sceneItemCount = 0;
           await iterateSceneItems(client, sceneId, (si: SceneItemData) => {
             if (si.attributes.suppliedId) {
