@@ -39,6 +39,17 @@ export interface SceneItem {
   readonly materialOverride?: ColorMaterial;
 
   /**
+   * Optional name for item.
+   */
+  readonly name?: string;
+
+  /**
+   * Optional A 0-based index used for defining a consistent ordering amongst
+   * sibling scene items.
+   */
+  readonly ordinal?: number;
+
+  /**
    * Optional hierarchical parent of item.
    */
   readonly parentId?: string;
