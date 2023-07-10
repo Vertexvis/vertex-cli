@@ -78,4 +78,14 @@ export interface SceneItem {
    * @see {@link https://developer.vertexvis.com/docs/guides/rendering-scenes#transformation-matrices|Transformation Matrices}
    */
   readonly transform?: Matrix4;
+
+  /**
+   * Whether the item is phantom
+   */
+  readonly phantom?: boolean;
+
+  /**
+   * Whether the item is an end item
+   */
+  readonly endItem?: boolean;
 }

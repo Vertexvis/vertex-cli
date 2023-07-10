@@ -16,6 +16,7 @@ interface CreateSceneItemArgs {
   readonly partRevision: string;
   readonly fileName?: string;
   readonly transform?: number[][];
+  readonly endItem?: boolean;
 }
 
 interface ComponentInstance {
@@ -35,6 +36,7 @@ interface Component {
   readonly component_instance?: ComponentInstance[] | ComponentInstance;
   readonly name: string;
   readonly shape_source?: ShapeSource;
+  readonly end_item?: string;
   vertexIndex: number;
 }
 
@@ -133,6 +135,7 @@ function createItems(
           pathId,
           partName: comp.name,
           partRevision: getRevisionId(comp.vertexIndex, properties),
+          endItem: comp.end_item === 'true',
         })
       );
 
@@ -148,6 +151,7 @@ function createItems(
           partRevision: getRevisionId(comp.vertexIndex, properties),
           fileName: comp.shape_source.file_name,
           transform: tran,
+          endItem: comp.end_item === 'true',
         })
       );
     }
@@ -163,6 +167,7 @@ function createSceneItem({
   partRevision,
   fileName,
   transform,
+  endItem,
 }: CreateSceneItemArgs): SceneItem {
   const suppliedId = pathId === '' ? PathIdSeparator : pathId;
   const pId =
@@ -184,6 +189,7 @@ function createSceneItem({
       : undefined,
     suppliedId,
     transform: !t || is4x4Identity(t) ? undefined : toTransform(t),
+    endItem,
   };
 }
 
