@@ -8,7 +8,7 @@ import {
   Utf8,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
-import { readFileSync } from 'fs';
+import { createReadStream } from 'fs';
 import { readFile } from 'fs-extra';
 import pLimit from 'p-limit';
 import { basename, join } from 'path';
@@ -167,7 +167,7 @@ function createPart({
         type: 'part',
       },
     }),
-    fileData: readFileSync(filePath),
+    fileData: createReadStream(filePath),
     onMsg: console.error,
     verbose,
   });
