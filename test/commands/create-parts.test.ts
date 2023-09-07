@@ -124,7 +124,7 @@ function createReq(
     createPartReq: (fileId) => ({
       data: {
         attributes: {
-          indexMetadata: false,
+          indexMetadata: true,
           suppliedId: item?.source?.suppliedPartId,
           suppliedInstanceIdKey: undefined,
           suppliedRevisionId: item?.source?.suppliedRevisionId,
