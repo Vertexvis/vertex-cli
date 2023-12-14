@@ -1,13 +1,17 @@
 import { Polling } from '@vertexvis/api-client-node';
 import { PollIntervalMs } from '@vertexvis/api-client-node';
 
-export const DefaultBackoffMs: Record<number, number> = {
+const DefaultBackoffMs: Record<number, number> = {
   10: 1000,
   40: 2000,
   100: 5000,
   300: 10000,
   1000: 20000,
 };
+
+const DefaultBackoffKeys = Object.keys(DefaultBackoffMs).map((key) =>
+  parseInt(key, 10)
+);
 
 export function getPollingConfiguration({
   maxPollDurationSeconds,
@@ -50,10 +54,7 @@ function getMaxAttempts({
 
 function getBackoffForAttempt(attempt: number): number {
   const key =
-    Object.keys(DefaultBackoffMs)
-      .map((key) => parseInt(key, 10))
-      .reverse()
-      .find((key) => attempt > key) ?? 0;
+    [...DefaultBackoffKeys].reverse().find((key) => attempt > key) ?? 0;
 
   return DefaultBackoffMs[key] ?? 0;
 }
