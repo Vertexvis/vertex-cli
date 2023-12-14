@@ -5,7 +5,6 @@ import {
   CreatePartFromFileReq,
   CreatePartFromFileRes,
   FileRelationshipDataTypeEnum,
-  PollIntervalMs,
   Utf8,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
@@ -18,6 +17,7 @@ import { SceneItem } from '../create-items/index.d';
 import BaseCommand from '../lib/base';
 import { vertexClient } from '../lib/client';
 import { directoryExists, fileExists } from '../lib/fs';
+import { getPollingConfiguration } from '../lib/polling';
 import { progressBar } from '../lib/progress';
 
 type CreatePartsFn = (
@@ -35,14 +35,6 @@ interface Args extends BaseReq {
   readonly maxPollDuration: number;
   readonly backoff: boolean;
 }
-
-const DefaultBackoffMs: Record<number, number> = {
-  10: 1000,
-  40: 2000,
-  100: 5000,
-  300: 10000,
-  1000: 20000,
-};
 
 export default class CreateParts extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), upload geometry files and create parts in Vertex Part Library.`;
@@ -196,42 +188,12 @@ function createPart({
         type: 'part',
       },
     }),
-    polling: {
-      intervalMs: PollIntervalMs,
-      maxAttempts: getMaxAttempts({ maxPollDuration, backoff }),
-      backoff: backoff ? DefaultBackoffMs : undefined,
-    },
+    polling: getPollingConfiguration({
+      maxPollDurationSeconds: maxPollDuration,
+      backoff,
+    }),
     fileData: createReadStream(filePath),
     onMsg: console.error,
     verbose,
   });
-}
-
-function getMaxAttempts({
-  maxPollDuration,
-  backoff,
-}: Pick<Args, 'maxPollDuration' | 'backoff'>): number {
-  if (backoff) {
-    let remainingTimeMs = maxPollDuration * 1000;
-    let attempt = 0;
-
-    while (remainingTimeMs > 0) {
-      const backoffMs = getBackoffForAttempt(attempt + 1);
-      remainingTimeMs -= PollIntervalMs + backoffMs;
-      attempt += 1;
-    }
-
-    return attempt;
-  }
-  return Math.max(1, Math.floor(maxPollDuration / PollIntervalMs));
-}
-
-function getBackoffForAttempt(attempt: number): number {
-  const key =
-    Object.keys(DefaultBackoffMs)
-      .map((key) => parseInt(key, 10))
-      .reverse()
-      .find((key) => attempt > key) ?? 0;
-
-  return DefaultBackoffMs[key] ?? 0;
 }

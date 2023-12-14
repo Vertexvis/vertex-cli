@@ -20,6 +20,7 @@ import { SceneItem } from '../create-items/index.d';
 import BaseCommand from '../lib/base';
 import { vertexClient } from '../lib/client';
 import { fileExists } from '../lib/fs';
+import { getPollingConfiguration } from '../lib/polling';
 import { progressBar } from '../lib/progress';
 
 type CreateSceneFn = (
@@ -65,6 +66,17 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         'Whether or not scene trees should be enabled for this scene.',
       default: false,
     }),
+    maxPollDuration: flags.integer({
+      char: 'm',
+      description: 'The maximum poll duration in seconds for queued jobs.',
+      default: 3600,
+    }),
+    backoff: flags.boolean({
+      char: 'b',
+      description:
+        'Whether use a backoff to the pollInterval for longer queued jobs.',
+      default: true,
+    }),
   };
 
   public async run(): Promise<void> {
@@ -83,6 +95,8 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         parallelism,
         suppliedId,
         treeEnabled,
+        maxPollDuration,
+        backoff,
         validate,
         verbose,
       },
@@ -149,6 +163,10 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
           },
         }),
         failFast: !noFailFast,
+        polling: getPollingConfiguration({
+          maxPollDurationSeconds: maxPollDuration,
+          backoff,
+        }),
         onMsg: console.error,
         onProgress: (complete, total) => {
           if (showProgress) {
