@@ -5,6 +5,7 @@ import {
   CreatePartFromFileReq,
   CreatePartFromFileRes,
   FileRelationshipDataTypeEnum,
+  PollIntervalMs,
   Utf8,
 } from '@vertexvis/api-client-node';
 import cli from 'cli-ux';
@@ -31,7 +32,17 @@ interface Args extends BaseReq {
   readonly suppliedInstanceIdKey?: string;
   readonly suppliedPartId: string;
   readonly suppliedRevisionId: string;
+  readonly maxPollDuration: number;
+  readonly backoff: boolean;
 }
+
+const DefaultBackoffMs: Record<number, number> = {
+  10: 1000,
+  40: 2000,
+  100: 5000,
+  300: 10000,
+  1000: 20000,
+};
 
 export default class CreateParts extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), upload geometry files and create parts in Vertex Part Library.`;
@@ -55,6 +66,17 @@ export default class CreateParts extends BaseCommand {
       description: 'Number of files and parts to create in parallel.',
       default: 20,
     }),
+    maxPollDuration: flags.integer({
+      char: 'm',
+      description: 'The maximum poll duration in seconds for queued jobs.',
+      default: 3600,
+    }),
+    backoff: flags.boolean({
+      char: 'b',
+      description:
+        'Whether use a backoff to the pollInterval for longer queued jobs.',
+      default: true,
+    }),
   };
 
   public async run(): Promise<void> {
@@ -64,7 +86,7 @@ export default class CreateParts extends BaseCommand {
   public async innerRun(createPartsFn: CreatePartsFn): Promise<void> {
     const {
       args: { path },
-      flags: { directory, parallelism, verbose },
+      flags: { directory, parallelism, maxPollDuration, backoff, verbose },
     } = this.parse(CreateParts);
     const basePath = this.parsedFlags?.basePath;
     if (!(await fileExists(path))) {
@@ -75,6 +97,9 @@ export default class CreateParts extends BaseCommand {
     }
     if (parallelism < 1 || parallelism > 20) {
       this.error(`Invalid parallelism '${parallelism}'.`);
+    }
+    if (maxPollDuration > 86400) {
+      this.error(`Poll time cannot exceed 24 hours.`);
     }
 
     const itemsWithGeometry = new Map<string, Args>();
@@ -98,6 +123,8 @@ export default class CreateParts extends BaseCommand {
               createPartsFn,
               client,
               verbose,
+              maxPollDuration,
+              backoff,
               fileName,
               filePath: srcPath,
               indexMetadata: i.indexMetadata ?? true,
@@ -142,6 +169,8 @@ function createPart({
   suppliedPartId,
   suppliedRevisionId,
   verbose,
+  maxPollDuration,
+  backoff,
 }: Args): Promise<CreatePartFromFileRes> {
   return createPartsFn({
     client,
@@ -167,8 +196,42 @@ function createPart({
         type: 'part',
       },
     }),
+    polling: {
+      intervalMs: PollIntervalMs,
+      maxAttempts: getMaxAttempts({ maxPollDuration, backoff }),
+      backoff: backoff ? DefaultBackoffMs : undefined,
+    },
     fileData: createReadStream(filePath),
     onMsg: console.error,
     verbose,
   });
+}
+
+function getMaxAttempts({
+  maxPollDuration,
+  backoff,
+}: Pick<Args, 'maxPollDuration' | 'backoff'>): number {
+  if (backoff) {
+    let remainingTimeMs = maxPollDuration * 1000;
+    let attempt = 0;
+
+    while (remainingTimeMs > 0) {
+      const backoffMs = getBackoffForAttempt(attempt + 1);
+      remainingTimeMs -= PollIntervalMs + backoffMs;
+      attempt += 1;
+    }
+
+    return attempt;
+  }
+  return Math.max(1, Math.floor(maxPollDuration / PollIntervalMs));
+}
+
+function getBackoffForAttempt(attempt: number): number {
+  const key =
+    Object.keys(DefaultBackoffMs)
+      .map((key) => parseInt(key, 10))
+      .reverse()
+      .find((key) => attempt > key) ?? 0;
+
+  return DefaultBackoffMs[key] ?? 0;
 }
