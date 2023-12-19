@@ -17,6 +17,7 @@ import { SceneItem } from '../create-items/index.d';
 import BaseCommand from '../lib/base';
 import { vertexClient } from '../lib/client';
 import { directoryExists, fileExists } from '../lib/fs';
+import { getPollingConfiguration } from '../lib/polling';
 import { progressBar } from '../lib/progress';
 
 type CreatePartsFn = (
@@ -31,6 +32,8 @@ interface Args extends BaseReq {
   readonly suppliedInstanceIdKey?: string;
   readonly suppliedPartId: string;
   readonly suppliedRevisionId: string;
+  readonly maxPollDuration: number;
+  readonly backoff: boolean;
 }
 
 export default class CreateParts extends BaseCommand {
@@ -55,6 +58,17 @@ export default class CreateParts extends BaseCommand {
       description: 'Number of files and parts to create in parallel.',
       default: 20,
     }),
+    maxPollDuration: flags.integer({
+      char: 'm',
+      description: 'The maximum poll duration in seconds for queued jobs.',
+      default: 3600,
+    }),
+    backoff: flags.boolean({
+      char: 'b',
+      description:
+        'Whether use a backoff to the pollInterval for longer queued jobs.',
+      default: true,
+    }),
   };
 
   public async run(): Promise<void> {
@@ -64,7 +78,7 @@ export default class CreateParts extends BaseCommand {
   public async innerRun(createPartsFn: CreatePartsFn): Promise<void> {
     const {
       args: { path },
-      flags: { directory, parallelism, verbose },
+      flags: { directory, parallelism, maxPollDuration, backoff, verbose },
     } = this.parse(CreateParts);
     const basePath = this.parsedFlags?.basePath;
     if (!(await fileExists(path))) {
@@ -75,6 +89,9 @@ export default class CreateParts extends BaseCommand {
     }
     if (parallelism < 1 || parallelism > 20) {
       this.error(`Invalid parallelism '${parallelism}'.`);
+    }
+    if (maxPollDuration > 86400) {
+      this.error(`Poll time cannot exceed 24 hours.`);
     }
 
     const itemsWithGeometry = new Map<string, Args>();
@@ -98,6 +115,8 @@ export default class CreateParts extends BaseCommand {
               createPartsFn,
               client,
               verbose,
+              maxPollDuration,
+              backoff,
               fileName,
               filePath: srcPath,
               indexMetadata: i.indexMetadata ?? true,
@@ -142,6 +161,8 @@ function createPart({
   suppliedPartId,
   suppliedRevisionId,
   verbose,
+  maxPollDuration,
+  backoff,
 }: Args): Promise<CreatePartFromFileRes> {
   return createPartsFn({
     client,
@@ -166,6 +187,10 @@ function createPart({
         },
         type: 'part',
       },
+    }),
+    polling: getPollingConfiguration({
+      maxPollDurationSeconds: maxPollDuration,
+      backoff,
     }),
     fileData: createReadStream(filePath),
     onMsg: console.error,
