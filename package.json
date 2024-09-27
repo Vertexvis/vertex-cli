@@ -24,9 +24,9 @@
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1.18.9",
-    "@oclif/plugin-help": "^3.3.1",
+    "@oclif/plugin-help": "^4.0.0",
     "@vertexvis/api-client-node": "^0.23.1",
-    "cli-ux": "^5.6.7",
+    "cli-ux": "^6.0.9",
     "fast-xml-parser": "^3.21",
     "fs-extra": "^10.1.0",
     "p-limit": "^3.1",
