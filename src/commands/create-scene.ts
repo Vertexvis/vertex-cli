@@ -22,10 +22,10 @@ import { vertexClient } from '../lib/client';
 import { fileExists } from '../lib/fs';
 import { getPollingConfiguration } from '../lib/polling';
 import { progressBar } from '../lib/progress';
-
 type CreateSceneFn = (
   args: CreateSceneAndSceneItemsReq
 ) => Promise<CreateSceneAndSceneItemsRes>;
+
 export default class CreateScene extends BaseCommand {
   public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
 
@@ -77,6 +77,10 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         'Whether use a backoff to the pollInterval for longer queued jobs.',
       default: true,
     }),
+    experimentalSourceMetadataKeys: flags.string({
+      description: 'comma-separated list of items',
+      required: false,
+    }),
   };
 
   public async run(): Promise<void> {
@@ -99,8 +103,12 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
         backoff,
         validate,
         verbose,
+        experimentalSourceMetadataKeys,
       },
     } = this.parse(CreateScene);
+
+    const sourceMetadataKeys = experimentalSourceMetadataKeys?.split(',');
+
     const basePath = this.parsedFlags?.basePath;
     if (!(await fileExists(path))) {
       this.error(`'${path}' is not a valid file path, exiting.`);
@@ -145,6 +153,7 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
                 ordinal: i.ordinal ?? undefined,
                 phantom: i.phantom,
                 endItem: i.endItem,
+                experimentalSourceMetadataKeys: sourceMetadataKeys,
               },
               relationships: {},
               type: 'scene-item',

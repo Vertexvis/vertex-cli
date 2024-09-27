@@ -161,15 +161,16 @@ USAGE
   $ vertex create-scene [PATH]
 
 OPTIONS
-  -b, --basePath=basePath        [default: https://platform.vertexvis.com] Vertex API base path.
-  -h, --help                     show CLI help
-  -p, --parallelism=parallelism  [default: 20] Number of scene-items to create in parallel.
+  -b, --basePath=basePath             [default: https://platform.vertexvis.com] Vertex API base path.
+  -h, --help                          show CLI help
+  -p, --parallelism=parallelism       [default: 20] Number of scene-items to create in parallel.
   -v, --verbose
-  --name=name                    Name of scene.
-  --noFailFast                   Whether or not to fail the process immediately if any scene item creation fails.
-  --suppliedId=suppliedId        SuppliedId of scene.
-  --treeEnabled                  Whether or not scene trees should be enabled for this scene.
-  --validate                     Whether or not to validate the creation of every scene item.
+  --name=name                         Name of scene.
+  --noFailFast                        Whether or not to fail the process immediately if any scene item creation fails.
+  --suppliedId=suppliedId             SuppliedId of scene.
+  --treeEnabled                       Whether or not scene trees should be enabled for this scene.
+  --validate                          Whether or not to validate the creation of every scene item.
+  --experimentalSourceMetadataKeys    A list of keys to include on the scene items from the source item. Example `"Key One", "KEY_TWO"`
 
 EXAMPLE
   $ vertex create-scene --name my-scene [YOUR_PATH_TO_JSON_FILE]

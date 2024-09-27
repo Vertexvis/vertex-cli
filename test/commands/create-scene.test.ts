@@ -78,6 +78,7 @@ describe('create-scene', () => {
               ordinal: i.ordinal ?? undefined,
               phantom: i.phantom,
               endItem: i.endItem,
+              experimentalSourceMetadataKeys: undefined,
             },
             relationships: {},
             type: 'scene-item',
