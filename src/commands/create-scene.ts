@@ -117,7 +117,6 @@ f79d4760-0b71-44e4-ad0b-22743fdd4ca3
       this.error(`Invalid parallelism '${parallelism}'.`);
     }
 
-    console.log('sourceMetadataKeys: ', sourceMetadataKeys);
     try {
       const progress = progressBar('Creating scene');
       const client = await vertexClient(basePath, this.userConfig);
