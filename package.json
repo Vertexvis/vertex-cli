@@ -25,7 +25,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1.18.9",
     "@oclif/plugin-help": "^3.3.1",
-    "@vertexvis/api-client-node": "^0.30.0",
+    "@vertexvis/api-client-node": "^0.31.0",
     "cli-ux": "^5.6.7",
     "fast-xml-parser": "^3.21",
     "fs-extra": "^10.1.0",
@@ -81,6 +81,9 @@
       "files": {
         "description": "File CRUD operations."
       },
+      "file-collections": {
+        "description": "File collection CRUD operations."
+      },
       "part-revisions": {
         "description": "Part revision CRUD operations."
       },
@@ -89,6 +92,9 @@
       },
       "scene-view-states": {
         "description": "Scene view state CRUD operations."
+      },
+      "scene-items": {
+        "description": "Scene item CRUD operations."
       },
       "scene-views": {
         "description": "Scene view CRUD operations."
@@ -117,5 +123,6 @@
     "setup": "yarn && yarn link",
     "test": "nyc mocha",
     "version": "oclif-dev readme && git add README.md"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

@@ -1,5 +1,6 @@
 import {
   BaseReq,
+  deleteAllFileCollections,
   deleteAllFiles,
   deleteAllParts,
   deleteAllScenes,
@@ -63,6 +64,22 @@ export function fileDeleter({ client, verbose }: BaseReq): Deleter {
     },
     deleteAll: async () => {
       await deleteAllFiles({
+        client,
+        onMsg: console.error,
+        pageSize: 200,
+        verbose,
+      });
+    },
+  };
+}
+
+export function fileCollectionDeleter({ client, verbose }: BaseReq): Deleter {
+  return {
+    deleteOne: async (id: string) => {
+      await client.fileCollections.deleteFileCollection({ id });
+    },
+    deleteAll: async () => {
+      await deleteAllFileCollections({
         client,
         onMsg: console.error,
         pageSize: 200,

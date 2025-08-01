@@ -1,6 +1,7 @@
 import {
   BaseReq,
   ExportData,
+  FileCollectionMetadataData,
   FileMetadataData,
   getPage,
   head,
@@ -109,6 +110,43 @@ export function fileGetter({ client }: BaseReq): Getter<FileMetadataData> {
           suppliedId: { extended: true, header: 'SuppliedId' },
           status: { extended: true },
           created: { extended: true },
+        },
+        { extended }
+      ),
+  };
+}
+
+export function fileCollectionGetter({
+  client,
+}: BaseReq): Getter<FileCollectionMetadataData> {
+  return {
+    getOne: async (id: string): Promise<FileCollectionMetadataData> => {
+      return (await client.fileCollections.getFileCollection({ id })).data.data;
+    },
+    getAll: async (
+      cursor?: string
+    ): Promise<Paged<FileCollectionMetadataData>> => {
+      const res = await getPage(() =>
+        client.fileCollections.listFileCollections({
+          pageCursor: cursor,
+          pageSize: 25,
+        })
+      );
+      return { items: res.page.data, cursor: res.cursor };
+    },
+    displayOne: (res: Paged<FileCollectionMetadataData>): void =>
+      console.log(prettyJson(head(res.items))),
+    displayAll: (
+      res: Paged<FileCollectionMetadataData>,
+      extended: boolean
+    ): void =>
+      cli.table(
+        res.items.map((f) => ({ id: f.id, ...f.attributes })),
+        {
+          id: { minWidth: 36 },
+          name: { minWidth: 12 },
+          suppliedId: { extended: false, header: 'SuppliedId' },
+          created: { extended: false },
         },
         { extended }
       ),
