@@ -5,15 +5,15 @@ import BaseCommand from '../../lib/base';
 import { vertexClient } from '../../lib/client';
 
 export default class Create extends BaseCommand {
-  public static description = `Create a webhook subscription.`;
+  public static readonly description = `Create a webhook subscription.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex webhook-subscriptions:create --topics queued-translation.completed,scene.updated --url https://example.com
 ta47eOIQtg13pSyf/PgpAB47r4JYJoAZfyzAcB5x8IHo+gQ
 `,
   ];
 
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     topics: flags.string({
       description: `Comma-separated list of topics.`,

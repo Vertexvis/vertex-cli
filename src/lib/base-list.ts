@@ -4,7 +4,7 @@ import { Input, OutputFlags } from '@oclif/parser';
 import BaseGetCommand from './base-get';
 
 export default abstract class BaseListCommand extends BaseGetCommand {
-  public static flags = {
+  public static readonly flags = {
     ...BaseGetCommand.flags,
     cursor: flags.string({
       description: 'Cursor for next page of items.',

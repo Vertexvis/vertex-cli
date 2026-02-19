@@ -4,7 +4,7 @@ import { Input, OutputFlags } from '@oclif/parser';
 import BaseCommand from './base';
 
 export default abstract class BaseDeleteCommand extends BaseCommand {
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     all: flags.boolean({
       description: 'Delete all resources.',

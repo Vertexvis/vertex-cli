@@ -6,18 +6,18 @@ import { vertexClient } from '../../lib/client';
 import { deleter, fileDeleter, validate } from '../../lib/deleter';
 
 export default class Delete extends BaseDeleteCommand {
-  public static description = `Delete files.`;
+  public static readonly description = `Delete files.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex files:delete 54964c61-05d8-4f37-9638-18f7c4960c80
 Deleted file 54964c61-05d8-4f37-9638-18f7c4960c80.
 Deleting file(s)...... done
 `,
   ];
 
-  public static args = [{ name: 'id' }];
+  public static readonly args = [{ name: 'id' }];
 
-  public static flags = BaseDeleteCommand.flags;
+  public static readonly flags = BaseDeleteCommand.flags;
 
   public async run(): Promise<void> {
     const {

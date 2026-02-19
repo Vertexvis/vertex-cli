@@ -7,17 +7,17 @@ import { fetchSceneItemTree } from '../../lib/scene-items';
 import { serializeTreeToZipFile } from '../../lib/tree-serializer';
 
 export default class Export extends BaseCommand {
-  public static description = `Export a scene's scene item tree to a ZIP file.`;
+  public static readonly description = `Export a scene's scene item tree to a ZIP file.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex scene-trees:export 54964c61-05d8-4f37-9638-18f7c4960c80
 Tree saved to: 54964c61-05d8-4f37-9638-18f7c4960c80.zip
 `,
   ];
 
-  public static args = [{ name: 'sceneId', required: true }];
+  public static readonly args = [{ name: 'sceneId', required: true }];
 
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     output: flags.string({
       char: 'o',

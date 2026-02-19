@@ -7,17 +7,17 @@ import BaseCommand from '../lib/base';
 import { fileExists } from '../lib/fs';
 
 export default class CreateItems extends BaseCommand {
-  public static description = `Calculate path IDs and transforms for each instance in file and output JSON file containing SceneItems (as defined in src/create-items/index.d.ts).`;
+  public static readonly description = `Calculate path IDs and transforms for each instance in file and output JSON file containing SceneItems (as defined in src/create-items/index.d.ts).`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex create-items --format pvs [YOUR_PATH_TO_XML_FILE]
 Wrote 5 pvs item(s) from '[YOUR_PATH_TO_XML_FILE]' to 'items.json'.
 `,
   ];
 
-  public static args = [{ name: 'path' }];
+  public static readonly args = [{ name: 'path' }];
 
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     format: flags.string({
       char: 'f',

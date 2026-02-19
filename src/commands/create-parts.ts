@@ -37,17 +37,17 @@ interface Args extends BaseReq {
 }
 
 export default class CreateParts extends BaseCommand {
-  public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), upload geometry files and create parts in Vertex Part Library.`;
+  public static readonly description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), upload geometry files and create parts in Vertex Part Library.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex create-parts --directory [YOUR_PATH_TO_GEOMETRY_DIRECTORY] [YOUR_PATH_TO_JSON_FILE]
   ████████████████████████████████████████ 100% | 10/10
 `,
   ];
 
-  public static args = [{ name: 'path' }];
+  public static readonly args = [{ name: 'path' }];
 
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     directory: flags.string({
       char: 'd',

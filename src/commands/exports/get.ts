@@ -5,18 +5,18 @@ import { vertexClient } from '../../lib/client';
 import { exportGetter, getterFn } from '../../lib/getter';
 
 export default class Get extends BaseGetCommand {
-  public static description = `Get an export.`;
+  public static readonly description = `Get an export.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex exports:get 54964c61-05d8-4f37-9638-18f7c4960c80
 Id                                   DownloadUrl
 54964c61-05d8-4f37-9638-18f7c4960c80 https://some-url.com/some-file
 `,
   ];
 
-  public static args = [{ name: 'id', required: true }];
+  public static readonly args = [{ name: 'id', required: true }];
 
-  public static flags = BaseGetCommand.flags;
+  public static readonly flags = BaseGetCommand.flags;
 
   public async run(): Promise<void> {
     const {

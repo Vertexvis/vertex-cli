@@ -20,7 +20,7 @@ BasePathAliases.set('platdev', 'https://platform.platdev.vertexvis.io');
 BasePathAliases.set('platstaging', 'https://platform.platstaging.vertexvis.io');
 
 export default abstract class BaseCommand extends Command {
-  public static flags = {
+  public static readonly flags = {
     help: flags.help({ char: 'h' }),
     basePath: flags.string({
       char: 'b',
