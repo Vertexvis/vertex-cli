@@ -33,11 +33,6 @@ describe('scene-trees:view', () => {
       const root = new TreeNode<SceneItemData>({
         id: 'root-id',
       } as SceneItemData);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const child = new TreeNode<SceneItemData>(
-        { id: 'child-id' } as SceneItemData,
-        root
-      );
       sinon.stub(si, 'fetchSceneItemTree').resolves(root);
 
       await new View([sceneId], {} as IConfig).run();

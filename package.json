@@ -42,7 +42,7 @@
     "@types/chai": "^4.3",
     "@types/fs-extra": "^9.0",
     "@types/mocha": "^9",
-    "@types/node": "^16",
+    "@types/node": "~16.11.26",
     "@vertexvis/eslint-config-vertexvis-typescript": "0.4",
     "chai": "^4.3",
     "eslint": "^7",
