@@ -5,13 +5,13 @@ import { TreeNode } from '../../src/lib/tree-node';
 describe('TreeNode', () => {
   let root: TreeNode<string>;
   let child1: TreeNode<string>;
+  let child2: TreeNode<string>;
   let grandchild: TreeNode<string>;
 
   beforeEach(() => {
     root = new TreeNode('root');
     child1 = new TreeNode('child1', root);
-    // eslint-disable-next-line no-new
-    new TreeNode('child2', root);
+    child2 = new TreeNode('child2', root);
     grandchild = new TreeNode('grandchild', child1);
   });
 
@@ -25,7 +25,9 @@ describe('TreeNode', () => {
 
     it('links to parent and adds itself to parent children', () => {
       expect(child1.parent).to.equal(root);
+      expect(child2.parent).to.equal(root);
       expect(root.children).to.include(child1);
+      expect(root.children).to.include(child2);
     });
   });
 

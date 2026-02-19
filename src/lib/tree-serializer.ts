@@ -18,18 +18,28 @@
  * const tree3 = deserializeTreeFromBuffer({ buffer: gzBuf });
  */
 import archiver from 'archiver';
-import fs from 'fs';
-import path from 'path';
-import { pipeline, Readable, Transform } from 'stream';
-import { finished } from 'stream/promises';
-import { promisify } from 'util';
-import zlib from 'zlib';
+import fs from 'node:fs';
+import path from 'node:path';
+import { pipeline, Readable, Transform } from 'node:stream';
+import { finished } from 'node:stream/promises';
+import { promisify } from 'node:util';
+import zlib from 'node:zlib';
 
 import { TreeNode } from './tree-node';
 
 interface SerializedNode<T> {
   data: T;
   children: SerializedNode<T>[];
+}
+
+function buildTreeFromSerialized<T>(obj: SerializedNode<T>): TreeNode<T> {
+  const node = new TreeNode<T>(obj.data);
+  for (const childObj of obj.children) {
+    const child = buildTreeFromSerialized(childObj);
+    child.parent = node;
+    node.children.push(child);
+  }
+  return node;
 }
 
 export interface SerializeFileOptions<T> {
@@ -115,18 +125,7 @@ export function deserializeTreeFromFile<T>({
   // fallback to full parse—if your JSON is enormous you can
   // also hook in a streaming parser like `stream-json`
   const parsed = JSON.parse(json) as SerializedNode<T>;
-
-  function build(obj: SerializedNode<T>): TreeNode<T> {
-    const node = new TreeNode<T>(obj.data);
-    for (const childObj of obj.children) {
-      const child = build(childObj);
-      child.parent = node;
-      node.children.push(child);
-    }
-    return node;
-  }
-
-  return build(parsed);
+  return buildTreeFromSerialized(parsed);
 }
 
 export interface BufferSerializeOptions<T> {
@@ -231,18 +230,7 @@ export function deserializeTreeFromBuffer<T>({
   const dataBuf = isGz ? zlib.gunzipSync(buffer as Uint8Array) : buffer;
   const parsed = JSON.parse(dataBuf.toString('utf8')) as SerializedNode<T>;
 
-  // Rebuild TreeNode<T>
-  const build = (obj: SerializedNode<T>): TreeNode<T> => {
-    const node = new TreeNode<T>(obj.data);
-    for (const childObj of obj.children) {
-      const child = build(childObj);
-      child.parent = node;
-      node.children.push(child);
-    }
-    return node;
-  };
-
-  return build(parsed);
+  return buildTreeFromSerialized(parsed);
 }
 
 export interface SerializeZipFileOptions<T> {
