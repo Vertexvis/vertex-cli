@@ -30,9 +30,10 @@ describe('scene-trees:view', () => {
         .stub(vc, 'vertexClient')
         .resolves(sinon.stub() as unknown as VertexClient);
 
-      const root = new TreeNode<SceneItemData>(
-        { id: 'root-id' } as SceneItemData
-      );
+      const root = new TreeNode<SceneItemData>({
+        id: 'root-id',
+      } as SceneItemData);
+      // eslint-disable-next-line no-new
       new TreeNode<SceneItemData>({ id: 'child-id' } as SceneItemData, root);
       sinon.stub(si, 'fetchSceneItemTree').resolves(root);
 

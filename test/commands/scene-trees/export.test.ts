@@ -6,8 +6,8 @@ import sinon, { assert } from 'sinon';
 import Export from '../../../src/commands/scene-trees/export';
 import * as vc from '../../../src/lib/client';
 import * as si from '../../../src/lib/scene-items';
-import * as ts from '../../../src/lib/tree-serializer';
 import { TreeNode } from '../../../src/lib/tree-node';
+import * as ts from '../../../src/lib/tree-serializer';
 
 const sceneId = 'my-scene-id';
 
@@ -31,9 +31,9 @@ describe('scene-trees:export', () => {
         .stub(vc, 'vertexClient')
         .resolves(sinon.stub() as unknown as VertexClient);
 
-      const root = new TreeNode<SceneItemData>(
-        { id: 'root-id' } as SceneItemData
-      );
+      const root = new TreeNode<SceneItemData>({
+        id: 'root-id',
+      } as SceneItemData);
       sinon.stub(si, 'fetchSceneItemTree').resolves(root);
       sinon.stub(ts, 'serializeTreeToZipFile').resolves();
 
@@ -50,13 +50,16 @@ describe('scene-trees:export', () => {
         .stub(vc, 'vertexClient')
         .resolves(sinon.stub() as unknown as VertexClient);
 
-      const root = new TreeNode<SceneItemData>(
-        { id: 'root-id' } as SceneItemData
-      );
+      const root = new TreeNode<SceneItemData>({
+        id: 'root-id',
+      } as SceneItemData);
       sinon.stub(si, 'fetchSceneItemTree').resolves(root);
       const serializeStub = sinon.stub(ts, 'serializeTreeToZipFile').resolves();
 
-      await new Export([sceneId, '--output', 'custom.zip'], {} as IConfig).run();
+      await new Export(
+        [sceneId, '--output', 'custom.zip'],
+        {} as IConfig
+      ).run();
 
       assert.calledOnce(serializeStub);
       expect(serializeStub.getCall(0).args[0].filePath).to.equal('custom.zip');
