@@ -1,5 +1,5 @@
 import { SceneItemData, VertexClient } from '@vertexvis/api-client-node';
-import { expect } from 'chai';
+import { assert, expect } from 'chai';
 import sinon from 'sinon';
 
 import {
@@ -82,6 +82,7 @@ describe('scene-items', () => {
       const client = makeClient([{ items }]);
 
       const root = await fetchSceneItemTree(client, 'scene-id');
+      assert.isDefined(root);
       expect(root.data?.id).to.equal('1');
       expect(root.children).to.have.length(1);
       expect(root.children[0].data?.id).to.equal('2');
@@ -92,6 +93,7 @@ describe('scene-items', () => {
       const client = makeClient([{ items }]);
 
       const root = await fetchSceneItemTree(client, 'scene-id');
+      assert.isDefined(root);
       expect(root.children[0].parent).to.equal(root);
     });
   });
