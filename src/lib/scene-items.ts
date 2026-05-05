@@ -35,11 +35,17 @@ export async function fetchAllSceneItemsForScene(
 export async function fetchSceneItemTree(
   client: VertexClient,
   sceneId: string
-): Promise<TreeNode<SceneItemData>> {
+): Promise<TreeNode<SceneItemData> | undefined> {
   const allSceneItems = await fetchAllSceneItemsForScene(client, sceneId);
-  return buildTreeFromFlat(
+  const roots = buildTreeFromFlat(
     allSceneItems,
     (rec) => rec.id,
     (rec) => rec.relationships.parent?.data.id
-  )[0];
+  );
+
+  if (roots.length === 0) {
+    return undefined;
+  }
+
+  return roots[0];
 }

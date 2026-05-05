@@ -73,38 +73,47 @@ export async function serializeTreeToFile<T>({
   if (gzipStream) gzipStream.pipe(fileStream);
   const out = gzipStream ?? fileStream;
 
+  async function writeChunk(chunk: string): Promise<void> {
+    if (!out.write(chunk)) {
+      await new Promise<void>((resolve, reject) => {
+        out.once('drain', resolve);
+        out.once('error', reject);
+      });
+    }
+  }
+
   // write the JSON root opening
-  out.write('{"data":');
-  out.write(JSON.stringify(root.data));
-  out.write(',"children":[');
+  await writeChunk('{"data":');
+  await writeChunk(JSON.stringify(root.data));
+  await writeChunk(',"children":[');
 
   // helper to write a node and its subtree
   async function writeNode(node: TreeNode<T>): Promise<void> {
     // open this node
-    out.write('{"data":');
-    out.write(JSON.stringify(node.data));
-    out.write(',"children":[');
+    await writeChunk('{"data":');
+    await writeChunk(JSON.stringify(node.data));
+    await writeChunk(',"children":[');
 
     // write each child (comma-separated)
     for (let i = 0; i < node.children.length; i++) {
-      if (i > 0) out.write(',');
+      if (i > 0) await writeChunk(',');
       // eslint-disable-next-line no-await-in-loop
       await writeNode(node.children[i]);
     }
 
     // close this node
-    out.write(']}');
+    await writeChunk(']}');
   }
 
   // write top-level children
   for (let i = 0; i < root.children.length; i++) {
-    if (i > 0) out.write(',');
+    if (i > 0) await writeChunk(',');
     // eslint-disable-next-line no-await-in-loop
     await writeNode(root.children[i]);
   }
 
   // close the JSON
-  out.write(']}');
+  await writeChunk(']}');
 
   out.end();
   await finished(out);
@@ -143,7 +152,7 @@ export interface BufferDeserializeOptions {
 }
 
 /*
- * Streamly serialize a TreeNode<T> into a Buffer of JSON or gzipped JSON
+ * Stream-serialize a TreeNode<T> into a Buffer of JSON or gzipped JSON
  * without ever building a giant string in memory.
  */
 export async function serializeTreeToBuffer<T>({
@@ -206,7 +215,11 @@ export async function serializeTreeToBuffer<T>({
   const chunks: Buffer[] = [];
   const collector = new Transform({
     transform(chunk, _enc, callback) {
-      chunks.push(Buffer.from(chunk));
+      if (Buffer.isBuffer(chunk)) {
+        chunks.push(chunk);
+      } else {
+        chunks.push(Buffer.from(chunk));
+      }
       callback();
     },
   });
