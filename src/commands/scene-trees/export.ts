@@ -39,13 +39,17 @@ Tree saved to: 54964c61-05d8-4f37-9638-18f7c4960c80.zip
         await vertexClient(basePath, this.userConfig),
         sceneId
       );
-      this.log(`Fetched ${root.size} scene items. Saving to file...`);
-      await serializeTreeToZipFile({
-        root,
-        filePath,
-        entryName: `${sceneId}.json`,
-      });
-      this.log(`Tree saved to: ${filePath}`);
+      if (root === undefined) {
+        throw new Error(`Failed to locate root scene item for scene.`);
+      } else {
+        this.log(`Fetched ${root.size} scene items. Saving to file...`);
+        await serializeTreeToZipFile({
+          root,
+          filePath,
+          entryName: `${sceneId}.json`,
+        });
+        this.log(`Tree saved to: ${filePath}`);
+      }
     } catch (error) {
       logError(error as VertexError, this.error);
     }

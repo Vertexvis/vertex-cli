@@ -142,7 +142,7 @@ export class TreeNode<T> implements Iterable<TreeNode<T>> {
     return node
       ? node(this)
       : `[TreeNode ${role} ${childInfo}, data=[${
-          data ? data(this.data) : JSON.stringify(this.data).slice(0, 160)
+          data ? data(this.data) : JSON.stringify(this.data)
         }]]`;
   }
 

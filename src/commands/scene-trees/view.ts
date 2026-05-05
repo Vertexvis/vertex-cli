@@ -30,8 +30,12 @@ export default class View extends BaseCommand {
         await vertexClient(basePath, this.userConfig),
         sceneId
       );
-      this.log(`Fetched ${root.size} scene items.`);
-      this.log(root.dump());
+      if (root === undefined) {
+        throw new Error(`Unable to locate root scene item for scene.`);
+      } else {
+        this.log(`Fetched ${root.size} scene items.`);
+        this.log(root.dump());
+      }
     } catch (error) {
       logError(error as VertexError, this.error);
     }
