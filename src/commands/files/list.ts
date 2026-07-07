@@ -5,9 +5,9 @@ import { vertexClient } from '../../lib/client';
 import { fileGetter, getterFn } from '../../lib/getter';
 
 export default class List extends BaseListCommand {
-  public static description = `Get files.`;
+  public static readonly description = `Get files.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex files:list
 Id                                   Name
 54964c61-05d8-4f37-9638-18f7c4960c80 my-file-1
@@ -15,7 +15,7 @@ a8070713-e48e-466b-b4bb-b3132895d5ce my-file-2
 `,
   ];
 
-  public static flags = BaseListCommand.flags;
+  public static readonly flags = BaseListCommand.flags;
 
   public async run(): Promise<void> {
     const {

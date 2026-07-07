@@ -5,15 +5,15 @@ import BaseCommand from '../../lib/base';
 import { vertexClient } from '../../lib/client';
 
 export default class Create extends BaseCommand {
-  public static description = `Create a stream key for a scene.`;
+  public static readonly description = `Create a stream key for a scene.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex stream-keys:create --sceneId f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 hBXAoQdnsHVhgDZkxeLEPQVxPJ600QwDMdgq
 `,
   ];
 
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     expiry: flags.integer({
       char: 'k',

@@ -5,15 +5,15 @@ import BaseCommand from '../../lib/base';
 import { vertexClient } from '../../lib/client';
 
 export default class Create extends BaseCommand {
-  public static description = `Create a scene view for a scene.`;
+  public static readonly description = `Create a scene view for a scene.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex scene-views:create --sceneId f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 bf0c4343-96eb-4aa9-8dee-e79c6458dedf
 `,
   ];
 
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     sceneId: flags.string({
       description: `Scene to base scene view on.`,

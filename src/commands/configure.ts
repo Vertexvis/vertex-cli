@@ -8,15 +8,15 @@ import { deleteFile, fileExists } from '../lib/fs';
 const UserRw = 0o600; // rw- --- ---
 
 export default class Configure extends BaseCommand {
-  public static description = `Configure Vertex credentials.`;
+  public static readonly description = `Configure Vertex credentials.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex configure
 Saved 'https://platform.vertexvis.com' configuration to '~/.config/@vertexvis/cli/config.json'.
 `,
   ];
 
-  public static flags = { ...BaseCommand.flags };
+  public static readonly flags = { ...BaseCommand.flags };
 
   public async run(): Promise<void> {
     const basePath = this.parsedFlags?.basePath;

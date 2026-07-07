@@ -4,7 +4,7 @@ import { Input, OutputFlags } from '@oclif/parser';
 import BaseCommand from './base';
 
 export default abstract class BaseGetCommand extends BaseCommand {
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     extended: flags.boolean({
       description: 'Display extended output.',

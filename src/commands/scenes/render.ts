@@ -13,17 +13,17 @@ import {
 } from '../../lib/renderer';
 
 export default class Render extends BaseRenderCommand {
-  public static description = `Render a scene.`;
+  public static readonly description = `Render a scene.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex scenes:render 54964c61-05d8-4f37-9638-18f7c4960c80
 54964c61-05d8-4f37-9638-18f7c4960c80.jpg
 `,
   ];
 
-  public static args = [{ name: 'id', required: true }];
+  public static readonly args = [{ name: 'id', required: true }];
 
-  public static flags = {
+  public static readonly flags = {
     ...BaseRenderCommand.flags,
     viewer: flags.boolean({
       description: 'Create Web SDK Viewer HTML instead of jpg image.',

@@ -6,18 +6,18 @@ import { vertexClient } from '../../lib/client';
 import { deleter, sceneViewStateDeleter, validate } from '../../lib/deleter';
 
 export default class Delete extends BaseDeleteCommand {
-  public static description = `Delete scene-view-states.`;
+  public static readonly description = `Delete scene-view-states.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex scene-view-states:delete 54964c61-05d8-4f37-9638-18f7c4960c80
 Deleted scene view state 54964c61-05d8-4f37-9638-18f7c4960c80.
 Deleting scene view state(s)...... done
 `,
   ];
 
-  public static args = [{ name: 'id' }];
+  public static readonly args = [{ name: 'id' }];
 
-  public static flags = BaseDeleteCommand.flags;
+  public static readonly flags = BaseDeleteCommand.flags;
 
   public async run(): Promise<void> {
     const {

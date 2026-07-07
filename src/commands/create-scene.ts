@@ -27,18 +27,18 @@ type CreateSceneFn = (
 ) => Promise<CreateSceneAndSceneItemsRes>;
 
 export default class CreateScene extends BaseCommand {
-  public static description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
+  public static readonly description = `Given JSON file containing SceneItems (as defined in src/create-items/index.d.ts), create scene in Vertex.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex create-scene --name my-scene [YOUR_PATH_TO_JSON_FILE]
   ████████████████████████████████████████ 100% | 10/10
 f79d4760-0b71-44e4-ad0b-22743fdd4ca3
 `,
   ];
 
-  public static args = [{ name: 'path' }];
+  public static readonly args = [{ name: 'path' }];
 
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     validate: flags.boolean({
       description:

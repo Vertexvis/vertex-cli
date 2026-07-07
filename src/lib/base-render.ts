@@ -4,7 +4,7 @@ import { Input, OutputFlags } from '@oclif/parser';
 import BaseCommand from './base';
 
 export default abstract class BaseRenderCommand extends BaseCommand {
-  public static flags = {
+  public static readonly flags = {
     ...BaseCommand.flags,
     height: flags.integer({
       char: 'h',

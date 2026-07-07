@@ -5,18 +5,18 @@ import { vertexClient } from '../../lib/client';
 import { getterFn, sceneItemGetter } from '../../lib/getter';
 
 export default class Get extends BaseGetCommand {
-  public static description = `Get a scene item.`;
+  public static readonly description = `Get a scene item.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex scene-items:get 54964c61-05d8-4f37-9638-18f7c4960c80
 Id                                   Name
 54964c61-05d8-4f37-9638-18f7c4960c80 my-scene-item
 `,
   ];
 
-  public static args = [{ name: 'id', required: true }];
+  public static readonly args = [{ name: 'id', required: true }];
 
-  public static flags = BaseGetCommand.flags;
+  public static readonly flags = BaseGetCommand.flags;
 
   public async run(): Promise<void> {
     const {

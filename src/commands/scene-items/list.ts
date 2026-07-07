@@ -6,9 +6,9 @@ import { vertexClient } from '../../lib/client';
 import { getterFn, sceneItemGetter } from '../../lib/getter';
 
 export default class List extends BaseListCommand {
-  public static description = `Get scene items.`;
+  public static readonly description = `Get scene items.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex scene-items:list
 Id                                   Name
 54964c61-05d8-4f37-9638-18f7c4960c80 my-scene-item-1
@@ -16,7 +16,7 @@ a8070713-e48e-466b-b4bb-b3132895d5ce my-scene-item-2
 `,
   ];
 
-  public static flags = {
+  public static readonly flags = {
     ...BaseListCommand.flags,
     sceneId: flags.string({
       description: `Scene to list scene items.`,

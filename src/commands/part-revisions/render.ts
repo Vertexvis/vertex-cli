@@ -11,17 +11,17 @@ import { vertexClient } from '../../lib/client';
 import { createFile, validate, validateImage } from '../../lib/renderer';
 
 export default class Render extends BaseRenderCommand {
-  public static description = `Render a part revision.`;
+  public static readonly description = `Render a part revision.`;
 
-  public static examples = [
+  public static readonly examples = [
     `$ vertex part-revisions:render 54964c61-05d8-4f37-9638-18f7c4960c80
 54964c61-05d8-4f37-9638-18f7c4960c80.jpg
 `,
   ];
 
-  public static args = [{ name: 'id', required: true }];
+  public static readonly args = [{ name: 'id', required: true }];
 
-  public static flags = BaseRenderCommand.flags;
+  public static readonly flags = BaseRenderCommand.flags;
 
   public async run(): Promise<void> {
     const {
