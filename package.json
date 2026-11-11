@@ -63,6 +63,11 @@
   "engines": {
     "node": ">=16.0.0"
   },
+  "resolutions": {
+    "@babel/traverse": "7.23.2",
+    "axios": "1.21.1",
+    "flatted": "3.4.4"
+  },
   "files": [
     "/bin",
     "/lib",

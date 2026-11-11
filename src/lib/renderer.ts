@@ -20,11 +20,17 @@ export function validateImage({
   resource,
 }: {
   id: string;
-  length: string;
+  length: unknown;
   onError: (msg: string) => void;
   resource: string;
 }): void {
-  if (Number.parseInt(length, 10) < 140) {
+  // axios 1.21 types this header as AxiosHeaderValue. Only a string or number
+  // is a byte count; other shapes match the old missing-header path.
+  const bytes =
+    typeof length === 'string' || typeof length === 'number'
+      ? String(length)
+      : '';
+  if (Number.parseInt(bytes, 10) < 140) {
     onError(`Received empty image for ${resource} ${id}.`);
   }
 }

@@ -8,20 +8,20 @@ jobs:
     outputs:
       publish: ${{ steps.detect-publish.outputs.publish }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - id: detect-publish
         run: |
           result=$(./scripts/detect_publish.sh)
-          echo $result
-          echo ::set-output name=publish::$result
+          echo "$result"
+          echo "publish=$result" >> "$GITHUB_OUTPUT"
 
   publish:
     runs-on: ubuntu-latest
     needs: [detect-publish]
     if: needs.detect-publish.outputs.publish == 1
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 18.x
           registry-url: https://registry.npmjs.org
@@ -39,8 +39,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [publish]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 18.x
           registry-url: https://registry.npmjs.org
