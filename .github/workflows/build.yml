@@ -16,6 +16,7 @@ jobs:
           # then crashes because module.parent is unset. Keep the ts-node require path.
           NODE_OPTIONS: --no-experimental-strip-types
         run: |
-          yarn install --frozen-lockfile
+          # Skip dependency lifecycle scripts. They execute arbitrary code at install, and this job does not need them.
+          yarn install --frozen-lockfile --ignore-scripts
           yarn build
           yarn test

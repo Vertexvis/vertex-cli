@@ -32,7 +32,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
         run: |
-          yarn install --frozen-lockfile
+          # Skip dependency lifecycle scripts. They execute arbitrary code at install, and this job does not need them.
+          yarn install --frozen-lockfile --ignore-scripts
           ./scripts/publish.sh
 
   docs:
@@ -49,7 +50,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          yarn install --frozen-lockfile
+          # Skip dependency lifecycle scripts. They execute arbitrary code at install, and this job does not need them.
+          yarn install --frozen-lockfile --ignore-scripts
           yarn generate:docs
           git config user.name github-actions
           git config user.email github-actions@github.com
