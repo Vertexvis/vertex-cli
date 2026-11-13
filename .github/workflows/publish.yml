@@ -44,8 +44,9 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24.x
-          registry-url: https://registry.npmjs.org
-          scope: '@vertexvis'
+          # setup-node v7 writes ${NODE_AUTH_TOKEN} when registry-url is set, and
+          # Yarn Classic aborts the install if that variable is unset. This job
+          # only installs public packages.
       - name: Deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
